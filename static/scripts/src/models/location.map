@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "location.js",
+  "sourceRoot": "../../../..",
+  "sources": [
+    "static/scripts/src/models/location.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAEA;CAAA,KAAA,KAAA;KAAA;oSAAA;;CAAA,CAAM,IAAiB,IAAP;CACd;;;;;CAAA;;CAAA,EACE,KADF;CACE,CAAO,GAAP,CAAA,UAAA;CAAA,CACQ,IAAR,qBADA;CADF,KAAA;;CAAA,EAIA,UAJA;;CAAA;;CADuC,OAAQ;;CAAjD,CAQM,QAAU,CAAY;CAC1B;;;;;CAAA;;CAAA,EAAO,EAAP,CAAwB,EAAxB,EAAiB;;CAAjB,EAEA,WAFA;;CAAA,EAIY,MAAA,CAAZ;CACO,CAAL,CAAe,CAAX,CAAJ,IAAgB,IAAhB;CACQ,IAAN,SAAA,CAAA;CADF,MAAe;CALjB,IAIY;;CAJZ;;CAD6C,OAAQ;CARvD"
+}

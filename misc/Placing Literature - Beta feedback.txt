@@ -1,0 +1,69 @@
+From: "Andrew Bardin Williams" <andrew@abwcopywriting.com>
+Subject: Placing Literature - Beta feedback
+Date: January 17, 2013 2:24:34 PM PST
+To: "Steven Young" <steven@fivepockets.com>
+Cc: <katiecwilliams@gmail.com>
+
+Hi Steve,
+ 
+Great talking to you this afternoon. Below is the feedback we discussed on the call. We’d love to see a Charlie version by the end of the month with the goal of completing the project by the end of February.
+ 
+Also, we’d like to send half your payment immediately—with the rest delivered upon project completion. Please send your mailing address ASAP.
+ 
+Thankb -/'.........................''º“«πª[py56784EQW$%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]\fgp
+
+
+Placing Literature Charlie Feedback
+
+Home Page:
+Create Home page by moving map to a separate page (layout should be similar to historypin.com)
+
+Navigation links: Map | About | Reintegrate (link to http://reintegratenewhaven.com) | Blog (link to http://placingliterature.wordpress.com)
+
+Add static map as the main graphic element
+
+Three additional content boxes:
+1: Placing Literature pilot is funded through a Reintegrate Grant from the Arts Council of Greater New Haven. Reintegrate is made possible through a Creative Placemaking Pilot Program grant from the Connecticut Department of Economic Development, Connecticut Office of the Arts.
+2: Recent activity box
+3: Blog box – placingliterature.wordpress.com
+
+Add copyright text (Content copyright 2013. All rights reserved.)
+
+About Page:
+Copy content from http://placingliterature.wordpress.com/about/.
+
+Map:
+Add Instructions box (Zoom into location on the map. Drag icon to location and enter scene information.)
+Pins should be book icons or book covers
+Change click to add pin to drag pin to location (drag pin from instructions box)
+
+Form Field:
+Bold “Enter Place Information”
+Spice it up a bit, maybe an open book?
+Add Book Cover option – users can enter URL to capture image or upload it manually
+Add “I’ve Been Here!” check box
+
+Pin Box:
+Same template as form field such as an open book
+Include information from form fields
+Check ins – total of “I’ve Been Here!”s
+Add date added
+Add date edited

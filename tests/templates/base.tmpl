@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}Set a Title{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block styles %}
+    <!-- <link href="/css/bootstrap.css" rel="stylesheet" type="text/css" /> -->
+    <link href="/css/placelit.css" rel="stylesheet" type="text/css" />
+    {% endblock %}
+    {% block libraries %}
+    {% if maps_api %}
+    <script type="text/javascript" src="{{ maps_api }}"></script>
+    {% endif %}
+    <script type="text/javascript" src="/js/libs/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="/js/libs/modernizr-latest.js"></script>
+    <script type="text/javascript" src="/js/libs/underscore-min.js"></script>
+    <script type="text/javascript" src="/js/libs/backbone-min.js"></script>
+    <script type="text/javascript" src="/js/libs/bootstrap.min.js"></script>
+    {% endblock %}
+  </head>
+  <body>
+    {% block content %}
+      Put some stuff here.
+    {% endblock %}
+    {% block modals %}
+    <div id="maphelp" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h3 id="myModalLabel">help</h3>
+      </div>
+      <div class="modal-body">
+        <p>Zoom and pan to pick a spot on the map. Or you can search to select a location.<p/>
+        <p>Click the map to drop a marker. Click the marker to describe your book.</p>
+        <p>You can drag the marker after it drops. And you can scroll to zoom or drag to pan.</p>
+      </div>
+    </div>
+    <div id="placelitabout" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h3 id="myModalLabel">funding</h3>
+      </div>
+      <div class="modal-body">
+        <p>Placing Literature pilot is funded through a Reintegrate Grant from the Arts Council of Greater New Haven.
+        Reintegrate is made possible through a Creative Placemaking Pilot Program grant from the Connecticut Department of Economic Development, Connecticut Office of the Arts.
+        </p>
+      </div>
+    </div>
+    {% endblock %}
+    {% block scripts %}
+    <script type="text/javascript" src="/js/src/models/location.js"></script>
+    {% endblock %}
+  </body>
+</html>

@@ -1,0 +1,68 @@
+application: placingliterature
+version: beta05
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /favicon\.ico
+  static_files: static/images/favicon.ico
+  upload: favicon\.ico
+
+- url: /img
+  static_dir: static/images
+
+- url: /css
+  static_dir: static/styles
+
+- url: /js
+  static_dir: static/scripts
+
+- url: /pages
+  static_dir: static/pages
+
+- url: /home
+  script: handlers.home.app
+
+- url: /map(/?.*)
+  script: handlers.home.app
+
+- url: /places/add
+  script: handlers.place.app
+
+- url: /places/show
+  script: handlers.place.app
+
+- url: /places/info/(.*)
+  script: handlers.place.app
+
+- url: /places/visit/(.*)
+  script: handlers.place.app
+
+- url: /places/export
+  script: handlers.place.app
+
+- url: /places/recent
+  script: handlers.place.app
+
+- url: /places/count
+  script: handlers.place.app
+
+- url: /places/dump
+  script: handlers.export.app
+
+- url: /places/import
+  script: handlers.export.app
+
+- url: /blog/update
+  script: handlers.blogposts.app
+
+- url: /user/status
+  script: handlers.home.app
+
+- url: .*
+  script: handlers.home.app
+
+libraries:
+- name: webapp2
+  version: "2.5.1"

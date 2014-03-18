@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>{% block title %}{{ title }}{% endblock %}</title>
+{% block styles %}
+<link href="/static/styles/buttons.css" rel="stylesheet" type="text/css" />
+<link href="{{ maps_css }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript" src="/static/scripts/jquery-1.6.2.js"></script>
+<script type="text/javascript" src="{{ maps_api }}"></script>
+<script type="text/javascript" src="{{ gears_api }}"></script>
+<script type="text/javascript" src="/static/scripts/gmbh.js"></script>
+{% endblock %}
+</head>
+<body onload="initializeMap(); setLocation();"
+  style="font: bold 12px Helvetica, Arial, sans-serif;">
+  <div style="padding: 5px;">{{ userinfo }}</div>
+  <div>
+    <a class="button" href="{{ url }}">{{ url_linktext }}</a>
+    <a href="#" class="button" onclick="showSharedLocations();">show locations</a>
+    <a href="#" class="button" onclick="setLocation();">update location</a>
+    <form action="/locate/share" method="post">
+      <input type="hidden" name="latitude" id="latitude" value=""/>
+      <input type="hidden" name="longitude" id="longitude" value=""/>
+      {% if submit_text %}
+        <input class="button" type="submit" value="{{ submit_text }}">
+      {% endif %}
+    </form>
+  </div>  
+  <div id="map_canvas"></div>
+</body>
+</html>

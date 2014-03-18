@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "metadata.js",
+  "sourceRoot": "../../../..",
+  "sources": [
+    "static/scripts/src/models/metadata.coffee"
+  ],
+  "names": [],
+  "mappings": ";AAGA;CAAA,KAAA,KAAA;KAAA;oSAAA;;CAAA,CAAM,IAAiB,IAAP;CACd;;;;;CAAA;;CAAA,EAAA,YAAA;;CAAA,EAEY,MAAA,CAAZ;;CAFA;;CADuC,OAAQ;;CAAjD,CAMM,QAAU,CAAY;CAC1B;;;;;CAAA;;CAAA,EAAO,EAAP,CAAwB,EAAxB,EAAiB;;CAAjB,EAEA,aAFA;;CAAA;;CADmD,OAAQ;CAN7D"
+}

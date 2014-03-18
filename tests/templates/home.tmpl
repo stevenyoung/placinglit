@@ -1,0 +1,81 @@
+{% extends 'base.tmpl' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+  <div id="homecontainer">
+    <div id="plpageheader">
+      <h3><img id="weblogo" src="/img/webicon.png">Placing Literature: Where Your Book Meets the Map</h3>
+      <div id="uppernavcontainer">
+        <div id="uppernav">
+          <ul id="sitelinks">
+            <li class="active"><a href="/home">home</a></li>
+            <li class="divider-vertical"></li>
+            <li><a href="/map">map</a></li>
+            <li class="divider-vertical"></li>
+            <li><a href="//placingliterature.wordpress.com" target="_blank">blog</a></li>
+            <li class="divider-vertical"></li>
+            <li><a href="/pages/about.html">about</a></li>
+            <li class="divider-vertical"></li>
+            <li><a href="/pages/funding.html">funding</a></li>
+            <li class="divider-vertical"></li>
+            <li><a mailto="info@placingliterature.com" target="blank">report a map error</a></li>
+            <li class="divider-vertical"></li>
+            <li><a href="/places/export">download</a></li>
+            <li class="divider-vertical"></li>
+            <li><a id="loginlink" href="{{ url }}">{{ url_text }}</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div id="contentcontainer">
+      <div id="hpcontent"  class="row-fluid">
+        <div id="hpmap">
+          <!-- <h2>loading places...</h2> -->
+          <div id="hpbuttons">
+              <a href="/map?modal=1"><button id="mapscene" class="btn btn-large btn-info" type="button">Map a Scene from a Novel</button></a>
+              <a href="/map?modal=1"><button id="explore" class="btn btn-large btn-info" type="button">Explore a Place Through Its Literature</button></a>
+            </p>
+          </div>
+        </div>
+        <div id="recentcontent">
+          <h4>Newest Places Added:</h4>
+          <h5 id="count"></h5>
+          <ul><li>loading...</li></ul>
+        </div>
+      </div>
+      <div id="hplower" class="row-fluid">
+        <div id="cities">
+          <h4>Cities</h4>
+          <p><a href="/map/41.3060969411,-72.9260498285">New Haven, Connecticut</a></p>
+          <p><a href="/map/46.7833,-92.1064">Duluth, Minnesota</a></p>
+          <p><a href="/map/37.7750,-122.4183">San Francisco, California</a></p>
+        </div>
+        <div id="blogposts">
+          <h4>Blog Posts</h4>
+          {% for post in posts %}
+            <p><a href="{{ post.link }}" target="_blank">{{ post.title }}</a></p>
+          {% endfor %}
+        </div>
+        <div id="hpvideowrapper">
+          <h4>Place as Character</h4>
+          <iframe src="http://www.youtube.com/embed/NV0Qdo6ImJo?rel=0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+    <div id="lowernav">
+      <span>
+        <a href="#placelitabout" data-toggle="modal">Funding provided by the Arts Council of Greater New Haven</a>
+        &copy; 2013. All rights reserved</span>
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+{% comment %}
+  <script type="text/javascript" src="/js/src/models/location.js"></script>
+  <script type="text/javascript" src="/js/src/views/recentplaces.js"></script>
+  <script type="text/javascript" src="/js/src/views/locationcount.js"></script>
+  <script type="text/javascript" src="/js/src/views/mapview.js"></script>
+  <script type="text/javascript" src="/js/src/views/homepagemap.js"></script>
+{% endcomment %}
+  <script type="text/javascript" src="/js/src/app.js"></script>
+  <script type="text/javascript" src="/js/src/home.js"></script>
+{% endblock %}
