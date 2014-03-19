@@ -12,7 +12,7 @@ class UpdateBooksHandler(webapp.RequestHandler):
 
 class UpdateUserISBNHandler(webapp.RequestHandler):
   def get(self):
-    deferred.defer(update_schema.update_user_isbns)
+    deferred.defer(update_schema.update_schema)
     self.response.out.write('Schema migration successfully initiated.')
 
 
