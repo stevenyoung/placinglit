@@ -41,6 +41,8 @@ class GetAllPlacesHandler(baseapp.BaseAppHandler):
         'checkins': place.checkins,
         'image_url': place.image_url,
         'db_key': key.id()}
+      if place.ug_isbn:
+        loc['ug_isbn'] = place.ug_isbn
       loc_json.append(loc)
     self.output_json(loc_json)
 
