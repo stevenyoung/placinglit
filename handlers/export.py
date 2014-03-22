@@ -56,7 +56,7 @@ class QLDImportPlacesHandler(baseapp.BaseAppHandler):
     if 'notes' not in data:
       data['notes'] = ''
     place_key = placedlit.PlacedLit.create_from_dict(data)
-    print data['title'], place_key
+    # print data['title'], place_key
     print place_key
     # collections.add_scene(place_key)
 
