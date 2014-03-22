@@ -12,7 +12,7 @@ from google.appengine.api import users
 
 from handlers.abstracts import baseapp
 from classes import placedlit
-# from classes import collections
+from classes import collections
 
 
 class GetAllPlacesHandler(baseapp.BaseAppHandler):
@@ -50,6 +50,9 @@ class GetAllPlacesHandler(baseapp.BaseAppHandler):
 class QLDImportPlacesHandler(baseapp.BaseAppHandler):
   """ import qld places from csv """
   def post(self):
+    collection = collections.Collection.get_by_key_name('qld')
+    if not collection:
+      collection = collections.Collection(key_name='qld')
     data = json.loads(self.request.body)
     data['user'] = users.User('test@example.com')
     data['email'] = 'qld@qld.gov'
@@ -57,8 +60,8 @@ class QLDImportPlacesHandler(baseapp.BaseAppHandler):
       data['notes'] = ''
     place_key = placedlit.PlacedLit.create_from_dict(data)
     # print data['title'], place_key
-    print place_key
-    # collections.add_scene(place_key)
+    # print place_key
+    collection.add_scene(place_key)
 
 
 class ImportPlacesHandler(baseapp.BaseAppHandler):
