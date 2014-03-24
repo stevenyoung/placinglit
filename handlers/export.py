@@ -43,16 +43,16 @@ class GetAllPlacesHandler(baseapp.BaseAppHandler):
         'db_key': key.id()}
       if place.ug_isbn:
         loc['ug_isbn'] = place.ug_isbn
+      if place.user_email:
+        loc['user_email'] = place.ug_isbn
       loc_json.append(loc)
     self.output_json(loc_json)
 
 
-class QLDImportPlacesHandler(baseapp.BaseAppHandler):
+class CSVImportPlacesHandler(baseapp.BaseAppHandler):
   """ import qld places from csv """
-  def post(self):
-    collection = collections.Collection.get_by_key_name('qld')
-    if not collection:
-      collection = collections.Collection(key_name='qld')
+  def post(self, collection_name, user):
+    collection = collections.Collection().get_named(collection_name)
     data = json.loads(self.request.body)
     data['user'] = users.User('test@example.com')
     data['email'] = 'qld@qld.gov'
@@ -63,6 +63,7 @@ class QLDImportPlacesHandler(baseapp.BaseAppHandler):
 
 
 class ImportPlacesHandler(baseapp.BaseAppHandler):
+  """ import scenes from json """
   def post(self):
     data = {'actors': self.request.get('actors'),
             'author': self.request.get('author'),
@@ -81,6 +82,7 @@ class ImportPlacesHandler(baseapp.BaseAppHandler):
 
 
 class MissingBookSceneHandler(baseapp.BaseAppHandler):
+  """ list scenes missing book data """
   def get(self):
     places = placedlit.PlacedLit.get_all_unresolved_places()
     place_json = []
@@ -110,7 +112,7 @@ class MissingBookSceneHandler(baseapp.BaseAppHandler):
 urls = [
   ('/places/dump', GetAllPlacesHandler),
   ('/places/import', ImportPlacesHandler),
-  ('/places/qld_import', QLDImportPlacesHandler),
+  ('/places/csv_import/(.*)', CSVImportPlacesHandler),
   ('/places/missing_books', MissingBookSceneHandler)
 ]
 
