@@ -1,6 +1,7 @@
 """ Datastore model for scenes. """
 # pylint: disable=W0403, R0904
 
+from datetime import datetime
 import logging
 import urlparse
 
@@ -55,6 +56,9 @@ class PlacedLit(db.Model):
 
     if 'current_checkin_count' in place_data:
       placed.checkins = place_data['current_checkin_count']
+
+    if 'timestamp' in place_data:
+      placed.ts = datetime.strptime(place_data['timestamp'], '%Y-%m-%d %X.%f')
 
     try:
       entity_key = placed.put()
