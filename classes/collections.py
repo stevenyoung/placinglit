@@ -3,6 +3,12 @@
 
 from google.appengine.ext import db
 
+FEATURED = dict()
+FEATURED['catalan'] = {'url': 'http://www.espaisescrits.cat/',
+                       'user': 'info@espaisescrits.cat'}
+FEATURED['slq'] = {'url': 'http://slq.qld.gov.au',
+                   'user': 'webmanager@slq.qld.gov.au'}
+
 
 class Collection(db.Model):
   """ Collections of scenes """
@@ -16,7 +22,11 @@ class Collection(db.Model):
     self.put()
 
   def get_named(self, collection_name):
+    """ collections are keyed by names or created if key is not found """
     collection = self.get_by_key_name(collection_name)
     if not collection:
       collection = Collection(key_name=collection_name)
+      if collection_name in FEATURED:
+        collection.url = FEATURED[collection_name]['url']
+        collection.put()
     return collection
