@@ -75,6 +75,8 @@ class ImportPlacesHandler(baseapp.BaseAppHandler):
             'title': self.request.get('title'),
             'email': self.request.get('user_email')
             }
+    if not data['email']:
+      data['email'] = 'info@placingliterature.com'
     data['user'] = users.User(data['email'])
     location = ast.literal_eval(self.request.get('location'))
     data['longitude'] = location['longitude']
