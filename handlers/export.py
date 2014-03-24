@@ -36,26 +36,27 @@ class GetAllPlacesHandler(baseapp.BaseAppHandler):
         'symbols': place.symbols,
         'scenedescription': place.scenedescription,
         'notes': place.notes,
-        # 'ts': place.ts,
         'location': location_export,
         'checkins': place.checkins,
         'image_url': place.image_url,
+        'ts': place.ts.strftime('%Y-%m-%d %X.%f'),
         'db_key': key.id()}
       if place.ug_isbn:
         loc['ug_isbn'] = place.ug_isbn
       if place.user_email:
-        loc['user_email'] = place.ug_isbn
+        loc['user_email'] = place.user_email
+      logging.info('timestamp: %s', place.ts)
       loc_json.append(loc)
     self.output_json(loc_json)
 
 
 class CSVImportPlacesHandler(baseapp.BaseAppHandler):
-  """ import qld places from csv """
-  def post(self, collection_name, user):
+  """ import places from csv and add to a collection """
+  def post(self, collection_name):
     collection = collections.Collection().get_named(collection_name)
     data = json.loads(self.request.body)
-    data['user'] = users.User('test@example.com')
-    data['email'] = 'qld@qld.gov'
+    data['email'] = collections.FEATURED[collection_name]['user']
+    data['user'] = users.User(data['email'])
     if 'notes' not in data:
       data['notes'] = ''
     place_key = placedlit.PlacedLit.create_from_dict(data)
@@ -72,12 +73,14 @@ class ImportPlacesHandler(baseapp.BaseAppHandler):
             'scene': self.request.get('scenedescription'),
             'place_name': self.request.get('scenelocation'),
             'title': self.request.get('title'),
-            'email': 'test@example.com'
+            'email': self.request.get('user_email')
             }
     data['user'] = users.User(data['email'])
     location = ast.literal_eval(self.request.get('location'))
     data['longitude'] = location['longitude']
     data['latitude'] = location['latitude']
+    if self.request.get('ts'):
+      data['timestamp'] = self.request.get('ts')
     placedlit.PlacedLit.create_from_dict(data)
 
 
