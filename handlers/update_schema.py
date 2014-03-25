@@ -34,26 +34,23 @@ def update_book_data(cursor=None, num_updated=0):
     query_title = place.title.lower().replace(' ', '_')
     query_author = transform_author_name_for_query(place.author)
     logging.info('%s by %s?', query_title, query_author)
-    matching_book = books.Book.get_by_key_name(query_title)
     # matching books and authors
-    # if matching_books:
-    #   for index, book in enumerate(matching_books.authors):
-    #     author_name = matching_books.authors[index].name()
-    #     if author_name == query_author:
-    #       place.book_data = matching_books
-    #       # to_put.append(place)
-    #       logging.info('found %s by %s', query_title, query_author)
-    # to_put.append(place)
+    matching_books = books.Book.get_by_key_name(query_title)
+    if matching_books:
+      for index, book in enumerate(matching_books.authors):
+        author_name = matching_books.authors[index].name()
+        if author_name == query_author:
+          place.book_data = matching_books
+          # to_put.append(place)
+          logging.info('found %s by %s', query_title, query_author)
+    to_put.append(place)
 
     # matching book titles only
-    if matching_book:
-      print matching_book.title
-      place.book_data = matching_book
-      to_put.append(place)
-      # for book in matching_books:
-      #   place.book_data = matching_books
-      #   to_put.append(place)
-      #   logging.info('%s :: %s', place.title, query_title)
+    # matching_book = books.Book.get_by_key_name(query_title)
+    # if matching_book:
+    #   print matching_book.title
+    #   place.book_data = matching_book
+    #   to_put.append(place)
 
   if to_put:
     db.put(to_put)
