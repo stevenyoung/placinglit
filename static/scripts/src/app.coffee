@@ -125,7 +125,6 @@ class PlacingLit.Views.MapView extends Backbone.View
       @clearPlaceholders()
       )
     document.getElementById('guidelines').addEventListener 'click', (event) =>
-      console.log('guidelines clicked')
       $('#helpmodal').modal()
 
 
@@ -190,7 +189,7 @@ class PlacingLit.Views.HomepagemapView extends PlacingLit.Views.MapView
     @gmap ?= @googlemap('hpmap')
     @dropMarkerForStoredLocation(location) for location in locations
     mapcenter = new google.maps.LatLng(@cities.newhaven.lat, @cities.newhaven.lng)
-    console.log('map markers', @gmap)
+    # console.log('map markers', @gmap)
     @gmap.setCenter(mapcenter)
     @gmap.setZoom(@settings.zoomLevel.homepagedefault)
 
@@ -224,7 +223,7 @@ class PlacingLit.Views.MapCanvasView extends PlacingLit.Views.MapView
   initialize: () ->
     # @collection ?= new PlacingLit.Collections.Locations
     @collection ?= new PlacingLit.Collections.Locations(url: '/places/1')
-    console.log(@collection)
+    # console.log(@collection)
     @listenTo @collection, 'all', @render
     @collection.fetch()
 
@@ -401,7 +400,7 @@ class PlacingLit.Views.MapCanvasView extends PlacingLit.Views.MapView
       check_in: $('#check_in').prop('checked')
     form_data.latitude = @userPlace.lat()
     form_data.longitude = @userPlace.lng()
-    console.log('form data', form_data)
+    # console.log('form data', form_data)
     required_fields = ['author', 'notes', 'place_name', 'scene', 'title']
     for field in required_fields
       if form_data[field].length == 0
@@ -447,7 +446,7 @@ class PlacingLit.Views.MapCanvasView extends PlacingLit.Views.MapView
       @geocoderSearch()
 
   infowindowContent: (data, updateButton) ->
-    console.log(data)
+    # console.log(data)
     gr_books = 'http://www.goodreads.com/book/title/'
     buy_books = 'http://www.rjjulia.com/book/'
     field_format = '<br><span class="pllabel"><%= label %></span>'

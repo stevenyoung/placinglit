@@ -215,7 +215,6 @@
       }
       return document.getElementById('guidelines').addEventListener('click', (function(_this) {
         return function(event) {
-          console.log('guidelines clicked');
           return $('#helpmodal').modal();
         };
       })(this));
@@ -327,7 +326,6 @@
         this.dropMarkerForStoredLocation(location);
       }
       mapcenter = new google.maps.LatLng(this.cities.newhaven.lat, this.cities.newhaven.lng);
-      console.log('map markers', this.gmap);
       this.gmap.setCenter(mapcenter);
       return this.gmap.setZoom(this.settings.zoomLevel.homepagedefault);
     };
@@ -382,7 +380,9 @@
 
     MapCanvasView.prototype.initialize = function() {
       if (this.collection == null) {
-        this.collection = new PlacingLit.Collections.Locations;
+        this.collection = new PlacingLit.Collections.Locations({
+          url: '/places/1'
+        });
       }
       this.listenTo(this.collection, 'all', this.render);
       this.collection.fetch();
@@ -584,7 +584,6 @@
       };
       form_data.latitude = this.userPlace.lat();
       form_data.longitude = this.userPlace.lng();
-      console.log('form data', form_data);
       required_fields = ['author', 'notes', 'place_name', 'scene', 'title'];
       for (_i = 0, _len = required_fields.length; _i < _len; _i++) {
         field = required_fields[_i];
@@ -651,7 +650,6 @@
 
     MapCanvasView.prototype.infowindowContent = function(data, updateButton) {
       var aff_span, button_format, buy_books, buybook_button, content, field_format, goodrd_button, gr_books, image_format, infotemplate;
-      console.log(data);
       gr_books = 'http://www.goodreads.com/book/title/';
       buy_books = 'http://www.rjjulia.com/book/';
       field_format = '<br><span class="pllabel"><%= label %></span>';
