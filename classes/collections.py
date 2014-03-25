@@ -11,7 +11,7 @@ FEATURED['slq'] = {'url': 'http://slq.qld.gov.au',
 
 
 class Collection(db.Model):
-  """ Collections of scenes """
+  """ Collections of scenes. Collections are keyed by name """
   name = db.StringProperty()
   url = db.LinkProperty()
   scenes = db.ListProperty(db.Key)
@@ -21,8 +21,8 @@ class Collection(db.Model):
     self.scenes.append(scene_key)
     self.put()
 
-  def get_named(self, collection_name):
-    """ collections are keyed by names or created if key is not found """
+  def create_or_update(self, collection_name):
+    """ named collections is updated or created if key is not found """
     collection = self.get_by_key_name(collection_name)
     if not collection:
       collection = Collection(key_name=collection_name)
@@ -30,3 +30,7 @@ class Collection(db.Model):
         collection.url = FEATURED[collection_name]['url']
         collection.put()
     return collection
+
+  def get_named(self, collection_name):
+    """ return previously existing collection or None """
+    return self.get_by_key_name(collection_name)
