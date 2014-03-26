@@ -53,7 +53,7 @@ class GetAllPlacesHandler(baseapp.BaseAppHandler):
 class CSVImportPlacesHandler(baseapp.BaseAppHandler):
   """ import places from csv and add to a collection """
   def post(self, collection_name):
-    collection = collections.Collection().get_named(collection_name)
+    collection = collections.Collection().create_or_update(collection_name)
     data = json.loads(self.request.body)
     data['email'] = collections.FEATURED[collection_name]['user']
     data['user'] = users.User(data['email'])
