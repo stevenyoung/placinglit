@@ -1,7 +1,9 @@
 """ Handle web requests for collections """
 # pylint disable=C0103
 import json
+import logging
 
+from google.appengine.ext import db
 from google.appengine.ext import webapp
 
 from handlers.abstracts import baseapp
@@ -28,6 +30,34 @@ class SceneCollectionHandler(baseapp.BaseAppHandler):
     template_values['scenes'] = json.dumps(scenes_json)
     self.render_template('map.tmpl', template_values)
 
-handler_urls = [('/collections/(.*)', SceneCollectionHandler)]
+
+class UpdateCatalanCollectionbyUserHandler(baseapp.BaseAppHandler):
+  def get(self):
+    logging.info('fixing catalan')
+    place_query = db.GqlQuery(
+        'SELECT __key__ FROM PlacedLit WHERE user_email = :1',
+        'espaisescrits@gmail.com')
+    collection = collections.Collection().get_named('catalan')
+    for place in place_query:
+      if place not in collection.scenes:
+        logging.info('place added: %s', place)
+        collection.scenes.append(place)
+    collection.put()
+    place_query = db.GqlQuery(
+        'SELECT __key__ FROM PlacedLit WHERE user_email = :1',
+        'fjoseppla@gmail.com')
+    collection = collections.Collection().get_named('catalan')
+    for place in place_query:
+      if place not in collection.scenes:
+        logging.info('place added: %s', place)
+        collection.scenes.append(place)
+    collection.put()
+    self.response.write('done.')
+
+
+handler_urls = [
+  ('/collections/fix', UpdateCatalanCollectionbyUserHandler),
+  ('/collections/(.*)', SceneCollectionHandler),
+]
 
 app = webapp.WSGIApplication(handler_urls, debug=True)
