@@ -7,7 +7,9 @@ FEATURED = dict()
 FEATURED['catalan'] = {'url': 'http://www.espaisescrits.cat/',
                        'user': 'info@espaisescrits.cat'}
 FEATURED['slq'] = {'url': 'http://slq.qld.gov.au',
-                   'user': 'webmanager@slq.qld.gov.au'}
+                   'user': 'webmanager@slq.qld.gov.au',
+                   'center': {'lat': '-25.0246396949',
+                              'lng': '136.142578125'}}
 
 
 class Collection(db.Model):
