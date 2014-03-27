@@ -123,6 +123,10 @@ handlers:
   script: handlers.update_scenes.app
   login: admin
 
+- url: /collections/(.*)
+  script: handlers.collections.app
+
+
 - url: .*
   script: handlers.home.app
 
