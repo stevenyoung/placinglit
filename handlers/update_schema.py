@@ -66,7 +66,9 @@ def update_book_data(cursor=None, num_updated=0):
 
 def update_user_isbns(cursor=None, num_updated=0):
   """ insert values for user generated isbns """
-  pass
+  isbn_list_query = db.GqlQuery(
+    'SELECT __key__ FROM PlacedLit WHERE ug_isbn != NULL')
+
   query = placedlit.PlacedLit.all()
   if cursor:
     query.with_cursor(cursor)
