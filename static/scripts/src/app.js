@@ -470,7 +470,7 @@
       if (typeof CENTER !== "undefined" && CENTER !== null) {
         mapcenter = new google.maps.LatLng(CENTER.lat, CENTER.lng);
         this.gmap.setCenter(mapcenter);
-        this.gmap.setZoom(this.settings.zoomLevel.close);
+        this.gmap.setZoom(this.settings.zoomLevel.wide);
       } else {
         usacenterCoords = {
           lat: 39.8282,
