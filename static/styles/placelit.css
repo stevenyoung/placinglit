@@ -4723,6 +4723,7 @@ body {
   padding: 10px; }
 
 .plinfowindow {
+  overflow: hidden;
   min-width: 400px;
   text-align: left; }
   .plinfowindow .pllabel {
