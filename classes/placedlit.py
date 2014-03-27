@@ -60,6 +60,9 @@ class PlacedLit(db.Model):
     if 'timestamp' in place_data:
       placed.ts = datetime.strptime(place_data['timestamp'], '%Y-%m-%d %X.%f')
 
+    if 'ug_isbn' in place_data:
+      placed.ug_isbn = place_data['ug_isbn']
+
     try:
       entity_key = placed.put()
       memcache.add(str(entity_key.id()), placed)

@@ -83,6 +83,8 @@ class ImportPlacesHandler(baseapp.BaseAppHandler):
     data['latitude'] = location['latitude']
     if self.request.get('ts'):
       data['timestamp'] = self.request.get('ts')
+    if self.request.get('ug_isbn'):
+      data['ug_isbn'] = self.request.get('ug_isbn')
     placedlit.PlacedLit.create_from_dict(data)
 
 
