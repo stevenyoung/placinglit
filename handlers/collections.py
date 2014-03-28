@@ -32,6 +32,7 @@ class SceneCollectionHandler(baseapp.BaseAppHandler):
 
 
 class UpdateCatalanCollectionbyUserHandler(baseapp.BaseAppHandler):
+  """ update catalan users """
   def get(self):
     logging.info('fixing catalan')
     place_query = db.GqlQuery(
