@@ -95,6 +95,7 @@ handlers:
 
 - url: /places/csv_import/(.*)
   script: handlers.export.app
+  login: admin
 
 - url: /places/missing_books
   script: handlers.export.app
