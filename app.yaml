@@ -1,5 +1,5 @@
 application: placingliterature
-version: isbn-import
+version: apr2014
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -120,6 +120,10 @@ handlers:
   login: admin
 
 - url: /update_isbns
+  script: handlers.update_scenes.app
+  login: admin
+
+- url: /reset_isbns
   script: handlers.update_scenes.app
   login: admin
 
