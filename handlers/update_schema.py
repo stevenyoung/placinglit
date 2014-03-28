@@ -1,4 +1,5 @@
 # import json
+""" update scenes """
 import logging
 
 from google.appengine.ext import deferred
@@ -62,37 +63,3 @@ def update_book_data(cursor=None, num_updated=0):
       update_book_data, cursor=query.cursor(), num_updated=num_updated)
   else:
     logging.debug('UpdateSchema complete with %d updates!', num_updated)
-
-
-def update_user_isbns(cursor=None, num_updated=0):
-  """ insert values for user generated isbns """
-  isbn_list_query = db.GqlQuery(
-    'SELECT __key__ FROM PlacedLit WHERE ug_isbn != NULL')
-
-  query = placedlit.PlacedLit.all()
-  if cursor:
-    query.with_cursor(cursor)
-
-  to_update = []
-
-  for place in query.fetch(limit=BATCH_SIZE):
-    if place.ug_isbn:
-      TITLE_ISBNS[place.title] = place.ug_isbn
-    else:
-      place.ug_isbn = TITLE_ISBNS[place.title]
-      to_update.append(place)
-
-  for place in to_update:
-    place.ug_isbn = titles_isbns[place.title]
-    place.put()
-
-  # if to_put:
-  #   db.put(to_put)
-  #   num_updated += len(to_put)
-  #   logging.debug(
-  #     'Put %d entities to Datastore for a total of %d',
-  #     len(to_put), num_updated)
-  #   deferred.defer(
-  #     update_user_isbns, cursor=query.cursor(), num_updated=num_updated)
-  # else:
-  #   logging.debug('update isbns complete with %d updates!', num_updated)
