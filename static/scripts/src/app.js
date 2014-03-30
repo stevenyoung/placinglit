@@ -659,7 +659,7 @@
       image_format = '<img src="<%= image_url %>">';
       aff_span = '<span id="affbtns">';
       buybook_button = '<a target="_blank" href="<%= buy_url %>">';
-      buybook_button += '<button class="btn" id="rjjbuy">buy this book</button></a>';
+      buybook_button += '<img src="/img/ib.png" id="rjjbuy"/></a>';
       goodrd_button = '<a target="_blank" href="<%= gr_url %>">';
       goodrd_button += '<img id="grbtn" src="/img/goodrd.png"></a>';
       aff_span += buybook_button + goodrd_button + '</span>';
