@@ -312,7 +312,7 @@ class PlacingLit.Views.MapCanvasView extends PlacingLit.Views.MapView
     if CENTER?
       mapcenter = new google.maps.LatLng(CENTER.lat, CENTER.lng)
       @gmap.setCenter(mapcenter)
-      @gmap.setZoom(@settings.zoomLevel.wide)
+      @gmap.setZoom(@settings.zoomLevel.default)
     else
       usacenterCoords =
         lat: 39.8282
