@@ -6,6 +6,8 @@ from google.appengine.ext import db
 FEATURED = dict()
 FEATURED['catalan'] = {'url': 'http://www.espaisescrits.cat/',
                        'user': 'info@espaisescrits.cat'}
+                       'center': {'lat': '41.3866336905',
+                                  'lng': '2.1750998497'}}
 FEATURED['slq'] = {'url': 'http://slq.qld.gov.au',
                    'user': 'webmanager@slq.qld.gov.au',
                    'center': {'lat': '-25.0246396949',
