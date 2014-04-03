@@ -732,6 +732,7 @@
           gr_url: gr_books + data.isbn,
           buy_url: buy_books + data.isbn
         });
+        this.trackButtonEvents();
       }
       content += '</div>';
       return content;
@@ -751,6 +752,24 @@
           iw.setContent(_this.infowindowContent(data, true));
           iw.open(_this.gmap);
           return _this.placeInfowindow = iw;
+        };
+      })(this));
+    };
+
+    MapCanvasView.prototype.mapEventTracking = function(data) {
+      return ga('send', data.category, data.action, data.label);
+    };
+
+    MapCanvasView.prototype.trackButtonEvents = function() {
+      return $('#map_canvas').on('click', '#rjjbuy', (function(_this) {
+        return function(event) {
+          var tracking;
+          tracking = {
+            'category': 'button',
+            'action': 'click',
+            'label': 'buy'
+          };
+          return _this.mapEventTracking(tracking);
         };
       })(this));
     };
@@ -781,7 +800,13 @@
       marker.setMap(this.gmap);
       return google.maps.event.addListener(marker, 'click', (function(_this) {
         return function() {
-          var url;
+          var tracking, url;
+          tracking = {
+            'category': 'marker',
+            'action': 'click',
+            'label': 'open window'
+          };
+          _this.mapEventTracking(tracking);
           url = '/places/info/' + model.get('db_key');
           return $.getJSON(url, function(data) {
             var iw;

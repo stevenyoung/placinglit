@@ -491,11 +491,13 @@ class PlacingLit.Views.MapCanvasView extends PlacingLit.Views.MapView
       content += _.template(aff_span,
                             gr_url: gr_books + data.isbn,
                             buy_url: buy_books + data.isbn)
+      @trackButtonEvents()
     content += '</div>'
     return content
 
   openInfowindowForPlace: (place_key, position) ->
     url = '/places/info/' + place_key
+
     $.getJSON url, (data) =>
       @placeInfowindow.close() if @placeInfowindow?
       iw = @infowindow()
@@ -503,6 +505,17 @@ class PlacingLit.Views.MapCanvasView extends PlacingLit.Views.MapView
       iw.setContent(@infowindowContent(data, true))
       iw.open(@gmap)
       @placeInfowindow = iw
+
+  mapEventTracking: (data)->
+    ga('send', data.category, data.action, data.label)
+
+  trackButtonEvents: () ->
+    $('#map_canvas').on 'click', '#rjjbuy', (event) =>
+      tracking =
+        'category': 'button'
+        'action': 'click'
+        'label': 'buy'
+      @mapEventTracking(tracking)
 
   handleCheckinButtonClick: (event) ->
     $('#map_canvas').on 'click', '.visited', (event) =>
@@ -523,6 +536,11 @@ class PlacingLit.Views.MapCanvasView extends PlacingLit.Views.MapView
     marker = new google.maps.Marker(markerParams)
     marker.setMap(@gmap)
     google.maps.event.addListener marker, 'click', =>
+      tracking =
+        'category': 'marker'
+        'action': 'click'
+        'label': 'open window'
+      @mapEventTracking(tracking)
       url = '/places/info/' + model.get('db_key')
       $.getJSON url, (data) =>
         iw = @infowindow()
