@@ -102,10 +102,10 @@ class InfoHandler(baseapp.BaseAppHandler):
         'visits': place.checkins,
       }
       logging.info('place {} {} {}'.format(place_id, place.ug_isbn, place.ts))
-      if place.book_data:
-        place_info['isbn'] = place.book_data.isbn13
-      elif place.ug_isbn:
+      if place.ug_isbn:
         place_info['isbn'] = place.ug_isbn
+      elif place.book_data:
+        place_info['isbn'] = place.book_data.isbn13
       if place.image_url:
         place_info['image'] = place.image_url.replace('http://', '')
       self.output_json(place_info)
