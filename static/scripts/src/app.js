@@ -54,6 +54,12 @@
 
     Locations.prototype.url = '/places/show';
 
+    Locations.prototype.initialize = function() {
+      return this.on('add', function(model) {
+        return alert('adding model');
+      });
+    };
+
     return Locations;
 
   })(Backbone.Collection);
@@ -88,25 +94,16 @@
 
   })(Backbone.Collection);
 
-  PlacingLit.Views.MapCanvasView = (function(_super) {
-    __extends(MapCanvasView, _super);
+  PlacingLit.Views.MapView = (function(_super) {
+    __extends(MapView, _super);
 
-    function MapCanvasView() {
-      this.addPlace = __bind(this.addPlace, this);
-      return MapCanvasView.__super__.constructor.apply(this, arguments);
+    function MapView() {
+      return MapView.__super__.constructor.apply(this, arguments);
     }
 
-    MapCanvasView.prototype.el = 'map_canvas';
+    MapView.prototype.infowindows = [];
 
-    MapCanvasView.prototype.locations = null;
-
-    MapCanvasView.prototype.userInfowindow = null;
-
-    MapCanvasView.prototype.placeInfowindow = null;
-
-    MapCanvasView.prototype.infowindows = [];
-
-    MapCanvasView.prototype.settings = {
+    MapView.prototype.settings = {
       zoomLevel: {
         'wide': 4,
         'default': 10,
@@ -116,9 +113,9 @@
       }
     };
 
-    MapCanvasView.prototype.model = PlacingLit.Models.Location;
+    MapView.prototype.model = PlacingLit.Models.Location;
 
-    MapCanvasView.prototype.mapOptions = {
+    MapView.prototype.mapOptions = {
       zoom: 4,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       mapTypeControlOptions: {
@@ -136,22 +133,7 @@
       }
     };
 
-    MapCanvasView.prototype.initialize = function() {
-      if (this.collection == null) {
-        this.collection = new PlacingLit.Collections.Locations();
-      }
-      this.listenTo(this.collection, 'all', this.render);
-      this.collection.fetch();
-      return this.attachSearchHandler();
-    };
-
-    MapCanvasView.prototype.render = function(event) {
-      if (event === 'sync') {
-        return this.boundedMapWithMarkers;
-      }
-    };
-
-    MapCanvasView.prototype.googlemap = function(id) {
+    MapView.prototype.googlemap = function(id) {
       if (this.gmap != null) {
         return this.gmap;
       }
@@ -164,14 +146,14 @@
       return this.gmap;
     };
 
-    MapCanvasView.prototype.marker = function() {
+    MapView.prototype.marker = function() {
       if (this.placeInfowindow != null) {
         this.placeInfowindow.close();
       }
       return new google.maps.Marker();
     };
 
-    MapCanvasView.prototype.infowindow = function() {
+    MapView.prototype.infowindow = function() {
       var iw;
       if (this.infowindows.length) {
         this.closeInfowindows();
@@ -181,7 +163,7 @@
       return iw;
     };
 
-    MapCanvasView.prototype.closeInfowindows = function() {
+    MapView.prototype.closeInfowindows = function() {
       var iw, _i, _len, _ref, _results;
       _ref = this.infowindows;
       _results = [];
@@ -192,7 +174,11 @@
       return _results;
     };
 
-    MapCanvasView.prototype.markerFromMapLocation = function(map, location) {
+    MapView.prototype.mappoint = function(latitude, longitude) {
+      return new google.maps.LatLng(latitude, longitude);
+    };
+
+    MapView.prototype.markerFromMapLocation = function(map, location) {
       var markerSettings;
       markerSettings = {
         position: location,
@@ -203,7 +189,7 @@
       return new google.maps.Marker(markerSettings);
     };
 
-    MapCanvasView.prototype.updateInfoWindow = function(text, location, map) {
+    MapView.prototype.updateInfoWindow = function(text, location, map) {
       var infowindow;
       this.map = map != null ? map : this.googlemap('hpmap');
       infowindow = this.infowindow();
@@ -212,11 +198,11 @@
       return infowindow.open(map);
     };
 
-    MapCanvasView.prototype.setUserPlaceFromLocation = function(location) {
+    MapView.prototype.setUserPlaceFromLocation = function(location) {
       return this.userPlace = location;
     };
 
-    MapCanvasView.prototype.showInfowindowFormAtLocation = function(map, marker, location) {
+    MapView.prototype.showInfowindowFormAtLocation = function(map, marker, location) {
       this.closeInfowindows();
       this.userInfowindow = this.infowindow();
       this.userInfowindow.setContent(document.getElementById('iwcontainer').innerHTML);
@@ -234,7 +220,7 @@
       })(this));
     };
 
-    MapCanvasView.prototype.clearPlaceholders = function() {
+    MapView.prototype.clearPlaceholders = function() {
       $('#title').one('keypress', function() {
         return $('#title').val('');
       });
@@ -264,7 +250,7 @@
       });
     };
 
-    MapCanvasView.prototype.closeInfowindows = function() {
+    MapView.prototype.closeInfowindows = function() {
       if (this.userInfowindow != null) {
         this.userInfowindow.close();
       }
@@ -273,9 +259,50 @@
       }
     };
 
-    MapCanvasView.prototype.clearMapMarker = function(marker) {
+    MapView.prototype.clearMapMarker = function(marker) {
       marker.setMap(null);
       return marker = null;
+    };
+
+    MapView.prototype.initialize = function() {
+      return this.userMapsMarker = null;
+    };
+
+    return MapView;
+
+  })(Backbone.View);
+
+  PlacingLit.Views.MapCanvasView = (function(_super) {
+    __extends(MapCanvasView, _super);
+
+    function MapCanvasView() {
+      this.addPlace = __bind(this.addPlace, this);
+      return MapCanvasView.__super__.constructor.apply(this, arguments);
+    }
+
+    MapCanvasView.prototype.el = 'map_canvas';
+
+    MapCanvasView.prototype.locations = null;
+
+    MapCanvasView.prototype.userInfowindow = null;
+
+    MapCanvasView.prototype.placeInfowindow = null;
+
+    MapCanvasView.prototype.initialize = function() {
+      if (this.collection == null) {
+        this.collection = new PlacingLit.Collections.Locations({
+          url: '/places/1'
+        });
+      }
+      this.listenTo(this.collection, 'all', this.render);
+      this.collection.fetch();
+      return this.attachSearchHandler();
+    };
+
+    MapCanvasView.prototype.render = function(event) {
+      if (event === 'sync') {
+        return this.mapWithMarkers();
+      }
     };
 
     MapCanvasView.prototype.suggestTitles = function() {
@@ -449,6 +476,7 @@
 
     MapCanvasView.prototype.handleInfowindowButtonClick = function() {
       var $addPlaceButton;
+      $addPlaceButton = $('#addplacebutton');
       $addPlaceButton = $('#map_canvas .infowindowform').find('.btn');
       if ($addPlaceButton != null) {
         return $addPlaceButton.on('click', this.addPlace);
@@ -668,58 +696,38 @@
       })(this));
     };
 
-    MapCanvasView.prototype.buildMarkerFromLocation = function(location) {
+    MapCanvasView.prototype.dropMarkerForStoredLocation = function(model) {
       var marker, markerParams, pos;
-      pos = new google.maps.LatLng(location.get('latitude'), location.get('longitude'));
+      pos = new google.maps.LatLng(model.get('latitude'), model.get('longitude'));
       markerParams = {
         position: pos,
         draggable: false,
         animation: google.maps.Animation.DROP,
         icon: '/img/book.png',
-        title: "" + (location.get('title')) + " by " + (location.get('author'))
+        title: "" + (model.get('title')) + " by " + (model.get('author'))
       };
       marker = new google.maps.Marker(markerParams);
-      this.attachLocationMarkerClickHandler(location, marker);
-      return marker;
-    };
-
-    MapCanvasView.prototype.attachLocationMarkerClickHandler = function(location, marker) {
+      marker.setMap(this.gmap);
       return google.maps.event.addListener(marker, 'click', (function(_this) {
         return function() {
-          return _this.locationMarkerClickHandler(location, marker);
+          var tracking, url;
+          tracking = {
+            'category': 'marker',
+            'action': 'click',
+            'label': 'open window'
+          };
+          _this.mapEventTracking(tracking);
+          url = '/places/info/' + model.get('db_key');
+          return $.getJSON(url, function(data) {
+            var iw;
+            iw = _this.infowindow();
+            iw.setContent(_this.infowindowContent(data, true));
+            iw.open(_this.gmap, marker);
+            _this.placeInfowindow = iw;
+            return _this.handleCheckinButtonClick();
+          });
         };
       })(this));
-    };
-
-    MapCanvasView.prototype.locationMarkerClickHandler = function(location, marker) {
-      var tracking, url;
-      tracking = {
-        'category': 'marker',
-        'action': 'click',
-        'label': 'open window'
-      };
-      this.mapEventTracking(tracking);
-      url = '/places/info/' + location.get('db_key');
-      return $.getJSON(url, (function(_this) {
-        return function(data) {
-          return _this.openInfowindowFromMarker(marker, data);
-        };
-      })(this));
-    };
-
-    MapCanvasView.prototype.dropMarkerForStoredLocation = function(location) {
-      var marker;
-      marker = this.buildMarkerFromLocation(location);
-      return marker.setMap(this.gmap);
-    };
-
-    MapCanvasView.prototype.openInfowindowFromMarker = function(marker, data) {
-      var iw;
-      iw = this.infowindow();
-      iw.setContent(this.infowindowContent(data, true));
-      iw.open(this.gmap, marker);
-      this.placeInfowindow = iw;
-      return this.handleCheckinButtonClick();
     };
 
     MapCanvasView.prototype.handleInputAttributes = function() {
@@ -738,7 +746,7 @@
 
     return MapCanvasView;
 
-  })(Backbone.View);
+  })(PlacingLit.Views.MapView);
 
   PlacingLit.Views.RecentPlaces = (function(_super) {
     __extends(RecentPlaces, _super);

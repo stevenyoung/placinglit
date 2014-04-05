@@ -24,6 +24,10 @@ class PlacingLit.Collections.Locations extends Backbone.Collection
 
   url: '/places/show'
 
+  initialize: ->
+    this.on 'add', (model)->
+      alert 'adding model'
+
 
 class PlacingLit.Collections.NewestLocations extends Backbone.Collection
   model: PlacingLit.Models.Location
@@ -37,12 +41,7 @@ class PlacingLit.Collections.NewestLocationsByDate extends Backbone.Collection
   url :'/places/allbydate'
 
 
-class PlacingLit.Views.MapCanvasView extends Backbone.View
-  el: 'map_canvas'
-  locations: null
-  userInfowindow: null
-  placeInfowindow: null
-
+class PlacingLit.Views.MapView extends Backbone.View
   infowindows: []
 
   settings:
@@ -56,8 +55,10 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
   model: PlacingLit.Models.Location
 
   mapOptions:
+    #TODO styled maps?
+    #https://developers.google.com/maps/documentation/javascript/styling#creating_a_styledmaptype
     zoom: 4
-    # google.maps.MapTypeId.SATELLITE | ROADMAP | HYBRID
+    #google.maps.MapTypeId.SATELLITE | ROADMAP | HYBRID
     mapTypeId: google.maps.MapTypeId.ROADMAP
     mapTypeControlOptions:
       style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
@@ -70,21 +71,9 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     panControlOptions:
       position: google.maps.ControlPosition.TOP_LEFT
 
-  initialize: () ->
-    @collection ?= new PlacingLit.Collections.Locations()
-    @listenTo @collection, 'all', @render
-    @collection.fetch()
-
-    # setup handler for geocoder searches
-    @attachSearchHandler()
-
-  render: (event) ->
-    # console.log(event, this)
-    # @mapWithMarkers() if event is 'sync'
-    @boundedMapWithMarkers if event is 'sync'
-
   googlemap: (id)->
     return @gmap if @gmap?
+    # console.log('new page map', id)
     @gmap = new google.maps.Map(document.getElementById(id), @mapOptions)
     google.maps.event.addListener(@gmap, 'click', (event) =>
       @handleMapClick(event)
@@ -96,6 +85,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     return new google.maps.Marker()
 
   infowindow: ->
+    #return new google.maps.InfoWindow()
     @closeInfowindows() if @infowindows.length
     iw = new google.maps.InfoWindow()
     @infowindows.push(iw)
@@ -103,6 +93,9 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
 
   closeInfowindows: ->
     iw.close() for iw in @infowindows
+
+  mappoint: (latitude, longitude)->
+    return new google.maps.LatLng(latitude, longitude)
 
   markerFromMapLocation: (map, location)->
     markerSettings =
@@ -154,6 +147,30 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
   clearMapMarker: (marker) ->
     marker.setMap(null)
     marker = null
+
+  initialize: ->
+    @userMapsMarker = null
+
+
+class PlacingLit.Views.MapCanvasView extends PlacingLit.Views.MapView
+  el: 'map_canvas'
+  locations: null
+  userInfowindow: null
+  placeInfowindow: null
+
+  initialize: () ->
+    # @collection ?= new PlacingLit.Collections.Locations
+    @collection ?= new PlacingLit.Collections.Locations(url: '/places/1')
+    # console.log(@collection)
+    @listenTo @collection, 'all', @render
+    @collection.fetch()
+
+    # setup handler for geocoder searches
+    @attachSearchHandler()
+
+  render: (event) ->
+    # console.log(event, this)
+    @mapWithMarkers() if event is 'sync'
 
   suggestTitles: () ->
     title_data = []
@@ -299,10 +316,16 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     m = new MapCanvasView
 
   handleInfowindowButtonClick : ()->
+    # console.log('handle info window button')
+    $addPlaceButton = $('#addplacebutton')
+    # console.log('add place button', $addPlaceButton)
     $addPlaceButton = $('#map_canvas .infowindowform').find('.btn')
+    # console.log('add place button', $addPlaceButton)
     $addPlaceButton.on('click', @addPlace) if $addPlaceButton?
 
+  #TODO Why am I using => here? (jun 27)
   addPlace: () =>
+    #remove 'add placebutton'
     message = '<span>adding... please wait...</span>'
     $('#addplacebutton').replaceWith(message)
     form_data =
@@ -439,43 +462,30 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       $.getJSON '/places/visit/'+event.target.id, (data) =>
         @placeInfowindow.setContent(@infowindowContent(data, false))
 
-  buildMarkerFromLocation: (location) ->
-    pos = new google.maps.LatLng location.get('latitude'), location.get('longitude')
+  dropMarkerForStoredLocation: (model) ->
+    pos = new google.maps.LatLng model.get('latitude'), model.get('longitude')
     markerParams =
       position: pos
       draggable: false
       animation: google.maps.Animation.DROP
+      #animation: null
       icon : '/img/book.png'
-      title : "#{ location.get('title') } by #{ location.get('author')}"
+      title : "#{ model.get('title') } by #{ model.get('author')}"
     marker = new google.maps.Marker(markerParams)
-    @attachLocationMarkerClickHandler(location, marker)
-    return marker
-
-  attachLocationMarkerClickHandler: (location, marker) ->
-    google.maps.event.addListener marker, 'click', =>
-      @locationMarkerClickHandler(location, marker)
-
-  locationMarkerClickHandler: (location, marker) ->
-    tracking =
-      'category': 'marker'
-      'action': 'click'
-      'label': 'open window'
-    @mapEventTracking(tracking)
-    url = '/places/info/' + location.get('db_key')
-    $.getJSON url, (data) =>
-      @openInfowindowFromMarker(marker, data)
-
-  dropMarkerForStoredLocation: (location) ->
-    marker = @buildMarkerFromLocation(location)
     marker.setMap(@gmap)
-
-  openInfowindowFromMarker: (marker, data) ->
-    iw = @infowindow()
-    iw.setContent(@infowindowContent(data, true))
-    iw.open(@gmap, marker)
-    @placeInfowindow = iw
-    @handleCheckinButtonClick()
-
+    google.maps.event.addListener marker, 'click', =>
+      tracking =
+        'category': 'marker'
+        'action': 'click'
+        'label': 'open window'
+      @mapEventTracking(tracking)
+      url = '/places/info/' + model.get('db_key')
+      $.getJSON url, (data) =>
+        iw = @infowindow()
+        iw.setContent(@infowindowContent(data, true))
+        iw.open(@gmap, marker)
+        @placeInfowindow = iw
+        @handleCheckinButtonClick()
 
   handleInputAttributes: ->
     fields = $('#iwcontainer input')
@@ -586,3 +596,4 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
 
   render: (event) ->
     @mapWithMarkers()
+
