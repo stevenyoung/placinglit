@@ -46,9 +46,17 @@ class AddPlacesHandler(baseapp.BaseAppHandler):
 class GetPlacesHandler(baseapp.BaseAppHandler):
   def get(self):
     places = placedlit.PlacedLit.get_all_places()
-    # stats = memcache.get_stats()
-    # logging.info('memcache stats: %s' % (stats))
-    loc_json = [self.export_place_fields(place) for place in places]
+    loc_json = []
+    for place in places:
+      place_dict = {
+        'latitude': place.location.lat,
+        'longitude': place.location.lon,
+        'db_key': place.key().id(),
+        'title': place.title,
+        'author': place.author
+      }
+      loc_json.append(place_dict)
+    # loc_json = [self.export_place_fields(place) for place in places]
     self.output_json(loc_json)
 
 
