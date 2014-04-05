@@ -24,10 +24,6 @@ class PlacingLit.Collections.Locations extends Backbone.Collection
 
   url: '/places/show'
 
-  initialize: ->
-    this.on 'add', (model)->
-      alert 'adding model'
-
 
 class PlacingLit.Collections.NewestLocations extends Backbone.Collection
   model: PlacingLit.Models.Location
@@ -41,8 +37,16 @@ class PlacingLit.Collections.NewestLocationsByDate extends Backbone.Collection
   url :'/places/allbydate'
 
 
-class PlacingLit.Views.MapView extends Backbone.View
+class PlacingLit.Views.MapCanvasView extends Backbone.View
+  model: PlacingLit.Models.Location
+  el: 'map_canvas'
+
+  gmap: null
   infowindows: []
+  locations: null
+  userInfowindow: null
+  placeInfowindow: null
+  userMapsMarker: null
 
   settings:
     zoomLevel:
@@ -51,8 +55,10 @@ class PlacingLit.Views.MapView extends Backbone.View
       'close': 14
       'tight' : 21
       'increment' : 1
-
-  model: PlacingLit.Models.Location
+    markerDefaults:
+      draggable: false
+      animation: google.maps.Animation.DROP
+      icon : '/img/book.png'
 
   mapOptions:
     #TODO styled maps?
@@ -71,10 +77,21 @@ class PlacingLit.Views.MapView extends Backbone.View
     panControlOptions:
       position: google.maps.ControlPosition.TOP_LEFT
 
-  googlemap: (id)->
+  initialize: () ->
+    @collection ?= new PlacingLit.Collections.Locations
+    @listenTo @collection, 'all', @render
+    @collection.fetch()
+    # setup handler for geocoder searches
+    @attachSearchHandler()
+
+  render: (event) ->
+    # console.log(event, this)
+    @mapWithMarkers() if event is 'sync'
+
+  googlemap: ()->
     return @gmap if @gmap?
-    # console.log('new page map', id)
-    @gmap = new google.maps.Map(document.getElementById(id), @mapOptions)
+    map_elem = document.getElementById(@$el.selector)
+    @gmap = new google.maps.Map(map_elem, @mapOptions)
     google.maps.event.addListener(@gmap, 'click', (event) =>
       @handleMapClick(event)
     )
@@ -148,30 +165,6 @@ class PlacingLit.Views.MapView extends Backbone.View
     marker.setMap(null)
     marker = null
 
-  initialize: ->
-    @userMapsMarker = null
-
-
-class PlacingLit.Views.MapCanvasView extends PlacingLit.Views.MapView
-  el: 'map_canvas'
-  locations: null
-  userInfowindow: null
-  placeInfowindow: null
-
-  initialize: () ->
-    # @collection ?= new PlacingLit.Collections.Locations
-    @collection ?= new PlacingLit.Collections.Locations(url: '/places/1')
-    # console.log(@collection)
-    @listenTo @collection, 'all', @render
-    @collection.fetch()
-
-    # setup handler for geocoder searches
-    @attachSearchHandler()
-
-  render: (event) ->
-    # console.log(event, this)
-    @mapWithMarkers() if event is 'sync'
-
   suggestTitles: () ->
     title_data = []
     $.ajax
@@ -191,7 +184,7 @@ class PlacingLit.Views.MapCanvasView extends PlacingLit.Views.MapView
         $('#author').typeahead({source: author_data})
 
   mapWithMarkers: () ->
-    @gmap ?= @googlemap('map_canvas')
+    @gmap ?= @googlemap()
 
     # DROP ONE MARKER AT A TIME
     @collection.each (model) => @dropMarkerForStoredLocation(model)
@@ -317,13 +310,11 @@ class PlacingLit.Views.MapCanvasView extends PlacingLit.Views.MapView
 
   handleInfowindowButtonClick : ()->
     # console.log('handle info window button')
-    $addPlaceButton = $('#addplacebutton')
     # console.log('add place button', $addPlaceButton)
     $addPlaceButton = $('#map_canvas .infowindowform').find('.btn')
     # console.log('add place button', $addPlaceButton)
     $addPlaceButton.on('click', @addPlace) if $addPlaceButton?
 
-  #TODO Why am I using => here? (jun 27)
   addPlace: () =>
     #remove 'add placebutton'
     message = '<span>adding... please wait...</span>'
@@ -462,30 +453,37 @@ class PlacingLit.Views.MapCanvasView extends PlacingLit.Views.MapView
       $.getJSON '/places/visit/'+event.target.id, (data) =>
         @placeInfowindow.setContent(@infowindowContent(data, false))
 
-  dropMarkerForStoredLocation: (model) ->
-    pos = new google.maps.LatLng model.get('latitude'), model.get('longitude')
-    markerParams =
-      position: pos
-      draggable: false
-      animation: google.maps.Animation.DROP
-      #animation: null
-      icon : '/img/book.png'
-      title : "#{ model.get('title') } by #{ model.get('author')}"
+  buildMarkerFromLocation: (location) ->
+    lat = location.get('latitude')
+    lng = location.get('longitude')
+    title = location.get('title')
+    author = location.get('author')
+    markerParams = @settings.markerDefaults
+    markerParams.position = new google.maps.LatLng lat, lng
+    markerParams.title = "#{ title } by #{ author }"
     marker = new google.maps.Marker(markerParams)
-    marker.setMap(@gmap)
+    @locationMarkerEventHandler(location, marker)
+    return marker
+
+  locationMarkerEventHandler: (location, marker) ->
     google.maps.event.addListener marker, 'click', =>
       tracking =
         'category': 'marker'
         'action': 'click'
         'label': 'open window'
       @mapEventTracking(tracking)
-      url = '/places/info/' + model.get('db_key')
+      url = '/places/info/' + location.get('db_key')
       $.getJSON url, (data) =>
         iw = @infowindow()
         iw.setContent(@infowindowContent(data, true))
         iw.open(@gmap, marker)
         @placeInfowindow = iw
         @handleCheckinButtonClick()
+
+
+  dropMarkerForStoredLocation: (location) ->
+    marker = @buildMarkerFromLocation(location)
+    marker.setMap(@gmap)
 
   handleInputAttributes: ->
     fields = $('#iwcontainer input')
