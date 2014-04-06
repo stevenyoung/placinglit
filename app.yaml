@@ -1,5 +1,5 @@
 application: placingliterature
-version: april2014
+version: april2014-utf8fix
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -131,10 +131,8 @@ handlers:
 - url: /collections/(.*)
   script: handlers.collections.app
 
-
 - url: .*
   script: handlers.home.app
-
 
 libraries:
 - name: webapp2
