@@ -183,61 +183,53 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
           author_data.push(value.author.toString())
         $('#author').typeahead({source: author_data})
 
-  mapWithMarkers: () ->
-    @gmap ?= @googlemap()
-
-    # DROP ONE MARKER AT A TIME
+  markersForEachScene: () ->
     @collection.each (model) => @dropMarkerForStoredLocation(model)
 
-    # OR BUILD ARRAY OF MARKERS
-    # @allMarkers = @markerArrayFromCollection(@collection)
-    # cluster_styles =  [
-    #   {
-    #     url: 'img/bigbook.png',
-    #     height: 35,
-    #     width: 35,
-    #     # anchor: [16, 0],
-    #     textColor: '#ff0000',
-    #     textSize: 24
-    #   }, {
-    #     url: 'img/bigbook.png',
-    #     height: 45,
-    #     width: 45,
-    #     # anchor: [24, 0],
-    #     textColor: '#00ffff',
-    #     textSize: 30
-    #   }, {
-    #     url: 'img/bigbook.png',
-    #     height: 55,
-    #     width: 55,
-    #     # anchor: [32, 0],
-    #     textColor: '#ffffff',
-    #     textSize: 36
-    #   }
-    # ]
+  markerClustersForScenes: () ->
+    @allMarkers = @markerArrayFromCollection(@collection)
+    cluster_styles =  [
+      {
+        url: 'img/bigbook.png',
+        height: 35,
+        width: 35,
+        # anchor: [16, 0],
+        textColor: '#ff0000',
+        textSize: 24
+      }, {
+        url: 'img/bigbook.png',
+        height: 45,
+        width: 45,
+        # anchor: [24, 0],
+        textColor: '#00ffff',
+        textSize: 30
+      }, {
+        url: 'img/bigbook.png',
+        height: 55,
+        width: 55,
+        # anchor: [32, 0],
+        textColor: '#ffffff',
+        textSize: 36
+      }
+    ]
 
-    # cluster_options =
-    #   minimumClusterSize: 8
-    #   # imagePath: document.location.origin + '/img/book'
-    #   imagePath: document.location.origin + '/img/book'
-    #   styles: cluster_styles
+    cluster_options =
+      minimumClusterSize: 8
+      # imagePath: document.location.origin + '/img/book'
+      imagePath: document.location.origin + '/img/book'
+      styles: cluster_styles
 
-    # allMarkerCluster = new MarkerClusterer(@gmap, @allMarkers, cluster_options)
+    allMarkerCluster = new MarkerClusterer(@gmap, @allMarkers, @cluster_options)
     # console.log('cluster style', allMarkerCluster, cluster_options)
 
+  mapWithMarkers: () ->
+    @gmap ?= @googlemap()
+    # @markersForEachScene()
+    @markerClustersForScenes()
     @positionMap()
 
   markerArrayFromCollection: (collection) ->
-    markerParams =
-        draggable: false
-        animation: google.maps.Animation.DROP
-        icon : '/img/book.png'
-    buildMarker = (model) ->
-        title= "#{ model.get('title') } by #{ model.get('author')}"
-        markerParams.title = "#{ model.get('title') } by #{ model.get('author')}"
-        markerParams.position = new google.maps.LatLng model.get('latitude'), model.get('longitude')
-        marker = new google.maps.Marker(markerParams)
-    return (buildMarker(model) for model in collection.models)
+    return (@buildMarkerFromLocation(model) for model in collection.models)
 
   positionMap: () ->
     if CENTER?
@@ -453,6 +445,11 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       $.getJSON '/places/visit/'+event.target.id, (data) =>
         @placeInfowindow.setContent(@infowindowContent(data, false))
 
+  handleAllScenesClick: (event) =>
+    $('#allscenes').on 'click', (event) =>
+      window.CENTER = null
+      @showUpdatedMap()
+
   buildMarkerFromLocation: (location) ->
     lat = location.get('latitude')
     lng = location.get('longitude')
@@ -479,7 +476,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
         iw.open(@gmap, marker)
         @placeInfowindow = iw
         @handleCheckinButtonClick()
-
 
   dropMarkerForStoredLocation: (location) ->
     marker = @buildMarkerFromLocation(location)
@@ -594,4 +590,3 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
 
   render: (event) ->
     @mapWithMarkers()
-

@@ -92,6 +92,7 @@
     __extends(MapCanvasView, _super);
 
     function MapCanvasView() {
+      this.handleAllScenesClick = __bind(this.handleAllScenesClick, this);
       this.addPlace = __bind(this.addPlace, this);
       return MapCanvasView.__super__.constructor.apply(this, arguments);
     }
@@ -325,42 +326,66 @@
       });
     };
 
-    MapCanvasView.prototype.mapWithMarkers = function() {
-      if (this.gmap == null) {
-        this.gmap = this.googlemap();
-      }
-      this.collection.each((function(_this) {
+    MapCanvasView.prototype.markersForEachScene = function() {
+      return this.collection.each((function(_this) {
         return function(model) {
           return _this.dropMarkerForStoredLocation(model);
         };
       })(this));
+    };
+
+    MapCanvasView.prototype.markerClustersForScenes = function() {
+      var allMarkerCluster, cluster_options, cluster_styles;
+      this.allMarkers = this.markerArrayFromCollection(this.collection);
+      cluster_styles = [
+        {
+          url: 'img/bigbook.png',
+          height: 35,
+          width: 35,
+          textColor: '#ff0000',
+          textSize: 24
+        }, {
+          url: 'img/bigbook.png',
+          height: 45,
+          width: 45,
+          textColor: '#00ffff',
+          textSize: 30
+        }, {
+          url: 'img/bigbook.png',
+          height: 55,
+          width: 55,
+          textColor: '#ffffff',
+          textSize: 36
+        }
+      ];
+      cluster_options = {
+        minimumClusterSize: 8,
+        imagePath: document.location.origin + '/img/book',
+        styles: cluster_styles
+      };
+      return allMarkerCluster = new MarkerClusterer(this.gmap, this.allMarkers, this.cluster_options);
+    };
+
+    MapCanvasView.prototype.mapWithMarkers = function() {
+      if (this.gmap == null) {
+        this.gmap = this.googlemap();
+      }
+      this.markerClustersForScenes();
       return this.positionMap();
     };
 
     MapCanvasView.prototype.markerArrayFromCollection = function(collection) {
-      var buildMarker, markerParams, model;
-      markerParams = {
-        draggable: false,
-        animation: google.maps.Animation.DROP,
-        icon: '/img/book.png'
-      };
-      buildMarker = function(model) {
-        var marker, title;
-        title = "" + (model.get('title')) + " by " + (model.get('author'));
-        markerParams.title = "" + (model.get('title')) + " by " + (model.get('author'));
-        markerParams.position = new google.maps.LatLng(model.get('latitude'), model.get('longitude'));
-        return marker = new google.maps.Marker(markerParams);
-      };
+      var model;
       return (function() {
         var _i, _len, _ref, _results;
         _ref = collection.models;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           model = _ref[_i];
-          _results.push(buildMarker(model));
+          _results.push(this.buildMarkerFromLocation(model));
         }
         return _results;
-      })();
+      }).call(this);
     };
 
     MapCanvasView.prototype.positionMap = function() {
@@ -679,6 +704,15 @@
           return $.getJSON('/places/visit/' + event.target.id, function(data) {
             return _this.placeInfowindow.setContent(_this.infowindowContent(data, false));
           });
+        };
+      })(this));
+    };
+
+    MapCanvasView.prototype.handleAllScenesClick = function(event) {
+      return $('#allscenes').on('click', (function(_this) {
+        return function(event) {
+          window.CENTER = null;
+          return _this.showUpdatedMap();
         };
       })(this));
     };
