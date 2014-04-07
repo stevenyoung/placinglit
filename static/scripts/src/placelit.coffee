@@ -18,4 +18,5 @@ $(document).on('ready', ->
     mapCanvas = new PlacingLit.Views.MapCanvasView
   mapCanvas.handleInputAttributes() if not Modernizr.input.placeholder
   mapCanvas.showInfowindowFormAtLocation()
+  mapCanvas.handleAllScenesClick()
 )

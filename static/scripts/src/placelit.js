@@ -23,7 +23,8 @@
     if (!Modernizr.input.placeholder) {
       mapCanvas.handleInputAttributes();
     }
-    return mapCanvas.showInfowindowFormAtLocation();
+    mapCanvas.showInfowindowFormAtLocation();
+    return mapCanvas.handleAllScenesClick();
   });
 
 }).call(this);
