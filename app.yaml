@@ -1,5 +1,5 @@
 application: placingliterature
-version: april2014
+version: apr2014
 runtime: python27
 api_version: 1
 threadsafe: yes

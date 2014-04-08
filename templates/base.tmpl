@@ -32,32 +32,6 @@
     {% endblock %}
   </head>
   <body>
-  <div id="basenavcontainer">
-      <div id="uppernav">
-        <ul id="sitelinks">
-          <li><a href="/home">home</a></li>
-          <li class="divider-vertical"></li>
-          <li><a href="/map">map</a></li>
-          <li class="divider-vertical"></li>
-          <li><a href="//placingliterature.wordpress.com" target="_blank">blog</a></li>
-          <li class="divider-vertical"></li>
-          <li><a href="/about">about</a></li>
-          <li class="divider-vertical"></li>
-          <li><a href="https:facebook.com/placingliterature/" target="_blank">facebook</a></li>
-          <li class="divider-vertical"></li>
-          <li><a href="mailto:info@placingliterature.com">report a map error</a></li>
-          <li class="divider-vertical"></li>
-          <li><a id="loginlink" href="{{ url }}">{{ url_text }}</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div id="plpageheader">
-      <h3 id="plpagetitle"><img id="weblogo" src="/img/webicon.png">Placing Literature: Where Your Book Meets the Map</h3>
-    </div>
-    {% block content %}
-      Put some stuff here.
-    {% endblock %}
     {% block modals %}
     <div id="maphelp" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-header">
@@ -81,6 +55,31 @@
         </p>
       </div>
     </div>
+    {% endblock %}
+    <div id="basenavcontainer">
+      <div id="uppernav">
+        <ul id="sitelinks">
+          <li><a href="/home">home</a></li>
+          <li class="divider-vertical"></li>
+          <li><a href="/map">map</a></li>
+          <li class="divider-vertical"></li>
+          <li><a href="//placingliterature.wordpress.com" target="_blank">blog</a></li>
+          <li class="divider-vertical"></li>
+          <li><a href="/about">about</a></li>
+          <li class="divider-vertical"></li>
+          <li><a href="https:facebook.com/placingliterature/" target="_blank">facebook</a></li>
+          <li class="divider-vertical"></li>
+          <li><a href="mailto:info@placingliterature.com">report a map error</a></li>
+          <li class="divider-vertical"></li>
+          <li><a id="loginlink" href="{{ url }}">{{ url_text }}</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="plpageheader">
+      <h3 id="plpagetitle"><img id="weblogo" src="/img/webicon.png">Placing Literature: Where Your Book Meets the Map</h3>
+    </div>
+    {% block content %}
+      Put some stuff here.
     {% endblock %}
     {% block scripts %}
     <script type="text/javascript" src="/js/src/models/location.js"></script>

@@ -4621,7 +4621,8 @@ body {
   margin-bottom: 0px; }
 
 #map_canvas {
-  height: 80%;
+  text-align: center;
+  height: 100%;
   width: 100%;
   top: 0%;
   z-index: 0;
@@ -4648,10 +4649,7 @@ body {
   margin-right: 3%; }
 
 #mapcontainer {
-  height: 46em; }
-
-#map_canvas {
-  text-align: center; }
+  height: 72%; }
 
 #about {
   padding-bottom: 3%; }

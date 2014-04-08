@@ -1,33 +1,6 @@
 {% extends 'base.tmpl' %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
-  <div id="mapsearchcontainer" class="navbar">
-    <div id="maponly">
-      <ul id="maplinks" class="nav navbar-inner">
-        <li>
-          <form id="geocodersearch">
-            <input type="text" id="gcf" placeholder="search location" class="search-query"/>
-            <span id="search" class="btn">search</span>
-          </form>
-        </li>
-        <li class="divider-vertical"></li>
-        <li><a href="#maphelp" data-toggle="modal">help</a></li>
-        <li class="divider-vertical"></li>
-        <li id="allscenes"><a href="#">see all places</a></li>
-      </ul>
-    </div>
-  </div>
-  <div id="mapcontainer">
-    <div id="map_canvas">
-      <h3 class="alert alert-info">loading places...</h3>
-      <img class="loading" src="/img/loading.gif"/>
-    </div>
-    <div id="lowernav">
-        <span>
-          <a href="mailto:info@placingliterature.com">contact us</a> | <a href="/funding">funding provided by the Arts Council of Greater New Haven</a> | </span>
-        <span>&copy; 2013. all rights reserved</span>
-    </div>
-  </div>
   <div id="iwcontainer">
     <div class="infowindowform">
       <span id="formtitle">Enter Place Information: </span>
@@ -95,6 +68,34 @@
       <h4>Your search results are being displayed.</h4>
       <h4>To see all available places for every author click 'see all places'</h4>
     </div>
+  </div>
+  <div id="mapsearchcontainer" class="navbar">
+    <div id="maponly">
+      <ul id="maplinks" class="nav navbar-inner">
+        <li>
+          <form id="geocodersearch">
+            <input type="text" id="gcf" placeholder="search location" class="search-query"/>
+            <span id="search" class="btn">search</span>
+          </form>
+        </li>
+        <li class="divider-vertical"></li>
+        <li><a href="#maphelp" data-toggle="modal">help</a></li>
+        <li class="divider-vertical"></li>
+        <!-- <li id="allscenes"><a href="#">see all places</a></li> -->
+        <li id="allscenes"><a href="/map">see all places</a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="mapcontainer">
+    <div id="map_canvas">
+      <h3 class="alert alert-info">loading places...</h3>
+      <img class="loading" src="/img/loading.gif"/>
+    </div>
+  </div>
+  <div id="lowernav">
+    <span>
+      <a href="mailto:info@placingliterature.com">contact us</a> | <a href="/funding">funding provided by the Arts Council of Greater New Haven</a> | </span>
+    <span>&copy; 2013. all rights reserved</span>
   </div>
 {% endblock %}
 {% block scripts %}
