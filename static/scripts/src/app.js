@@ -370,7 +370,7 @@
       if (this.gmap == null) {
         this.gmap = this.googlemap();
       }
-      this.markerClustersForScenes();
+      this.markersForEachScene();
       return this.positionMap();
     };
 

@@ -224,8 +224,8 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
 
   mapWithMarkers: () ->
     @gmap ?= @googlemap()
-    # @markersForEachScene()
-    @markerClustersForScenes()
+    @markersForEachScene()
+    # @markerClustersForScenes()
     @positionMap()
 
   markerArrayFromCollection: (collection) ->
