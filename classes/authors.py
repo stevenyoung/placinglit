@@ -28,6 +28,7 @@ class Author(db.Model):   # pylint: disable=R0904
   books = db.ListProperty(db.Key)
   display_name = db.StringProperty()
   source = db.StringProperty()
+  author = db.StringProperty()
 
   @classmethod
   def get_author_key(cls, author_json=None, author_id=None):
@@ -63,7 +64,8 @@ class Author(db.Model):   # pylint: disable=R0904
       first_name=first_name,
       last_name=last_name,
       display_name=display_name,
-      source=source
+      source=source,
+      author=display_name
       )
     author.books = list()
     try:
@@ -83,3 +85,15 @@ class Author(db.Model):   # pylint: disable=R0904
     author_query = cls.all().filter('author_id =', author_id)
     results = author_query.run(limit=1)
     return results
+
+  @classmethod
+  def update_author_property(cls):
+    """ make sure 'author' is the same as 'display_name' """
+    author_query = cls.all()
+    to_put = list()
+    for author in author_query.run():
+      logging.info(author.display_name)
+      author.author = author.display_name
+      to_put.append(author)
+    db.put(to_put)
+

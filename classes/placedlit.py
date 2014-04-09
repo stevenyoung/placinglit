@@ -1,7 +1,9 @@
 """ Datastore model for scenes. """
 # pylint: disable=W0403, R0904
 
+
 from datetime import datetime
+import itertools
 import logging
 import urlparse
 
@@ -100,7 +102,7 @@ class PlacedLit(db.Model):
   @classmethod
   def count(cls):
     """ How many scenes have been added """
-    return cls.all().count(limit=100000)
+    return cls.all().count(limit=10000)
 
   def update_visit_count(self):
     """ Increment place visit count. """
@@ -118,8 +120,15 @@ class PlacedLit(db.Model):
   def get_all_authors(cls):
     """ Get all authors. """
     try:
-      query = db.GqlQuery('SELECT DISTINCT author FROM PlacedLit')
-      return query.run()
+      pl_query = db.GqlQuery('SELECT DISTINCT author FROM PlacedLit')
+      place_authors = [author for author in pl_query.run()]
+      logging.info('authors from places: %s', len(place_authors))
+      author_query = db.GqlQuery('SELECT DISTINCT author FROM Author')
+      author_authors = [author for author in author_query.run()]
+      logging.info('authors from authors: %s', len(author_authors))
+      combined_authors = [author for author in itertools.chain(pl_query.run(), author_query.run())]
+      logging.info('combined authors: %s', len(combined_authors))
+      return itertools.chain(pl_query.run(), author_query.run())
     except:
       raise
 
@@ -127,8 +136,15 @@ class PlacedLit(db.Model):
   def get_all_titles(cls):
     """" Get all titles. """
     try:
-      query = db.GqlQuery('SELECT DISTINCT title FROM PlacedLit')
-      return query.run()
+      pl_query = db.GqlQuery('SELECT DISTINCT title FROM PlacedLit')
+      place_titles = [title for title in pl_query.run()]
+      logging.info('titles from places: %s', len(place_titles))
+      book_query = db.GqlQuery('SELECT DISTINCT title FROM Book')
+      book_titles = [title for title in book_query.run()]
+      logging.info('titles from books: %s', len(book_titles))
+      combined_titles = [title for title in itertools.chain(pl_query.run(), book_query.run())]
+      logging.info('combined titles: %s', len(combined_titles))
+      return itertools.chain(pl_query.run(), book_query.run())
     except:
       raise
 

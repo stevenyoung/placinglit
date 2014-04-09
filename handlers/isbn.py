@@ -25,8 +25,17 @@ class ISBNdbBookImportHandler(baseapp.BaseAppHandler):
         if book_key not in author.books:
           author.add_book(book_key)
 
+
+class UpdateAuthorPropertyHandler(baseapp.BaseAppHandler):
+  """ update author property"""
+  def get(self):
+    authors.Author.update_author_property()
+    self.response.write('done')
+
+
 urls = [
   ('/isbndb/book_import', ISBNdbBookImportHandler),
+  ('/isbndb/author_update', UpdateAuthorPropertyHandler)
 ]
 
 app = webapp.WSGIApplication(urls, debug=True)
