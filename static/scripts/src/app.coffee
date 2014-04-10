@@ -224,8 +224,8 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
 
   mapWithMarkers: () ->
     @gmap ?= @googlemap()
-    @markersForEachScene()
-    # @markerClustersForScenes()
+    # @markersForEachScene()
+    @markerClustersForScenes()
     @positionMap()
 
   markerArrayFromCollection: (collection) ->
@@ -301,49 +301,61 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     m = new MapCanvasView
 
   handleInfowindowButtonClick : ()->
-    # console.log('handle info window button')
-    # console.log('add place button', $addPlaceButton)
-    $addPlaceButton = $('#map_canvas .infowindowform').find('.btn')
-    # console.log('add place button', $addPlaceButton)
-    $addPlaceButton.on('click', @addPlace) if $addPlaceButton?
+    $addPlaceButton = $('#map_canvas .infowindowform').find('#addplacebutton')
+    $addPlaceButton.on('click', @addPlace) #if $addPlaceButton?
 
-  addPlace: () =>
-    #remove 'add placebutton'
-    message = '<span>adding... please wait...</span>'
-    $('#addplacebutton').replaceWith(message)
+  getFormValues: () ->
+    $form = $('#map_canvas .infowindowform')
     form_data =
-      title: $('#title').val()
-      author: $('#author').val()
-      place_name: $('#place_name').val()
+      title: $form.find('#title').val()
+      author: $form.find('#author').val()
+      place_name: $form.find('#place_name').val()
       # date: $('#date').val()
       # actors: $('#actors').val()
       # symbols: $('#symbols').val()
-      scene: $('#scene').val()
-      notes: $('#notes').val()
-      image_url: $('#image_url').val()
-      check_in: $('#check_in').prop('checked')
+      scene: $form.find('#scene').val()
+      notes: $form.find('#notes').val()
+      image_url: $form.find('#image_url').val()
+      check_in: $form.find('#check_in').prop('checked')
     form_data.latitude = @userPlace.lat()
     form_data.longitude = @userPlace.lng()
-    # console.log('form data', form_data)
-    required_fields = ['author', 'notes', 'place_name', 'scene', 'title']
+    return form_data
+
+  isFormComplete: (form_data) ->
+    required_fields = ['title', 'author', 'place_name', 'scene', 'notes']
+    completed_entry = true
+    @missing_fields = ''
     for field in required_fields
       if form_data[field].length == 0
-        response =
-          message: '<p>This feels incomplete. <br>
-                    Close this window and drop a marker to start over. <br>
-                    Fill out some of these fields so we can add your scene. <br>
-                    Thanks.</p>'
-        @updateInfowindowWithMessage(@userInfowindow, response)
-        return false
+        field_name = field.charAt(0).toUpperCase()
+        field_name += field.substr(1).toLowerCase()
+        field_name = field_name.replace('_', ' ')
+        @missing_fields += 'Missing ' + field_name + '.</br>'
+        completed_entry = false
+    return completed_entry
 
-    location = new PlacingLit.Models.Location()
-    status = location.save(
-      form_data,
-        error: (model, xhr, options) =>
-          console.log('add place error - map canvas view', model, xhr, options)
-        success: (model, response, options) =>
-          @updateInfowindowWithMessage(@userInfowindow, response)
-    )
+  addPlace: () =>
+    form_data = @getFormValues()
+    if @isFormComplete(form_data)
+      message = '<span>adding... please wait...</span>'
+      $('#addplacebutton').replaceWith(message)
+      location = new PlacingLit.Models.Location()
+      status = location.save(
+        form_data,
+          error: (model, xhr, options) =>
+            console.log('add place error - map canvas view', model, xhr, options)
+          success: (model, response, options) =>
+            @updateInfowindowWithMessage(@userInfowindow, response)
+      )
+    else
+      error_msg = '<p>Close this window and click the marker to start over. <br>
+                  Fill out some of these fields so we can add your scene. <br>
+                  Thanks.</p>'
+      response =
+        message: @missing_fields + error_msg
+      @updateInfowindowWithMessage(@userInfowindow, response)
+      return false
+
 
   geocoderSearch: () ->
     address = document.getElementById('gcf').value
@@ -444,11 +456,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       @placeInfowindow.setContent('updating...')
       $.getJSON '/places/visit/'+event.target.id, (data) =>
         @placeInfowindow.setContent(@infowindowContent(data, false))
-
-  handleAllScenesClick: (event) =>
-    $('#allscenes').on 'click', (event) =>
-      window.CENTER = null
-      @showUpdatedMap()
 
   buildMarkerFromLocation: (location) ->
     lat = location.get('latitude')

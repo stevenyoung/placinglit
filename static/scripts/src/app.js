@@ -92,7 +92,6 @@
     __extends(MapCanvasView, _super);
 
     function MapCanvasView() {
-      this.handleAllScenesClick = __bind(this.handleAllScenesClick, this);
       this.addPlace = __bind(this.addPlace, this);
       return MapCanvasView.__super__.constructor.apply(this, arguments);
     }
@@ -370,7 +369,7 @@
       if (this.gmap == null) {
         this.gmap = this.googlemap();
       }
-      this.markersForEachScene();
+      this.markerClustersForScenes();
       return this.positionMap();
     };
 
@@ -489,51 +488,72 @@
 
     MapCanvasView.prototype.handleInfowindowButtonClick = function() {
       var $addPlaceButton;
-      $addPlaceButton = $('#map_canvas .infowindowform').find('.btn');
-      if ($addPlaceButton != null) {
-        return $addPlaceButton.on('click', this.addPlace);
-      }
+      $addPlaceButton = $('#map_canvas .infowindowform').find('#addplacebutton');
+      return $addPlaceButton.on('click', this.addPlace);
     };
 
-    MapCanvasView.prototype.addPlace = function() {
-      var field, form_data, location, message, required_fields, response, status, _i, _len;
-      message = '<span>adding... please wait...</span>';
-      $('#addplacebutton').replaceWith(message);
+    MapCanvasView.prototype.getFormValues = function() {
+      var $form, form_data;
+      $form = $('#map_canvas .infowindowform');
       form_data = {
-        title: $('#title').val(),
-        author: $('#author').val(),
-        place_name: $('#place_name').val(),
-        scene: $('#scene').val(),
-        notes: $('#notes').val(),
-        image_url: $('#image_url').val(),
-        check_in: $('#check_in').prop('checked')
+        title: $form.find('#title').val(),
+        author: $form.find('#author').val(),
+        place_name: $form.find('#place_name').val(),
+        scene: $form.find('#scene').val(),
+        notes: $form.find('#notes').val(),
+        image_url: $form.find('#image_url').val(),
+        check_in: $form.find('#check_in').prop('checked')
       };
       form_data.latitude = this.userPlace.lat();
       form_data.longitude = this.userPlace.lng();
-      required_fields = ['author', 'notes', 'place_name', 'scene', 'title'];
+      return form_data;
+    };
+
+    MapCanvasView.prototype.isFormComplete = function(form_data) {
+      var completed_entry, field, field_name, required_fields, _i, _len;
+      required_fields = ['title', 'author', 'place_name', 'scene', 'notes'];
+      completed_entry = true;
+      this.missing_fields = '';
       for (_i = 0, _len = required_fields.length; _i < _len; _i++) {
         field = required_fields[_i];
         if (form_data[field].length === 0) {
-          response = {
-            message: '<p>This feels incomplete. <br> Close this window and drop a marker to start over. <br> Fill out some of these fields so we can add your scene. <br> Thanks.</p>'
-          };
-          this.updateInfowindowWithMessage(this.userInfowindow, response);
-          return false;
+          field_name = field.charAt(0).toUpperCase();
+          field_name += field.substr(1).toLowerCase();
+          field_name = field_name.replace('_', ' ');
+          this.missing_fields += 'Missing ' + field_name + '.</br>';
+          completed_entry = false;
         }
       }
-      location = new PlacingLit.Models.Location();
-      return status = location.save(form_data, {
-        error: (function(_this) {
-          return function(model, xhr, options) {
-            return console.log('add place error - map canvas view', model, xhr, options);
-          };
-        })(this),
-        success: (function(_this) {
-          return function(model, response, options) {
-            return _this.updateInfowindowWithMessage(_this.userInfowindow, response);
-          };
-        })(this)
-      });
+      return completed_entry;
+    };
+
+    MapCanvasView.prototype.addPlace = function() {
+      var error_msg, form_data, location, message, response, status;
+      form_data = this.getFormValues();
+      if (this.isFormComplete(form_data)) {
+        message = '<span>adding... please wait...</span>';
+        $('#addplacebutton').replaceWith(message);
+        location = new PlacingLit.Models.Location();
+        return status = location.save(form_data, {
+          error: (function(_this) {
+            return function(model, xhr, options) {
+              return console.log('add place error - map canvas view', model, xhr, options);
+            };
+          })(this),
+          success: (function(_this) {
+            return function(model, response, options) {
+              return _this.updateInfowindowWithMessage(_this.userInfowindow, response);
+            };
+          })(this)
+        });
+      } else {
+        error_msg = '<p>Close this window and click the marker to start over. <br> Fill out some of these fields so we can add your scene. <br> Thanks.</p>';
+        response = {
+          message: this.missing_fields + error_msg
+        };
+        this.updateInfowindowWithMessage(this.userInfowindow, response);
+        return false;
+      }
     };
 
     MapCanvasView.prototype.geocoderSearch = function() {
@@ -704,15 +724,6 @@
           return $.getJSON('/places/visit/' + event.target.id, function(data) {
             return _this.placeInfowindow.setContent(_this.infowindowContent(data, false));
           });
-        };
-      })(this));
-    };
-
-    MapCanvasView.prototype.handleAllScenesClick = function(event) {
-      return $('#allscenes').on('click', (function(_this) {
-        return function(event) {
-          window.CENTER = null;
-          return _this.showUpdatedMap();
         };
       })(this));
     };
