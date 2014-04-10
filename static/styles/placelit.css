@@ -4630,6 +4630,8 @@ body {
   border-bottom: solid #aaaaaa 1px;
   margin-left: auto;
   margin-right: auto; }
+  #map_canvas #thankswindow {
+    text-align: left; }
 
 #iwcontainer {
   display: none;
