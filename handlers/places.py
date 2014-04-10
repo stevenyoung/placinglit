@@ -1,10 +1,6 @@
-"""
-handlers.place
+""" Request handlers for places. """
+# pylint: disable=W0403, R0904, C0103
 
-Created on Dec 19, 2012
-"""
-
-__author__ = 'steven@eyeballschool.com (Steven)'
 
 import datetime
 import json
@@ -22,6 +18,7 @@ from classes import user_request
 
 
 class AddPlacesHandler(baseapp.BaseAppHandler):
+  """ add a scene via json """
   def post(self):
     place_data = json.loads(self.request.body)
     place_data['user'] = users.get_current_user()
@@ -44,6 +41,7 @@ class AddPlacesHandler(baseapp.BaseAppHandler):
 
 
 class GetPlacesHandler(baseapp.BaseAppHandler):
+  """ get all places and return as list of json objects"""
   def get(self):
     places = placedlit.PlacedLit.get_all_places()
     loc_json = []
@@ -61,6 +59,7 @@ class GetPlacesHandler(baseapp.BaseAppHandler):
 
 
 class GetPlacesByDateHandler(baseapp.BaseAppHandler):
+  """ get all places sorted by date return as list of json objects"""
   def get(self):
     count = placedlit.PlacedLit.count()
     places = placedlit.PlacedLit.get_newest_places(limit=count)
@@ -71,6 +70,7 @@ class GetPlacesByDateHandler(baseapp.BaseAppHandler):
 
 
 class RecentPlacesHandler(baseapp.BaseAppHandler):
+  """ get newest 10 places sorted by date return as list of json objects"""
   def get(self):
     places = placedlit.PlacedLit.get_newest_places(limit=10)
     loc_json = []
@@ -92,6 +92,7 @@ class RecentPlacesHandler(baseapp.BaseAppHandler):
 
 
 class InfoHandler(baseapp.BaseAppHandler):
+  """ get info about a scene by id. """
   def get(self, place_id):
     place = placedlit.PlacedLit.get_place_from_id(place_id)
     if place:
@@ -109,7 +110,6 @@ class InfoHandler(baseapp.BaseAppHandler):
         'date_added': date_added,
         'visits': place.checkins,
       }
-      logging.info('place {} {} {}'.format(place_id, place.ug_isbn, place.ts))
       if place.ug_isbn:
         place_info['isbn'] = place.ug_isbn
       elif place.book_data:
@@ -120,6 +120,7 @@ class InfoHandler(baseapp.BaseAppHandler):
 
 
 class ExportPlacesHandler(baseapp.BaseAppHandler):
+  """ get places for csv export """
   def get(self):
     places = placedlit.PlacedLit.get_all_places()
     row_id = 1
@@ -142,6 +143,7 @@ class ExportPlacesHandler(baseapp.BaseAppHandler):
 
 
 class PlacesVisitHandler(baseapp.BaseAppHandler):
+  """ update visit count for a place. """
   def get(self, place_id):
     place = placedlit.PlacedLit.get_place_from_id(place_id)
     place.update_visit_count()
@@ -150,6 +152,7 @@ class PlacesVisitHandler(baseapp.BaseAppHandler):
 
 
 class CountPlacesHandler(baseapp.BaseAppHandler):
+  """ get a count of places added."""
   def get(self):
     count_data = {
       'count': placedlit.PlacedLit.count()
@@ -158,6 +161,7 @@ class CountPlacesHandler(baseapp.BaseAppHandler):
 
 
 class PlacesAuthors(baseapp.BaseAppHandler):
+  """ get authors."""
   def get(self):
     author_places = placedlit.PlacedLit.get_all_authors()
     author_json = []
@@ -167,6 +171,7 @@ class PlacesAuthors(baseapp.BaseAppHandler):
 
 
 class PlacesTitles(baseapp.BaseAppHandler):
+  """ get titles. """
   def get(self):
     title_places = placedlit.PlacedLit.get_all_titles()
     title_json = []
