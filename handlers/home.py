@@ -87,7 +87,9 @@ class MapFilterHandler(baseapp.BaseAppHandler):
     template_values = self.basic_template_content()
     template_values['title'] = 'Map'
     places = placedlit.PlacedLit.places_by_query(field, term)
-    loc_json = [self.export_place_fields(place) for place in places]
+    loc_json = []
+    if places:
+      loc_json = [self.export_place_fields(place) for place in places]
     template_values['scenes'] = json.dumps(loc_json)
     self.render_template('map.tmpl', template_values)
 

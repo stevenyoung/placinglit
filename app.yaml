@@ -134,10 +134,8 @@ handlers:
 - url: /collections/(.*)
   script: handlers.collections.app
 
-
 - url: .*
   script: handlers.home.app
-
 
 libraries:
 - name: webapp2

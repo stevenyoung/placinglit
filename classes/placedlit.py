@@ -137,16 +137,18 @@ class PlacedLit(db.Model):
       raise
 
   @classmethod
-  def places_by_query(cls, query=None, term=None):
+  def places_by_query(cls, field=None, term=None):
     """ Get scenes matching an arbitrary query. """
     try:
-      # term = capwords(term)
-      query = cls.all().filter(query, term)
-      places = query.run()
-      logging.info('places by query %s %s', query, term)
+      place_query = cls.all().filter(field, term)
+      places = place_query.run()
       return places
-    except:
-      raise
+    except UnicodeDecodeError:
+      logging.error('decode error! places by query: %s %s %s', field,
+                    term, type(term))
+      place_query = cls.all().filter(field, term.decode('iso-8859-1'))
+      places = place_query.run()
+      return places
 
   @classmethod
   def get_all_unresolved_places(cls):
