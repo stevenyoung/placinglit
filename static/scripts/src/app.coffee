@@ -290,15 +290,16 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @suggestTitles()
     @suggestAuthors()
 
-  updateInfowindowWithMessage: (infowindow, text) ->
+  updateInfowindowWithMessage: (infowindow, text, refresh) ->
     textcontainer = '<div id="thankswindow">' + text.message + '</div>'
     infowindow.setContent(textcontainer)
-    google.maps.event.addListener(infowindow, 'closeclick', () =>
-      @showUpdatedMap()
-    )
+    if refresh
+      google.maps.event.addListener(infowindow, 'closeclick', () =>
+        @showUpdatedMap()
+      )
 
   showUpdatedMap: () ->
-    m = new MapCanvasView
+    maps = new MapCanvasView
 
   handleInfowindowButtonClick : ()->
     $addPlaceButton = $('#map_canvas .infowindowform').find('#addplacebutton')
@@ -345,7 +346,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
           error: (model, xhr, options) =>
             console.log('add place error - map canvas view', model, xhr, options)
           success: (model, response, options) =>
-            @updateInfowindowWithMessage(@userInfowindow, response)
+            @updateInfowindowWithMessage(@userInfowindow, response, true)
       )
     else
       error_msg = '<p>Close this window and click the marker to start over. <br>
@@ -353,7 +354,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
                   Thanks.</p>'
       response =
         message: @missing_fields + error_msg
-      @updateInfowindowWithMessage(@userInfowindow, response)
+      @updateInfowindowWithMessage(@userInfowindow, response, false)
       return false
 
 

@@ -470,20 +470,22 @@
       return this.suggestAuthors();
     };
 
-    MapCanvasView.prototype.updateInfowindowWithMessage = function(infowindow, text) {
+    MapCanvasView.prototype.updateInfowindowWithMessage = function(infowindow, text, refresh) {
       var textcontainer;
       textcontainer = '<div id="thankswindow">' + text.message + '</div>';
       infowindow.setContent(textcontainer);
-      return google.maps.event.addListener(infowindow, 'closeclick', (function(_this) {
-        return function() {
-          return _this.showUpdatedMap();
-        };
-      })(this));
+      if (refresh) {
+        return google.maps.event.addListener(infowindow, 'closeclick', (function(_this) {
+          return function() {
+            return _this.showUpdatedMap();
+          };
+        })(this));
+      }
     };
 
     MapCanvasView.prototype.showUpdatedMap = function() {
-      var m;
-      return m = new MapCanvasView;
+      var maps;
+      return maps = new MapCanvasView;
     };
 
     MapCanvasView.prototype.handleInfowindowButtonClick = function() {
@@ -542,7 +544,7 @@
           })(this),
           success: (function(_this) {
             return function(model, response, options) {
-              return _this.updateInfowindowWithMessage(_this.userInfowindow, response);
+              return _this.updateInfowindowWithMessage(_this.userInfowindow, response, true);
             };
           })(this)
         });
@@ -551,7 +553,7 @@
         response = {
           message: this.missing_fields + error_msg
         };
-        this.updateInfowindowWithMessage(this.userInfowindow, response);
+        this.updateInfowindowWithMessage(this.userInfowindow, response, false);
         return false;
       }
     };
