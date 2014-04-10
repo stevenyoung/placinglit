@@ -491,7 +491,9 @@
     MapCanvasView.prototype.handleInfowindowButtonClick = function() {
       var $addPlaceButton;
       $addPlaceButton = $('#map_canvas .infowindowform').find('#addplacebutton');
-      return $addPlaceButton.on('click', this.addPlace);
+      if ($addPlaceButton != null) {
+        return $addPlaceButton.on('click', this.addPlace);
+      }
     };
 
     MapCanvasView.prototype.getFormValues = function() {
@@ -532,9 +534,10 @@
     MapCanvasView.prototype.addPlace = function() {
       var error_msg, form_data, location, message, response, status;
       form_data = this.getFormValues();
+      console.log('adding place', form_data);
       if (this.isFormComplete(form_data)) {
         message = '<span>adding... please wait...</span>';
-        $('#addplacebutton').replaceWith(message);
+        $('#map_canvas .infowindowform').find('#addplacebutton').replaceWith(message);
         location = new PlacingLit.Models.Location();
         return status = location.save(form_data, {
           error: (function(_this) {

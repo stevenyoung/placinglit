@@ -303,7 +303,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
 
   handleInfowindowButtonClick : ()->
     $addPlaceButton = $('#map_canvas .infowindowform').find('#addplacebutton')
-    $addPlaceButton.on('click', @addPlace) #if $addPlaceButton?
+    $addPlaceButton.on('click', @addPlace) if $addPlaceButton?
 
   getFormValues: () ->
     $form = $('#map_canvas .infowindowform')
@@ -337,9 +337,10 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
 
   addPlace: () =>
     form_data = @getFormValues()
+    console.log('adding place', form_data)
     if @isFormComplete(form_data)
       message = '<span>adding... please wait...</span>'
-      $('#addplacebutton').replaceWith(message)
+      $('#map_canvas .infowindowform').find('#addplacebutton').replaceWith(message)
       location = new PlacingLit.Models.Location()
       status = location.save(
         form_data,
