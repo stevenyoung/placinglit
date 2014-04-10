@@ -1,5 +1,5 @@
 """ Datastore model for scenes. """
-# pylint: disable=W0403, R0904
+# pylint: disable=W0403, R0904, C0103
 
 
 from datetime import datetime
@@ -54,7 +54,8 @@ class PlacedLit(db.Model):
         placed.image_url = urlparse.urlunsplit(image_url)
 
     if 'check_in' in place_data:
-      placed.checkins += 1
+      if place_data['check_in']:
+        placed.checkins += 1
 
     if 'current_checkin_count' in place_data:
       placed.checkins = place_data['current_checkin_count']
