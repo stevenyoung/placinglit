@@ -118,6 +118,7 @@ handlers:
 
 - url: /isbndb/author_update
   script: handlers.isbn.app
+  login: admin
 
 - url: /update_books
   script: handlers.update_scenes.app
