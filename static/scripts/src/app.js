@@ -358,7 +358,7 @@
         }
       ];
       cluster_options = {
-        minimumClusterSize: 8,
+        minimumClusterSize: 2,
         imagePath: document.location.origin + '/img/book',
         styles: cluster_styles
       };
@@ -534,7 +534,6 @@
     MapCanvasView.prototype.addPlace = function() {
       var error_msg, form_data, location, message, response, status;
       form_data = this.getFormValues();
-      console.log('adding place', form_data);
       if (this.isFormComplete(form_data)) {
         message = '<span>adding... please wait...</span>';
         $('#map_canvas .infowindowform').find('#addplacebutton').replaceWith(message);
@@ -609,10 +608,10 @@
       button_format += 'id="<%=place_id %>">check-in</button></div>';
       image_format = '<img src="<%= image_url %>">';
       aff_span = '<span id="affbtns">';
-      buybook_button = '<a target="_blank" href="<%= buy_url %>">';
-      buybook_button += '<img src="/img/ib.png" id="rjjbuy"/></a>';
-      goodrd_button = '<a target="_blank" href="<%= gr_url %>">';
-      goodrd_button += '<img id="grbtn" src="/img/goodrd.png"></a>';
+      buybook_button = '<span class="buybook" id="<%= buy_isbn %>">';
+      buybook_button += '<img src="/img/ib.png" id="rjjbuy"/></span>';
+      goodrd_button = '<span class="reviewbook" id="<%= gr_isbn %>">';
+      goodrd_button += '<img id="grbtn" src="/img/goodrd.png"></span>';
       aff_span += buybook_button + goodrd_button + '</span>';
       infotemplate = _.template(field_format);
       content = '<div class="plinfowindow">';
@@ -676,8 +675,8 @@
       }
       if (!!data.isbn) {
         content += _.template(aff_span, {
-          gr_url: gr_books + data.isbn,
-          buy_url: buy_books + data.isbn
+          gr_isbn: data.isbn,
+          buy_isbn: data.isbn
         });
         this.trackButtonEvents();
       }
@@ -704,19 +703,34 @@
     };
 
     MapCanvasView.prototype.mapEventTracking = function(data) {
-      return ga('send', data.category, data.action, data.label);
+      return ga('send', 'event', data.category, data.action, data.label, data.value);
     };
 
     MapCanvasView.prototype.trackButtonEvents = function() {
-      return $('#map_canvas').on('click', '#rjjbuy', (function(_this) {
+      $('#map_canvas').on('click', '.buybook', (function(_this) {
         return function(event) {
           var tracking;
           tracking = {
             'category': 'button',
             'action': 'click',
-            'label': 'buy'
+            'label': 'buy',
+            'value': event.currentTarget.id
           };
-          return _this.mapEventTracking(tracking);
+          _this.mapEventTracking(tracking);
+          return window.open('http://www.rjjulia.com/book/' + event.currentTarget.id);
+        };
+      })(this));
+      return $('#map_canvas').on('click', '.reviewbook', (function(_this) {
+        return function(event) {
+          var tracking;
+          tracking = {
+            'category': 'button',
+            'action': 'click',
+            'label': 'reviews',
+            'value': event.currentTarget.id
+          };
+          _this.mapEventTracking(tracking);
+          return window.open('http://www.goodreads.com/book/isbn/' + event.currentTarget.id);
         };
       })(this));
     };
@@ -749,7 +763,7 @@
 
     MapCanvasView.prototype.locationMarkerEventHandler = function(location, marker) {
       return google.maps.event.addListener(marker, 'click', (function(_this) {
-        return function() {
+        return function(event) {
           var tracking, url;
           tracking = {
             'category': 'marker',

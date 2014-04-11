@@ -85,7 +85,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @attachSearchHandler()
 
   render: (event) ->
-    # console.log(event, this)
     @mapWithMarkers() if event is 'sync'
 
   googlemap: ()->
@@ -146,7 +145,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
 
 
   clearPlaceholders: () ->
-    # console.log('clearPlaceholders')
     $('#title').one('keypress', ()-> $('#title').val(''))
     $('#author').one('keypress', ()-> $('#author').val(''))
     $('#place_name').one('keypress', ()-> $('#place_name').val(''))
@@ -214,13 +212,11 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     ]
 
     cluster_options =
-      minimumClusterSize: 8
-      # imagePath: document.location.origin + '/img/book'
+      minimumClusterSize: 2
       imagePath: document.location.origin + '/img/book'
       styles: cluster_styles
 
     allMarkerCluster = new MarkerClusterer(@gmap, @allMarkers, @cluster_options)
-    # console.log('cluster style', allMarkerCluster, cluster_options)
 
   mapWithMarkers: () ->
     @gmap ?= @googlemap()
@@ -337,7 +333,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
 
   addPlace: () =>
     form_data = @getFormValues()
-    console.log('adding place', form_data)
     if @isFormComplete(form_data)
       message = '<span>adding... please wait...</span>'
       $('#map_canvas .infowindowform').find('#addplacebutton').replaceWith(message)
@@ -384,7 +379,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       @geocoderSearch()
 
   infowindowContent: (data, updateButton) ->
-    # console.log(data)
     gr_books = 'http://www.goodreads.com/book/title/'
     buy_books = 'http://www.rjjulia.com/book/'
     field_format = '<br><span class="pllabel"><%= label %></span>'
@@ -393,11 +387,10 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     button_format += 'id="<%=place_id %>">check-in</button></div>'
     image_format = '<img src="<%= image_url %>">'
     aff_span = '<span id="affbtns">'
-    buybook_button =  '<a target="_blank" href="<%= buy_url %>">'
-    # buybook_button += '<button class="btn" id="rjjbuy">buy this book</button></a>'
-    buybook_button += '<img src="/img/ib.png" id="rjjbuy"/></a>'
-    goodrd_button = '<a target="_blank" href="<%= gr_url %>">'
-    goodrd_button += '<img id="grbtn" src="/img/goodrd.png"></a>'
+    buybook_button =  '<span class="buybook" id="<%= buy_isbn %>">'
+    buybook_button += '<img src="/img/ib.png" id="rjjbuy"/></span>'
+    goodrd_button = '<span class="reviewbook" id="<%= gr_isbn %>">'
+    goodrd_button += '<img id="grbtn" src="/img/goodrd.png"></span>'
     aff_span += buybook_button + goodrd_button + '</span>'
     infotemplate = _.template(field_format)
     content = '<div class="plinfowindow">'
@@ -424,8 +417,8 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       @handleCheckinButtonClick()
     if !!data.isbn
       content += _.template(aff_span,
-                            gr_url: gr_books + data.isbn,
-                            buy_url: buy_books + data.isbn)
+                            gr_isbn: data.isbn,
+                            buy_isbn: data.isbn)
       @trackButtonEvents()
     content += '</div>'
     return content
@@ -442,15 +435,26 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       @placeInfowindow = iw
 
   mapEventTracking: (data)->
-    ga('send', data.category, data.action, data.label)
+    ga('send', 'event', data.category, data.action, data.label, data.value)
 
   trackButtonEvents: () ->
-    $('#map_canvas').on 'click', '#rjjbuy', (event) =>
+    $('#map_canvas').on 'click', '.buybook', (event) =>
       tracking =
         'category': 'button'
         'action': 'click'
         'label': 'buy'
+        'value' : event.currentTarget.id
       @mapEventTracking(tracking)
+      window.open('http://www.rjjulia.com/book/' + event.currentTarget.id)
+    $('#map_canvas').on 'click', '.reviewbook', (event) =>
+      tracking =
+        'category': 'button'
+        'action': 'click'
+        'label': 'reviews'
+        'value' : event.currentTarget.id
+      @mapEventTracking(tracking)
+      window.open('http://www.goodreads.com/book/isbn/' + event.currentTarget.id)
+
 
   handleCheckinButtonClick: (event) ->
     $('#map_canvas').on 'click', '.visited', (event) =>
@@ -472,7 +476,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     return marker
 
   locationMarkerEventHandler: (location, marker) ->
-    google.maps.event.addListener marker, 'click', =>
+    google.maps.event.addListener marker, 'click', (event) =>
       tracking =
         'category': 'marker'
         'action': 'click'
@@ -508,7 +512,6 @@ class PlacingLit.Views.RecentPlaces extends Backbone.View
     @listenTo @collection, 'all', @render
 
   render: (event) ->
-    # console.log('recent places collection', event)
     @showNewestPlaces() if event is 'sync'
 
   showNewestPlaces: () ->
@@ -521,7 +524,6 @@ class PlacingLit.Views.RecentPlaces extends Backbone.View
     return listFragment
 
   getPlaceLink: (place) ->
-    # console.log('place', place)
     li = document.createElement('li')
     li.id = place.get('db_key')
     # li.addEventListener('click', (event) =>
@@ -550,7 +552,6 @@ class PlacingLit.Views.Countview extends Backbone.View
     @listenTo @model, 'all', @render
 
   render: (event) ->
-    # console.log('place count view', event)
     @showCount() if event is 'change:count'
 
   showCount: () ->
@@ -577,7 +578,6 @@ class PlacingLit.Views.Allscenes extends Backbone.View
     return listFragment
 
   getPlaceLink: (place) ->
-    # console.log('place', place)
     li = document.createElement('li')
     li.id = place.get('db_key')
     # li.addEventListener('click', (event) =>
