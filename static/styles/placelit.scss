@@ -336,3 +336,6 @@ body { height: $full; margin:0%; padding:0; }
 .loading {
   width: 10em;
 }
+.buybook, .reviewbook {
+  cursor: pointer;
+}
