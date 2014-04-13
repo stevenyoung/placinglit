@@ -47,6 +47,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
   userInfowindow: null
   placeInfowindow: null
   userMapsMarker: null
+  allMarkers: []
 
   settings:
     zoomLevel:
@@ -77,8 +78,8 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     panControlOptions:
       position: google.maps.ControlPosition.TOP_LEFT
 
-  initialize: () ->
-    @collection ?= new PlacingLit.Collections.Locations
+  initialize: (scenes) ->
+    @collection ?= new PlacingLit.Collections.Locations()
     @listenTo @collection, 'all', @render
     @collection.fetch()
     # setup handler for geocoder searches
@@ -155,10 +156,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     $('#notes').one('keypress', ()-> $('#notes').val(''))
     $('#image_url').one('keypress', ()-> $('#image_url').val(''))
 
-  closeInfowindows: ->
-    @userInfowindow.close() if @userInfowindow?
-    @placeInfowindow.close() if @placeInfowindow?
-
   clearMapMarker: (marker) ->
     marker.setMap(null)
     marker = null
@@ -184,48 +181,28 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
   markersForEachScene: () ->
     @collection.each (model) => @dropMarkerForStoredLocation(model)
 
-  markerClustersForScenes: () ->
-    @allMarkers = @markerArrayFromCollection(@collection)
-    cluster_styles =  [
-      {
-        url: 'img/bigbook.png',
-        height: 35,
-        width: 35,
-        # anchor: [16, 0],
-        textColor: '#ff0000',
-        textSize: 24
-      }, {
-        url: 'img/bigbook.png',
-        height: 45,
-        width: 45,
-        # anchor: [24, 0],
-        textColor: '#00ffff',
-        textSize: 30
-      }, {
-        url: 'img/bigbook.png',
-        height: 55,
-        width: 55,
-        # anchor: [32, 0],
-        textColor: '#ffffff',
-        textSize: 36
-      }
-    ]
+  markerArrayFromCollection: (collection) ->
+    return (@buildMarkerFromLocation(model) for model in collection.models)
 
+  markerClustersForScenes: (locations) ->
     cluster_options =
-      minimumClusterSize: 2
-      imagePath: document.location.origin + '/img/book'
-      styles: cluster_styles
+      minimumClusterSize: 5
+    allMarkerCluster = new MarkerClusterer(@gmap, locations, cluster_options)
 
-    allMarkerCluster = new MarkerClusterer(@gmap, @allMarkers, @cluster_options)
+  hideMarkers: =>
+    marker.setMap(null) for marker in @allMarkers
+
+  showMarkers: =>
+    marker.setMap(@gmap) for marker in @allMarkers
 
   mapWithMarkers: () ->
     @gmap ?= @googlemap()
+    @allMarkers = @markerArrayFromCollection(@collection)
     # @markersForEachScene()
-    @markerClustersForScenes()
+    @markerClustersForScenes(@allMarkers)
     @positionMap()
-
-  markerArrayFromCollection: (collection) ->
-    return (@buildMarkerFromLocation(model) for model in collection.models)
+    # $('#hidemarkers').on('click', @hideMarkers)
+    # $('#showmarkers').on('click', @showMarkers)
 
   positionMap: () ->
     if CENTER?
@@ -236,10 +213,10 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       else
         @gmap.setZoom(@settings.zoomLevel.default)
     else
-      usacenterCoords =
+      usaCoords =
         lat: 39.8282
         lng: -98.5795
-      usacenter = new google.maps.LatLng(usacenterCoords.lat, usacenterCoords.lng)
+      usacenter = new google.maps.LatLng(usaCoords.lat, usaCoords.lng)
       @gmap.setCenter(usacenter)
       @gmap.setZoom(2)
     if PLACEKEY?
@@ -334,13 +311,13 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
   addPlace: () =>
     form_data = @getFormValues()
     if @isFormComplete(form_data)
-      message = '<span>adding... please wait...</span>'
-      $('#map_canvas .infowindowform').find('#addplacebutton').replaceWith(message)
+      msg = '<span>adding... please wait...</span>'
+      $('#map_canvas .infowindowform').find('#addplacebutton').replaceWith(msg)
       location = new PlacingLit.Models.Location()
       status = location.save(
         form_data,
           error: (model, xhr, options) =>
-            console.log('add place error - map canvas view', model, xhr, options)
+            console.log('add place error', model, xhr, options)
           success: (model, response, options) =>
             @updateInfowindowWithMessage(@userInfowindow, response, true)
       )
@@ -394,7 +371,8 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     aff_span += buybook_button + goodrd_button + '</span>'
     infotemplate = _.template(field_format)
     content = '<div class="plinfowindow">'
-    content += '<span class="lead">' + data.title + ' by ' + data.author + '</span>'
+    content += '<span class="lead">' + data.title + ' by ' + data.author
+    content += '</span>'
     if !!data.place_name
       content += infotemplate({label:'location', content:data.place_name})
     if !!data.scene_time
@@ -445,7 +423,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
         'label': 'buy'
         'value' : event.currentTarget.id
       @mapEventTracking(tracking)
-      window.open('http://www.rjjulia.com/book/' + event.currentTarget.id)
+      window.open('//www.rjjulia.com/book/' + event.currentTarget.id)
     $('#map_canvas').on 'click', '.reviewbook', (event) =>
       tracking =
         'category': 'button'
@@ -453,7 +431,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
         'label': 'reviews'
         'value' : event.currentTarget.id
       @mapEventTracking(tracking)
-      window.open('http://www.goodreads.com/book/isbn/' + event.currentTarget.id)
+      window.open('//www.goodreads.com/book/isbn/' + event.currentTarget.id)
 
 
   handleCheckinButtonClick: (event) ->
@@ -526,19 +504,16 @@ class PlacingLit.Views.RecentPlaces extends Backbone.View
   getPlaceLink: (place) ->
     li = document.createElement('li')
     li.id = place.get('db_key')
-    # li.addEventListener('click', (event) =>
-    #   @getPlaceDetails(event)
-    # )
     link = document.createElement('a')
     link.href = '/map/' + place.get('latitude') + ',' + place.get('longitude')
     link.href += '?key=' + place.get('db_key')
-    title_text = place.get('title')
-    link.textContent = place.get('title')
+    title = place.get('title')
+    link.textContent = title
     if place.get('location')?
-      location_text = place.get('location')
-      if (location_text + title_text).length > @max_desc_length
-        location_text = location_text.substr(0, @max_desc_length - title_text.length) + '...'
-      link.textContent += ': ' + location_text
+      location = place.get('location')
+      if (location + title).length > @max_desc_length
+        location = location.substr(0, @max_desc_length - title.length) + '...'
+      link.textContent += ': ' + location
     li.appendChild(link)
     return li
 

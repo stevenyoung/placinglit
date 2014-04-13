@@ -93,6 +93,8 @@
 
     function MapCanvasView() {
       this.addPlace = __bind(this.addPlace, this);
+      this.showMarkers = __bind(this.showMarkers, this);
+      this.hideMarkers = __bind(this.hideMarkers, this);
       return MapCanvasView.__super__.constructor.apply(this, arguments);
     }
 
@@ -111,6 +113,8 @@
     MapCanvasView.prototype.placeInfowindow = null;
 
     MapCanvasView.prototype.userMapsMarker = null;
+
+    MapCanvasView.prototype.allMarkers = [];
 
     MapCanvasView.prototype.settings = {
       zoomLevel: {
@@ -145,9 +149,9 @@
       }
     };
 
-    MapCanvasView.prototype.initialize = function() {
+    MapCanvasView.prototype.initialize = function(scenes) {
       if (this.collection == null) {
-        this.collection = new PlacingLit.Collections.Locations;
+        this.collection = new PlacingLit.Collections.Locations();
       }
       this.listenTo(this.collection, 'all', this.render);
       this.collection.fetch();
@@ -279,15 +283,6 @@
       });
     };
 
-    MapCanvasView.prototype.closeInfowindows = function() {
-      if (this.userInfowindow != null) {
-        this.userInfowindow.close();
-      }
-      if (this.placeInfowindow != null) {
-        return this.placeInfowindow.close();
-      }
-    };
-
     MapCanvasView.prototype.clearMapMarker = function(marker) {
       marker.setMap(null);
       return marker = null;
@@ -333,46 +328,6 @@
       })(this));
     };
 
-    MapCanvasView.prototype.markerClustersForScenes = function() {
-      var allMarkerCluster, cluster_options, cluster_styles;
-      this.allMarkers = this.markerArrayFromCollection(this.collection);
-      cluster_styles = [
-        {
-          url: 'img/bigbook.png',
-          height: 35,
-          width: 35,
-          textColor: '#ff0000',
-          textSize: 24
-        }, {
-          url: 'img/bigbook.png',
-          height: 45,
-          width: 45,
-          textColor: '#00ffff',
-          textSize: 30
-        }, {
-          url: 'img/bigbook.png',
-          height: 55,
-          width: 55,
-          textColor: '#ffffff',
-          textSize: 36
-        }
-      ];
-      cluster_options = {
-        minimumClusterSize: 2,
-        imagePath: document.location.origin + '/img/book',
-        styles: cluster_styles
-      };
-      return allMarkerCluster = new MarkerClusterer(this.gmap, this.allMarkers, this.cluster_options);
-    };
-
-    MapCanvasView.prototype.mapWithMarkers = function() {
-      if (this.gmap == null) {
-        this.gmap = this.googlemap();
-      }
-      this.markerClustersForScenes();
-      return this.positionMap();
-    };
-
     MapCanvasView.prototype.markerArrayFromCollection = function(collection) {
       var model;
       return (function() {
@@ -387,8 +342,47 @@
       }).call(this);
     };
 
+    MapCanvasView.prototype.markerClustersForScenes = function(locations) {
+      var allMarkerCluster, cluster_options;
+      cluster_options = {
+        minimumClusterSize: 5
+      };
+      return allMarkerCluster = new MarkerClusterer(this.gmap, locations, cluster_options);
+    };
+
+    MapCanvasView.prototype.hideMarkers = function() {
+      var marker, _i, _len, _ref, _results;
+      _ref = this.allMarkers;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        marker = _ref[_i];
+        _results.push(marker.setMap(null));
+      }
+      return _results;
+    };
+
+    MapCanvasView.prototype.showMarkers = function() {
+      var marker, _i, _len, _ref, _results;
+      _ref = this.allMarkers;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        marker = _ref[_i];
+        _results.push(marker.setMap(this.gmap));
+      }
+      return _results;
+    };
+
+    MapCanvasView.prototype.mapWithMarkers = function() {
+      if (this.gmap == null) {
+        this.gmap = this.googlemap();
+      }
+      this.allMarkers = this.markerArrayFromCollection(this.collection);
+      this.markerClustersForScenes(this.allMarkers);
+      return this.positionMap();
+    };
+
     MapCanvasView.prototype.positionMap = function() {
-      var mapcenter, usacenter, usacenterCoords;
+      var mapcenter, usaCoords, usacenter;
       if (typeof CENTER !== "undefined" && CENTER !== null) {
         mapcenter = new google.maps.LatLng(CENTER.lat, CENTER.lng);
         this.gmap.setCenter(mapcenter);
@@ -398,11 +392,11 @@
           this.gmap.setZoom(this.settings.zoomLevel["default"]);
         }
       } else {
-        usacenterCoords = {
+        usaCoords = {
           lat: 39.8282,
           lng: -98.5795
         };
-        usacenter = new google.maps.LatLng(usacenterCoords.lat, usacenterCoords.lng);
+        usacenter = new google.maps.LatLng(usaCoords.lat, usaCoords.lng);
         this.gmap.setCenter(usacenter);
         this.gmap.setZoom(2);
       }
@@ -532,16 +526,16 @@
     };
 
     MapCanvasView.prototype.addPlace = function() {
-      var error_msg, form_data, location, message, response, status;
+      var error_msg, form_data, location, msg, response, status;
       form_data = this.getFormValues();
       if (this.isFormComplete(form_data)) {
-        message = '<span>adding... please wait...</span>';
-        $('#map_canvas .infowindowform').find('#addplacebutton').replaceWith(message);
+        msg = '<span>adding... please wait...</span>';
+        $('#map_canvas .infowindowform').find('#addplacebutton').replaceWith(msg);
         location = new PlacingLit.Models.Location();
         return status = location.save(form_data, {
           error: (function(_this) {
             return function(model, xhr, options) {
-              return console.log('add place error - map canvas view', model, xhr, options);
+              return console.log('add place error', model, xhr, options);
             };
           })(this),
           success: (function(_this) {
@@ -615,7 +609,8 @@
       aff_span += buybook_button + goodrd_button + '</span>';
       infotemplate = _.template(field_format);
       content = '<div class="plinfowindow">';
-      content += '<span class="lead">' + data.title + ' by ' + data.author + '</span>';
+      content += '<span class="lead">' + data.title + ' by ' + data.author;
+      content += '</span>';
       if (!!data.place_name) {
         content += infotemplate({
           label: 'location',
@@ -717,7 +712,7 @@
             'value': event.currentTarget.id
           };
           _this.mapEventTracking(tracking);
-          return window.open('http://www.rjjulia.com/book/' + event.currentTarget.id);
+          return window.open('//www.rjjulia.com/book/' + event.currentTarget.id);
         };
       })(this));
       return $('#map_canvas').on('click', '.reviewbook', (function(_this) {
@@ -730,7 +725,7 @@
             'value': event.currentTarget.id
           };
           _this.mapEventTracking(tracking);
-          return window.open('http://www.goodreads.com/book/isbn/' + event.currentTarget.id);
+          return window.open('//www.goodreads.com/book/isbn/' + event.currentTarget.id);
         };
       })(this));
     };
@@ -858,20 +853,20 @@
     };
 
     RecentPlaces.prototype.getPlaceLink = function(place) {
-      var li, link, location_text, title_text;
+      var li, link, location, title;
       li = document.createElement('li');
       li.id = place.get('db_key');
       link = document.createElement('a');
       link.href = '/map/' + place.get('latitude') + ',' + place.get('longitude');
       link.href += '?key=' + place.get('db_key');
-      title_text = place.get('title');
-      link.textContent = place.get('title');
+      title = place.get('title');
+      link.textContent = title;
       if (place.get('location') != null) {
-        location_text = place.get('location');
-        if ((location_text + title_text).length > this.max_desc_length) {
-          location_text = location_text.substr(0, this.max_desc_length - title_text.length) + '...';
+        location = place.get('location');
+        if ((location + title).length > this.max_desc_length) {
+          location = location.substr(0, this.max_desc_length - title.length) + '...';
         }
-        link.textContent += ': ' + location_text;
+        link.textContent += ': ' + location;
       }
       li.appendChild(link);
       return li;
