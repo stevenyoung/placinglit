@@ -4,6 +4,8 @@ from google.appengine.ext import webapp
 
 import update_schema
 
+TITLES = {'The Wedding of the Two Headed Woman':'The Wedding of the Two-Headed Woman'}
+
 
 class UpdateBooksHandler(webapp.RequestHandler):
   def get(self):
@@ -49,8 +51,38 @@ class UpdateUserISBNHandler(webapp.RequestHandler):
     self.response.out.write(' done.')
 
 
+class UpdateTitlesHandler(webapp.RequestHandler):
+  def get(self, titles=TITLES):
+    scene_updates = list()
+    for key, value in titles.items():
+      title_query = db.GqlQuery('SELECT * FROM PlacedLit WHERE title = :1', key)
+      for scene in title_query.run():
+        self.response.out.write('updating {} to {}'.format(scene.title, value))
+        scene.title = value
+        scene_updates.append(scene)
+    db.put(scene_updates)
+    self.response.out.write('done.')
+
+
+class UpdateAuthorsHandler(webapp.RequestHandler):
+  def get(self, authors=AUTHORS):
+    scene_updates = list()
+    for key, value in authors.items():
+      author_query = db.GqlQuery(
+        'SELECT * FROM PlacedLit WHERE author = :1', key)
+      for scene in author_query.run():
+        self.response.out.write(
+          'updating {} to {}<br>'.format(scene.author, value))
+        scene.author = value
+        scene_updates.append(scene)
+    db.put(scene_updates)
+    self.response.out.write(' done.')
+
+
 app = webapp.WSGIApplication([
   ('/update_books', UpdateBooksHandler),
   ('/update_isbns', UpdateUserISBNHandler),
-  ('/reset_isbns', ResetUserISBNHandler)
+  ('/reset_isbns', ResetUserISBNHandler),
+  ('/update_titles', UpdateTitlesHandler),
+  ('/update_authors', UpdateAuthorsHandler)
   ])
