@@ -43,6 +43,8 @@ class GetAllPlacesHandler(baseapp.BaseAppHandler):
         'db_key': key.id()}
       if place.ug_isbn:
         loc['ug_isbn'] = place.ug_isbn
+      if place.book_data:
+        loc['isbn13'] = place.book_data.isbn13
       if place.user_email:
         loc['user_email'] = place.user_email
       logging.info('timestamp: %s', place.ts)
