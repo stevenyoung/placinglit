@@ -1,10 +1,10 @@
 #!/usr/bin/env coffee
 
-
 $(document).on('ready', ->
   $('#mapmodal').modal() if location.search == '?modal=1'
   if window.SCENES
-    query = decodeURIComponent(window.location.pathname.replace('/map/filter/author/',''))
+    author_path = '/map/filter/author/'
+    query = decodeURIComponent(window.location.pathname.replace(author_path,''))
     if window.SCENES.length == 0
       mapCanvas = new PlacingLit.Views.MapCanvasView
       alertMessage = 'Whoa! No places found for ' + query + '. '
