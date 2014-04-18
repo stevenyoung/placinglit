@@ -420,16 +420,16 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       tracking =
         'category': 'button'
         'action': 'click'
-        'label': 'buy'
-        'value' : event.currentTarget.id
+        'label': 'buy:' + event.currentTarget.id
+        'value' : 1
       @mapEventTracking(tracking)
       window.open('//www.rjjulia.com/book/' + event.currentTarget.id)
     $('#map_canvas').on 'click', '.reviewbook', (event) =>
       tracking =
         'category': 'button'
         'action': 'click'
-        'label': 'reviews'
-        'value' : event.currentTarget.id
+        'label': 'reviews:' + event.currentTarget.id
+        'value' : 1
       @mapEventTracking(tracking)
       window.open('//www.goodreads.com/book/isbn/' + event.currentTarget.id)
 
@@ -455,10 +455,12 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
 
   locationMarkerEventHandler: (location, marker) ->
     google.maps.event.addListener marker, 'click', (event) =>
+      db_key = location.get('db_key')
       tracking =
         'category': 'marker'
-        'action': 'click'
-        'label': 'open window'
+        'action': 'click: location info'
+        'label': location.get('title') + ':' + db_key
+        'value': 1
       @mapEventTracking(tracking)
       url = '/places/info/' + location.get('db_key')
       $.getJSON url, (data) =>
