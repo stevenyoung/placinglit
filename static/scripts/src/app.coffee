@@ -141,7 +141,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       google.maps.event.addListener(@userInfowindow, 'domready', () =>
       @clearPlaceholders()
       )
-    document.getElementById('guidelines').addEventListener 'click', (event) =>
+    $('#map_canvas').find('#guidelines').on 'click', (event) =>
       $('#helpmodal').modal()
 
 

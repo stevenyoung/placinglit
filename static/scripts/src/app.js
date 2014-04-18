@@ -246,7 +246,7 @@
           return function() {};
         })(this), this.clearPlaceholders());
       }
-      return document.getElementById('guidelines').addEventListener('click', (function(_this) {
+      return $('#map_canvas').find('#guidelines').on('click', (function(_this) {
         return function(event) {
           return $('#helpmodal').modal();
         };
