@@ -712,8 +712,8 @@
           var tracking;
           tracking = {
             'category': 'button',
-            'action': 'click',
-            'label': 'buy:' + event.currentTarget.id,
+            'action': 'buy',
+            'label': event.currentTarget.id,
             'value': 1
           };
           _this.mapEventTracking(tracking);
@@ -725,8 +725,8 @@
           var tracking;
           tracking = {
             'category': 'button',
-            'action': 'click',
-            'label': 'reviews:' + event.currentTarget.id,
+            'action': 'reviews',
+            'label': event.currentTarget.id,
             'value': 1
           };
           _this.mapEventTracking(tracking);
@@ -770,12 +770,12 @@
           db_key = location.get('db_key');
           tracking = {
             'category': 'marker',
-            'action': 'click: location info',
+            'action': 'open window',
             'label': location.get('title') + ':' + db_key,
             'value': 1
           };
           _this.mapEventTracking(tracking);
-          url = '/places/info/' + location.get('db_key');
+          url = '/places/info/' + db_key;
           return $.getJSON(url, function(data) {
             var iw;
             iw = _this.infowindow();

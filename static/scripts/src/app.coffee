@@ -423,16 +423,16 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     $('#map_canvas').on 'click', '.buybook', (event) =>
       tracking =
         'category': 'button'
-        'action': 'click'
-        'label': 'buy:' + event.currentTarget.id
+        'action': 'buy'
+        'label': event.currentTarget.id
         'value' : 1
       @mapEventTracking(tracking)
       window.open('//www.rjjulia.com/book/' + event.currentTarget.id)
     $('#map_canvas').on 'click', '.reviewbook', (event) =>
       tracking =
         'category': 'button'
-        'action': 'click'
-        'label': 'reviews:' + event.currentTarget.id
+        'action': 'reviews'
+        'label': event.currentTarget.id
         'value' : 1
       @mapEventTracking(tracking)
       window.open('//www.goodreads.com/book/isbn/' + event.currentTarget.id)
@@ -464,11 +464,11 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       db_key = location.get('db_key')
       tracking =
         'category': 'marker'
-        'action': 'click: location info'
+        'action': 'open window'
         'label': location.get('title') + ':' + db_key
-        'value': 1
+        'value' : 1
       @mapEventTracking(tracking)
-      url = '/places/info/' + location.get('db_key')
+      url = '/places/info/' + db_key
       $.getJSON url, (data) =>
         iw = @infowindow()
         iw.setContent(@infowindowContent(data, true))
