@@ -707,9 +707,9 @@
           var tracking;
           tracking = {
             'category': 'button',
-            'action': 'click',
-            'label': 'buy',
-            'value': event.currentTarget.id
+            'action': 'buy',
+            'label': event.currentTarget.id,
+            'value': 1
           };
           _this.mapEventTracking(tracking);
           return window.open('//www.rjjulia.com/book/' + event.currentTarget.id);
@@ -720,9 +720,9 @@
           var tracking;
           tracking = {
             'category': 'button',
-            'action': 'click',
-            'label': 'reviews',
-            'value': event.currentTarget.id
+            'action': 'reviews',
+            'label': event.currentTarget.id,
+            'value': 1
           };
           _this.mapEventTracking(tracking);
           return window.open('//www.goodreads.com/book/isbn/' + event.currentTarget.id);
@@ -759,14 +759,16 @@
     MapCanvasView.prototype.locationMarkerEventHandler = function(location, marker) {
       return google.maps.event.addListener(marker, 'click', (function(_this) {
         return function(event) {
-          var tracking, url;
+          var db_key, tracking, url;
+          db_key = location.get('db_key');
           tracking = {
             'category': 'marker',
-            'action': 'click',
-            'label': 'open window'
+            'action': 'open window',
+            'label': db_key,
+            'value': 1
           };
           _this.mapEventTracking(tracking);
-          url = '/places/info/' + location.get('db_key');
+          url = '/places/info/' + db_key;
           return $.getJSON(url, function(data) {
             var iw;
             iw = _this.infowindow();
