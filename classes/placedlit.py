@@ -13,6 +13,7 @@ from google.appengine.api import memcache
 ALL_PLACES_LOCATION_KEY = 'show_all_places'
 
 import books
+import site_users
 
 
 class PlacedLit(db.Model):
@@ -55,7 +56,7 @@ class PlacedLit(db.Model):
 
     if 'check_in' in place_data:
       if place_data['check_in']:
-        placed.checkins += 1
+        placed.checkins = 1
 
     if 'current_checkin_count' in place_data:
       placed.checkins = place_data['current_checkin_count']
@@ -105,17 +106,23 @@ class PlacedLit(db.Model):
     """ How many scenes have been added """
     return cls.all().count(limit=10000)
 
-  def update_visit_count(self):
+  def update_visit_count(self, user_email):
     """ Increment place visit count. """
-    self.checkins += 1
-    try:
-      self.put()
-      logging.info('update checkin info for: ' + str(self.key().id()))
-      memcache.set(str(self.key().id()), self)
-      return self.key()
-    except db.BadValueError:
-      logging.error('update visit count error - id:%s, count:%s',
-                    self.key().id(), self.checkins)
+    scene_key = self.key()
+    visitor = site_users.User().get_from_email(user_email)
+    # checkins = None
+    visited = visitor.has_visited_scene(scene_key)
+    if not visited:
+      visitor.visit_scene(scene_key)
+      self.checkins += 1
+      try:
+        self.put()
+        logging.info('update checkin info for: ' + str(self.key().id()))
+        memcache.set(str(self.key().id()), self)
+        return self.key()
+      except db.BadValueError:
+        logging.error('update visit count error - id:%s, count:%s',
+                      self.key().id(), self.checkins)
 
   @classmethod
   def get_all_authors(cls):
