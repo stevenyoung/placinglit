@@ -231,28 +231,32 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @userMapsMarker = @markerFromMapLocation(map, location)
     @userMapsMarker.setMap(map)
     google.maps.event.addListener(@userMapsMarker, 'click', (event) =>
-      @isUserLoggedIn()
+      @isUserLoggedIn(@dropMarkerForNewLocation)
     )
 
-  isUserLoggedIn: () ->
+  isUserLoggedIn: (callback) ->
     $.ajax
       datatype: 'json',
       url: '/user/status',
       success: (data) =>
         if data.status == 'logged in'
-          @dropMarkerForNewLocation()
+          callback.call(this)
         else
           @showLoginInfoWindow()
 
   showLoginInfoWindow: () ->
+    if @userMapsMarker
+      loginWindowPosition = @userMapsMarker.getPosition()
+    else
+      loginWindowPosition = @gmap.getCenter()
     @closeInfowindows()
     @userInfowindow = @infowindow()
-    content = '<div id="maplogin">'
-    content += '<div>You must be logged in to add content.</div>'
+    content = '<div id="maplogin" class="plinfowindow">'
+    content += '<div>You must be logged in to update content.</div>'
     login_url = document.getElementById('loginlink').href
     content += '<a href="' + login_url + '"><button>log in</button></a></p>'
     @userInfowindow.setContent(content)
-    @userInfowindow.setPosition(@userMapsMarker.getPosition())
+    @userInfowindow.setPosition(loginWindowPosition)
     @userInfowindow.open(@gmap)
 
   dropMarkerForNewLocation: () ->
@@ -436,10 +440,12 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
 
   handleCheckinButtonClick: (event) ->
     $('#map_canvas').on 'click', '.visited', (event) =>
-      $('.visited').hide()
-      @placeInfowindow.setContent('updating...')
-      $.getJSON '/places/visit/'+event.target.id, (data) =>
-        @placeInfowindow.setContent(@infowindowContent(data, false))
+      @isUserLoggedIn( =>
+        $('.visited').hide()
+        @placeInfowindow.setContent('updating...')
+        $.getJSON '/places/visit/'+event.target.id, (data) =>
+          @placeInfowindow.setContent(@infowindowContent(data, false))
+      )
 
   buildMarkerFromLocation: (location) ->
     lat = location.get('latitude')
@@ -468,7 +474,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
         iw.setContent(@infowindowContent(data, true))
         iw.open(@gmap, marker)
         @placeInfowindow = iw
-        @handleCheckinButtonClick()
+        @handleCheckinButtonClick
 
   dropMarkerForStoredLocation: (location) ->
     marker = @buildMarkerFromLocation(location)

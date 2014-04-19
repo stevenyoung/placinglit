@@ -420,19 +420,19 @@
       this.userMapsMarker.setMap(map);
       return google.maps.event.addListener(this.userMapsMarker, 'click', (function(_this) {
         return function(event) {
-          return _this.isUserLoggedIn();
+          return _this.isUserLoggedIn(_this.dropMarkerForNewLocation);
         };
       })(this));
     };
 
-    MapCanvasView.prototype.isUserLoggedIn = function() {
+    MapCanvasView.prototype.isUserLoggedIn = function(callback) {
       return $.ajax({
         datatype: 'json',
         url: '/user/status',
         success: (function(_this) {
           return function(data) {
             if (data.status === 'logged in') {
-              return _this.dropMarkerForNewLocation();
+              return callback.call(_this);
             } else {
               return _this.showLoginInfoWindow();
             }
@@ -442,15 +442,20 @@
     };
 
     MapCanvasView.prototype.showLoginInfoWindow = function() {
-      var content, login_url;
+      var content, loginWindowPosition, login_url;
+      if (this.userMapsMarker) {
+        loginWindowPosition = this.userMapsMarker.getPosition();
+      } else {
+        loginWindowPosition = this.gmap.getCenter();
+      }
       this.closeInfowindows();
       this.userInfowindow = this.infowindow();
-      content = '<div id="maplogin">';
-      content += '<div>You must be logged in to add content.</div>';
+      content = '<div id="maplogin" class="plinfowindow">';
+      content += '<div>You must be logged in to update content.</div>';
       login_url = document.getElementById('loginlink').href;
       content += '<a href="' + login_url + '"><button>log in</button></a></p>';
       this.userInfowindow.setContent(content);
-      this.userInfowindow.setPosition(this.userMapsMarker.getPosition());
+      this.userInfowindow.setPosition(loginWindowPosition);
       return this.userInfowindow.open(this.gmap);
     };
 
@@ -733,10 +738,12 @@
     MapCanvasView.prototype.handleCheckinButtonClick = function(event) {
       return $('#map_canvas').on('click', '.visited', (function(_this) {
         return function(event) {
-          $('.visited').hide();
-          _this.placeInfowindow.setContent('updating...');
-          return $.getJSON('/places/visit/' + event.target.id, function(data) {
-            return _this.placeInfowindow.setContent(_this.infowindowContent(data, false));
+          return _this.isUserLoggedIn(function() {
+            $('.visited').hide();
+            _this.placeInfowindow.setContent('updating...');
+            return $.getJSON('/places/visit/' + event.target.id, function(data) {
+              return _this.placeInfowindow.setContent(_this.infowindowContent(data, false));
+            });
           });
         };
       })(this));
@@ -775,7 +782,7 @@
             iw.setContent(_this.infowindowContent(data, true));
             iw.open(_this.gmap, marker);
             _this.placeInfowindow = iw;
-            return _this.handleCheckinButtonClick();
+            return _this.handleCheckinButtonClick;
           });
         };
       })(this));
