@@ -15,6 +15,7 @@ from google.appengine.api import memcache
 from handlers.abstracts import baseapp
 from classes import placedlit
 from classes import user_request
+from classes import site_users
 
 
 class AddPlacesHandler(baseapp.BaseAppHandler):
@@ -24,7 +25,12 @@ class AddPlacesHandler(baseapp.BaseAppHandler):
     place_data['user'] = users.get_current_user()
     place_data['email'] = users.get_current_user().email()
     place_key = placedlit.PlacedLit.create_from_dict(place_data)
-
+    user = site_users.User.get_by_id(place_data['email'])
+    if not user:
+      user = site_users.User.create(place_data['email'])
+    user.add_scene(place_key)
+    if place_data['check_in']:
+      user.visit_scene(place_key)
     agent = self.request.headers['User-Agent']
     user_request.UserRequest.create(ua=agent, user_loc=place_key)
     response = '{} by {} added at <br>location: ({}, {})<br>thanks.'
@@ -145,8 +151,9 @@ class ExportPlacesHandler(baseapp.BaseAppHandler):
 class PlacesVisitHandler(baseapp.BaseAppHandler):
   """ update visit count for a place. """
   def get(self, place_id):
+    user_email = users.get_current_user().email()
     place = placedlit.PlacedLit.get_place_from_id(place_id)
-    place.update_visit_count()
+    place.update_visit_count(user_email)
     info_path = '/places/info/' + place_id
     self.redirect(info_path)
 

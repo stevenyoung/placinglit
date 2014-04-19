@@ -1,6 +1,4 @@
 """ Datastore model for user data """
-import logging
-
 from google.appengine.ext import ndb
 
 
@@ -12,30 +10,22 @@ class User(ndb.Model):
   @classmethod
   def create(cls, user_email):
     """ new User """
-    logging.info('creating user %s', user_email)
     user = cls(id=user_email)
     user.put()
-    logging.info('created user %s', user.key)
     return user
 
   def visit_scene(self, scene_key):
     """ updated list of visited scenes """
-    logging.info('update scene visit %s', scene_key)
-    # visit_key = ndb.Key(urlsafe=str(scene_key))
-    # self.visited_scenes.append(visit_key)
     self.visited_scenes.append(ndb.Key.from_old_key(scene_key))
     self.put()
-    logging.info('visit scene %s', self.key)
 
   def add_scene(self, scene_key):
     """ updated list of added scenes """
-    self.added_scenes.append(scene_key)
+    self.added_scenes.append(ndb.Key.from_old_key(scene_key))
     self.put()
-    logging.info('add scene %s', self.key)
 
   def has_visited_scene(self, scene_key):
     """ scene checked in? """
-    logging.info('visited? %s', scene_key)
     if ndb.Key.from_old_key(scene_key) in self.visited_scenes:
       return True
     else:
