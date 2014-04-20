@@ -4,8 +4,8 @@ from google.appengine.ext import webapp
 
 import update_schema
 
-TITLES = {'The Wedding of the Two Headed Woman':'The Wedding of the Two-Headed Woman'}
-
+TITLES = dict()
+AUTHORS = dict()
 
 class UpdateBooksHandler(webapp.RequestHandler):
   def get(self):
