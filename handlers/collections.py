@@ -4,12 +4,14 @@ import json
 import logging
 
 from google.appengine.ext import db
+from google.appengine.ext import ndb
 from google.appengine.ext import webapp
 
 from handlers.abstracts import baseapp
 
 from classes import collections
 from classes import placedlit
+from classes import site_users
 
 
 class SceneCollectionHandler(baseapp.BaseAppHandler):
@@ -53,11 +55,25 @@ class UpdateCatalanCollectionbyUserHandler(baseapp.BaseAppHandler):
         logging.info('place added: %s', place)
         collection.scenes.append(place)
     collection.put()
-    self.response.write('done.')
 
+
+class UpdateSiteUserScenesHandler(baseapp.BaseAppHandler):
+  """ add scenes to site users """
+  def get(self):
+    scene_query = db.GqlQuery('SELECT * FROM PlacedLit')
+    users_to_put = list()
+    for scene in scene_query:
+      logging.info('email:%s', scene.user_email)
+      user = site_users.User.get_by_id(scene.user_email)
+      if not user:
+        user = site_users.User.create(scene.user_email)
+      user.added_scenes.append(ndb.Key.from_old_key(scene.key()))
+      users_to_put.append(user)
+    ndb.put_multi(users_to_put)
 
 handler_urls = [
   ('/collections/fix', UpdateCatalanCollectionbyUserHandler),
+  ('/collections/users', UpdateSiteUserScenesHandler),
   ('/collections/(.*)', SceneCollectionHandler),
 ]
 
