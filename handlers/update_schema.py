@@ -32,9 +32,9 @@ def update_user_scene_data(cursor=None, num_updated=0):
     scene_query.with_cursor(cursor)
 
   users_to_put = list()
-  for scene in scene_query.fetch(limit=BATCH_SIZE):
-    logging.debug('email %s', scene.user_email)
+  for scene in scene_query.fetch(limit=500):
     if scene.user_email:
+      logging.debug('email %s', scene.user_email)
       user = site_users.User.get_by_id(scene.user_email)
       if not user:
         user = site_users.User.create(scene.user_email)
