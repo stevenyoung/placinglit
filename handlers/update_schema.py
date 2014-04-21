@@ -27,7 +27,7 @@ def transform_author_name_for_query(name):
 
 def update_user_scene_data(cursor=None, num_updated=0):
   """ add scenes to site users """
-  scene_query = placedlit.PlacedLit.all().filter('user_email !=', NULL)
+  scene_query = placedlit.PlacedLit.all()
   if cursor:
     scene_query.with_cursor(cursor)
 
