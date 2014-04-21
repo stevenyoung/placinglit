@@ -1,5 +1,5 @@
 application: placingliterature
-version: apr2014
+version: checkins
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -134,6 +134,10 @@ handlers:
 
 - url: /reset_isbns
   script: handlers.update_scenes.app
+  login: admin
+
+- url: /collections/users
+  script: handlers.collections.app
   login: admin
 
 - url: /collections/(.*)
