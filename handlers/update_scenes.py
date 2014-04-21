@@ -3,9 +3,11 @@ from google.appengine.ext import deferred
 from google.appengine.ext import webapp
 
 import update_schema
+import collections
 
 TITLES = dict()
 AUTHORS = dict()
+
 
 class UpdateBooksHandler(webapp.RequestHandler):
   def get(self):
