@@ -4,6 +4,7 @@ from google.appengine.ext import ndb
 
 class User(ndb.Model):
   """ user properties """
+  email = ndb.StringProperty()
   added_scenes = ndb.KeyProperty(repeated=True)
   visited_scenes = ndb.KeyProperty(repeated=True)
 
@@ -11,6 +12,7 @@ class User(ndb.Model):
   def create(cls, user_email):
     """ new User """
     user = cls(id=user_email)
+    user.email = user_email
     user.put()
     return user
 
