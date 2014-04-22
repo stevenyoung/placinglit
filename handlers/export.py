@@ -7,12 +7,16 @@ import ast
 import json
 import logging
 
-from google.appengine.ext import webapp
 from google.appengine.api import users
+from google.appengine.ext import db
+# from google.appengine.ext import ndb
+from google.appengine.ext import webapp
+
 
 from handlers.abstracts import baseapp
 from classes import placedlit
 from classes import collections
+from classes import site_users
 
 
 class GetAllPlacesHandler(baseapp.BaseAppHandler):
@@ -118,11 +122,35 @@ class MissingBookSceneHandler(baseapp.BaseAppHandler):
     self.output_json(place_json)
 
 
+class SiteUserJSONExportHandler(baseapp.BaseAppHandler):
+  """ export site user added and visited scenes """
+  def get(self):
+    users = site_users.User.query()
+    user_list = list()
+    for user in users.iter():
+      logging.info('user:%s', user)
+      user_data = dict()
+      user_data['email'] = user.email
+      scene_list = list()
+      for scene_key in user.added_scenes:
+        scene_data = dict()
+        logging.info('scene key %s', scene_key)
+        scene = db.get(scene_key.to_old_key())
+        logging.info('%s:%s:%s', scene.title, scene.author, scene_key.id())
+        scene_data['title'] = scene.title
+        scene_data['author'] = scene.author
+        scene_data['id'] = scene_key.id()
+        scene_list.append(scene_data)
+      user_data['added'] = scene_list
+      user_list.append(user_data)
+    self.response.out.write(json.dumps(user_list))
+
 urls = [
   ('/places/dump', GetAllPlacesHandler),
   ('/places/import', ImportPlacesHandler),
   ('/places/csv_import/(.*)', CSVImportPlacesHandler),
-  ('/places/missing_books', MissingBookSceneHandler)
+  ('/places/missing_books', MissingBookSceneHandler),
+  ('/users/scenes', SiteUserJSONExportHandler)
 ]
 
 
