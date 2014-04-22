@@ -79,7 +79,7 @@ class NewhomeHandler(baseapp.BaseAppHandler):
     posts = blogposts.BlogpostsHandler.posts_for_display()
     bloglinks = [{'title': post.title, 'link': post.link} for post in posts]
     template_values['posts'] = bloglinks
-    self.render_template('home2.tmpl', template_values)
+    self.render_template('placinglit.tmpl', template_values)
 
 
 class MapFilterHandler(baseapp.BaseAppHandler):
