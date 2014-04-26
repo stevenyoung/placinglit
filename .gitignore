@@ -3,3 +3,4 @@
 *.sublime-workspace
 *.ipynb*
 *.pyc
+static/app/bower_components
