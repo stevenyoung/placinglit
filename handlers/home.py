@@ -103,7 +103,7 @@ urls = [
   ('/map(/?.*)', MapHandler),
   ('/', HomeHandler),
   ('/user/status', UserstatusHandler),
-  ('/newhome', NewhomeHandler)
+  ('/top/', NewhomeHandler)
 ]
 
 app = webapp.WSGIApplication(urls, debug=True)

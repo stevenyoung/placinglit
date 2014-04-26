@@ -35,6 +35,15 @@ handlers:
 - url: /pages
   static_dir: static/pages
 
+- url: /top/scripts
+  static_dir: static/app/scripts
+
+- url: /top/views
+  static_dir: static/app/views
+
+- url: /top/styles
+  static_dir: static/app/styles
+
 - url: /about
   script: handlers.home.app
 
@@ -44,7 +53,7 @@ handlers:
 - url: /home
   script: handlers.home.app
 
-- url: /newhome
+- url: /top/(.*)
   script: handlers.home.app
 
 - url: /map(/?.*)

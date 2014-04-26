@@ -9,7 +9,9 @@
     {% block styles %}
       <!-- Bootstrap core CSS    -->
       <link href="/css/bootstrap3.min.css" rel="stylesheet" type="text/css" />
+      <link rel="stylesheet" href="styles/main.css">
       <link href="/css/dashboard.css" rel="stylesheet">
+      <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
     {% endblock %}
     <title>{% block title %}{{ title }}{% endblock %}</title>
     <!-- Just for debugging purposes. Don't actually copy this line! -->
@@ -21,15 +23,14 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     {% block libraries %}
-      {% if maps_api %}
-        <script type="text/javascript" src="{{ maps_api }}"></script>
-        <script src="/js/libs/markerclusterer.js"></script>
-      {% endif %}
+     <!--
+      <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
       <script type="text/javascript" src="/js/libs/jquery-1.11.0.min.js"></script>
       <script type="text/javascript" src="/js/libs/modernizr-latest.js"></script>
       <script type="text/javascript" src="/js/libs/underscore-min.js"></script>
       <script type="text/javascript" src="/js/libs/backbone-min.js"></script>
       <script type="text/javascript" src="/js/libs/bootstrap3.min.js"></script>
+    -->
     {% endblock %}
   </head>
 
@@ -44,11 +45,11 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="#">Placing Literature</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Dashboard</a></li>
+            <li><a href="#/map">Map</a></li>
             <li><a href="#">Settings</a></li>
             <li><a href="#">Profile</a></li>
             <li><a href="#">Help</a></li>
@@ -59,7 +60,7 @@
         </div>
       </div>
     </div>
-
+    <!--
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
@@ -239,7 +240,12 @@
         </div>
       </div>
     </div>
+    -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/js/libs/docs.min.js"></script>
+    <div class="container" ng-view=""></div>
+    <script data-main="scripts/main" src="scripts/vendor/require.js"></script>
+    <!--
+     <script src="/js/libs/docs.min.js"></script>
+    -->
   </body>
 </html>
