@@ -20,8 +20,11 @@ from classes import site_users
 
 class AddPlacesHandler(baseapp.BaseAppHandler):
   """ adding a place from user interaction """
+  def __init__(self):
+    self.place_data = None
 
   def post(self):
+    """ add scene from user submission """
     self.place_data = json.loads(self.request.body)
     self.place_data['user'] = users.get_current_user()
     self.place_data['email'] = users.get_current_user().email()
@@ -33,6 +36,7 @@ class AddPlacesHandler(baseapp.BaseAppHandler):
     self.post_to_twitter()
 
   def add_scene_to_user(self, scene_key=None):
+    """ update a users added and vistited scenes """
     user_email = self.place_data['email']
     if user_email:
       user = site_users.User.get_by_id(user_email)
@@ -57,7 +61,9 @@ class AddPlacesHandler(baseapp.BaseAppHandler):
     self.output_json(response_json)
 
   def post_to_twitter(self):
+    """ update twitter status """
     pass
+
 
 class GetPlacesHandler(baseapp.BaseAppHandler):
   """ get all places and return as list of json objects"""
