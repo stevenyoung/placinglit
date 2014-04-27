@@ -19,28 +19,32 @@ from classes import site_users
 
 
 class AddPlacesHandler(baseapp.BaseAppHandler):
-  """ add a scene via json """
+  """ adding a place from user interaction """
+
   def post(self):
-    place_data = json.loads(self.request.body)
-    place_data['user'] = users.get_current_user()
-    place_data['email'] = users.get_current_user().email()
-    place_key = placedlit.PlacedLit.create_from_dict(place_data)
-    self.add_scene_to_user(user_email=place_data['email'],
-                           scene_key=place_key,
-                           check_in=place_data['check_in'])
+    self.place_data = json.loads(self.request.body)
+    self.place_data['user'] = users.get_current_user()
+    self.place_data['email'] = users.get_current_user().email()
+    place_key = placedlit.PlacedLit.create_from_dict(self.place_data)
+    self.add_scene_to_user(scene_key=place_key)
     agent = self.request.headers['User-Agent']
     user_request.UserRequest.create(ua=agent, user_loc=place_key)
-    self.send_response(scene_data=place_data)
+    self.send_response()
+    self.post_to_twitter()
 
-  def add_scene_to_user(self, user_email=None, scene_key=None, check_in=False):
-    user = site_users.User.get_by_id(user_email)
-    if not user:
-      user = site_users.User.create(user_email)
-    user.add_scene(scene_key)
-    if check_in:
-      user.visit_scene(scene_key)
+  def add_scene_to_user(self, scene_key=None):
+    user_email = self.place_data['email']
+    if user_email:
+      user = site_users.User.get_by_id(user_email)
+      if not user:
+        user = site_users.User.create(user_email)
+      user.add_scene(scene_key)
+      if self.place_data['check_in']:
+        user.visit_scene(scene_key)
 
-  def send_response(self, scene_data=None):
+  def send_response(self):
+    """ format user client response """
+    scene_data = self.place_data
     response = '{} by {} added at <br>location: ({}, {})<br>thanks.'
     response_message = response.format(
       scene_data['title'], scene_data['author'],
@@ -52,6 +56,8 @@ class AddPlacesHandler(baseapp.BaseAppHandler):
     }
     self.output_json(response_json)
 
+  def post_to_twitter(self):
+    pass
 
 class GetPlacesHandler(baseapp.BaseAppHandler):
   """ get all places and return as list of json objects"""
