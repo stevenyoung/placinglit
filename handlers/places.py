@@ -25,24 +25,31 @@ class AddPlacesHandler(baseapp.BaseAppHandler):
     place_data['user'] = users.get_current_user()
     place_data['email'] = users.get_current_user().email()
     place_key = placedlit.PlacedLit.create_from_dict(place_data)
-    user = site_users.User.get_by_id(place_data['email'])
-    if not user:
-      user = site_users.User.create(place_data['email'])
-    user.add_scene(place_key)
-    if place_data['check_in']:
-      user.visit_scene(place_key)
+    self.add_scene_to_user(user_email=place_data['email'],
+                           scene_key=place_key,
+                           check_in=place_data['check_in'])
     agent = self.request.headers['User-Agent']
     user_request.UserRequest.create(ua=agent, user_loc=place_key)
+    self.send_response(scene_data=place_data)
+
+  def add_scene_to_user(self, user_email=None, scene_key=None, check_in=False):
+    user = site_users.User.get_by_id(user_email)
+    if not user:
+      user = site_users.User.create(user_email)
+    user.add_scene(scene_key)
+    if check_in:
+      user.visit_scene(scene_key)
+
+  def send_response(self, scene_data=None):
     response = '{} by {} added at <br>location: ({}, {})<br>thanks.'
     response_message = response.format(
-      place_data['title'], place_data['author'],
-      place_data['latitude'], place_data['longitude']
+      scene_data['title'], scene_data['author'],
+      scene_data['latitude'], scene_data['longitude']
     )
     response_json = {
       'message': response_message,
-      'geopt': {'lat': place_data['latitude'], 'lng': place_data['longitude']}
+      'geopt': {'lat': scene_data['latitude'], 'lng': scene_data['longitude']}
     }
-
     self.output_json(response_json)
 
 
