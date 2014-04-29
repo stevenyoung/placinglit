@@ -20,9 +20,6 @@ from classes import site_users
 
 class AddPlacesHandler(baseapp.BaseAppHandler):
   """ adding a place from user interaction """
-  def __init__(self):
-    self.place_data = None
-
   def post(self):
     """ add scene from user submission """
     self.place_data = json.loads(self.request.body)
