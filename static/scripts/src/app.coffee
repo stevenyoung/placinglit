@@ -167,7 +167,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       success: (data) ->
         $.each data, (key, value) ->
           title_data.push(value.title.toString())
-        $('#title').typeahead({source: title_data})
+        $('#map_canvas').find('#title').typeahead({source: title_data})
 
   suggestAuthors: () ->
     author_data = []
@@ -176,7 +176,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       success: (data) ->
         $.each data, (key, value) ->
           author_data.push(value.author.toString())
-        $('#author').typeahead({source: author_data})
+        $('#map_canvas').find('#author').typeahead({source: author_data})
 
   markersForEachScene: () ->
     @collection.each (model) => @dropMarkerForStoredLocation(model)

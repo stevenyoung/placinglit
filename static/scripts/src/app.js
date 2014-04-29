@@ -297,7 +297,7 @@
           $.each(data, function(key, value) {
             return title_data.push(value.title.toString());
           });
-          return $('#title').typeahead({
+          return $('#map_canvas').find('#title').typeahead({
             source: title_data
           });
         }
@@ -313,7 +313,7 @@
           $.each(data, function(key, value) {
             return author_data.push(value.author.toString());
           });
-          return $('#author').typeahead({
+          return $('#map_canvas').find('#author').typeahead({
             source: author_data
           });
         }
