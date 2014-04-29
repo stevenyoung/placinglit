@@ -51,7 +51,6 @@ class GetAllPlacesHandler(baseapp.BaseAppHandler):
         loc['isbn13'] = place.book_data.isbn13
       if place.user_email:
         loc['user_email'] = place.user_email
-      logging.info('timestamp: %s', place.ts)
       loc_json.append(loc)
     self.output_json(loc_json)
 
@@ -125,9 +124,9 @@ class MissingBookSceneHandler(baseapp.BaseAppHandler):
 class SiteUserJSONExportHandler(baseapp.BaseAppHandler):
   """ export site user added and visited scenes """
   def get(self):
-    users = site_users.User.query()
+    export_users = site_users.User.query()
     user_list = list()
-    for user in users.iter():
+    for user in export_users.iter():
       logging.info('user:%s', user)
       user_data = dict()
       user_data['email'] = user.email
