@@ -1,5 +1,5 @@
 application: placingliterature
-version: checkins
+version: may2014
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -34,6 +34,9 @@ handlers:
 
 - url: /pages
   static_dir: static/pages
+
+- url: /media
+  static_dir: static/media
 
 - url: /top/scripts
   static_dir: static/app/scripts
