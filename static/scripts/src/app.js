@@ -116,6 +116,17 @@
 
     MapCanvasView.prototype.allMarkers = [];
 
+    MapCanvasView.prototype.field_labels = {
+      place_name: 'location',
+      scene_time: 'time',
+      actors: 'characters',
+      symbols: 'symbols',
+      description: 'description',
+      notes: 'notes',
+      visits: 'visits',
+      date_added: 'added'
+    };
+
     MapCanvasView.prototype.settings = {
       zoomLevel: {
         'wide': 4,
@@ -597,84 +608,69 @@
       })(this));
     };
 
-    MapCanvasView.prototype.infowindowContent = function(data, updateButton) {
-      var aff_span, button_format, buy_books, buybook_button, content, field_format, goodrd_button, gr_books, image_format, infotemplate;
-      gr_books = 'http://www.goodreads.com/book/title/';
-      buy_books = 'http://www.rjjulia.com/book/';
+    MapCanvasView.prototype.sceneFieldsTemplate = function() {
+      var field_format;
       field_format = '<br><span class="pllabel"><%= label %></span>';
       field_format += '<br><span class="plcontent"><%= content %></span>';
-      button_format = '<br><div id="checkin"><button class="btn visited" ';
-      button_format += 'id="<%=place_id %>">check-in</button></div>';
-      image_format = '<img src="<%= image_url %>">';
+      return _.template(field_format);
+    };
+
+    MapCanvasView.prototype.sceneButtonTemplate = function() {
+      var aff_span, buy_books, buybook_button, goodrd_button, gr_books;
+      gr_books = 'http://www.goodreads.com/book/title/';
+      buy_books = 'http://www.rjjulia.com/book/';
       aff_span = '<span id="affbtns">';
       buybook_button = '<span class="buybook" id="<%= buy_isbn %>">';
       buybook_button += '<img src="/img/ib.png" id="rjjbuy"/></span>';
       goodrd_button = '<span class="reviewbook" id="<%= gr_isbn %>">';
       goodrd_button += '<img id="grbtn" src="/img/goodrd.png"></span>';
       aff_span += buybook_button + goodrd_button + '</span>';
-      infotemplate = _.template(field_format);
+      return _.template(aff_span);
+    };
+
+    MapCanvasView.prototype.sceneCheckinButtonTemplate = function() {
+      var button_format;
+      button_format = '<br><div id="checkin"><button class="btn visited"';
+      button_format += 'id="<%=place_id %>">check-in</button></div>';
+      return _.template(button_format);
+    };
+
+    MapCanvasView.prototype.sceneImageTemplate = function() {
+      return _.template('<img src="<%= image_url %>">');
+    };
+
+    MapCanvasView.prototype.sceneTitleTemplate = function() {
+      return _.template('<span class="lead"><%= title %> by <%= author %></span>');
+    };
+
+    MapCanvasView.prototype.buildInfowindow = function(data, updateButton) {
+      var content, field;
       content = '<div class="plinfowindow">';
-      content += '<span class="lead">' + data.title + ' by ' + data.author;
-      content += '</span>';
-      if (!!data.place_name) {
-        content += infotemplate({
-          label: 'location',
-          content: data.place_name
-        });
-      }
-      if (!!data.scene_time) {
-        content += infotemplate({
-          label: 'time',
-          content: data.place_time
-        });
-      }
-      if (!!data.actors) {
-        content += infotemplate({
-          label: 'characters',
-          content: data.actors
-        });
-      }
-      if (!!data.symbols) {
-        content += infotemplate({
-          label: 'symbols',
-          content: data.symbols
-        });
-      }
-      if (!!data.description) {
-        content += infotemplate({
-          label: 'description',
-          content: data.description
-        });
-      }
-      if (!!data.notes) {
-        content += infotemplate({
-          label: 'notes',
-          content: data.notes
-        });
-      }
-      content += infotemplate({
-        label: 'visits',
-        content: data.visits
+      content += this.sceneTitleTemplate()({
+        title: data.title,
+        author: data.author
       });
-      if (!!data.date_added) {
-        content += infotemplate({
-          label: 'added',
-          content: data.date_added
-        });
-      }
       if (!!data.image_url) {
-        content += _.template(image_format, {
+        content += this.sceneImageTemplate()({
           image_url: data.image_url
         });
       }
+      for (field in this.field_labels) {
+        if (data[field]) {
+          content += this.sceneFieldsTemplate()({
+            label: field,
+            content: data[field]
+          });
+        }
+      }
       if (updateButton) {
-        content += _.template(button_format, {
+        content += this.sceneCheckinButtonTemplate()({
           place_id: data.id
         });
         this.handleCheckinButtonClick();
       }
       if (!!data.isbn) {
-        content += _.template(aff_span, {
+        content += this.sceneButtonTemplate()({
           gr_isbn: data.isbn,
           buy_isbn: data.isbn
         });
@@ -695,7 +691,7 @@
           }
           iw = _this.infowindow();
           iw.setPosition(position);
-          iw.setContent(_this.infowindowContent(data, true));
+          iw.setContent(_this.buildInfowindow(data, true));
           iw.open(_this.gmap);
           return _this.placeInfowindow = iw;
         };
@@ -742,7 +738,7 @@
             $('.visited').hide();
             _this.placeInfowindow.setContent('updating...');
             return $.getJSON('/places/visit/' + event.target.id, function(data) {
-              return _this.placeInfowindow.setContent(_this.infowindowContent(data, false));
+              return _this.placeInfowindow.setContent(_this.buildInfowindow(data, false));
             });
           });
         };
@@ -779,7 +775,7 @@
           return $.getJSON(url, function(data) {
             var iw;
             iw = _this.infowindow();
-            iw.setContent(_this.infowindowContent(data, true));
+            iw.setContent(_this.buildInfowindow(data, true));
             iw.open(_this.gmap, marker);
             _this.placeInfowindow = iw;
             return _this.handleCheckinButtonClick;

@@ -49,6 +49,16 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
   userMapsMarker: null
   allMarkers: []
 
+  field_labels:
+    place_name: 'location'
+    scene_time: 'time'
+    actors: 'characters'
+    symbols: 'symbols'
+    description: 'description'
+    notes: 'notes'
+    visits: 'visits'
+    date_added: 'added'
+
   settings:
     zoomLevel:
       'wide' : 4
@@ -143,7 +153,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       )
     $('#map_canvas').find('#guidelines').on 'click', (event) =>
       $('#helpmodal').modal()
-
 
   clearPlaceholders: () ->
     $('#title').one('keypress', ()-> $('#title').val(''))
@@ -334,7 +343,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       @updateInfowindowWithMessage(@userInfowindow, response, false)
       return false
 
-
   geocoderSearch: () ->
     address = document.getElementById('gcf').value
     if address
@@ -359,60 +367,57 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     document.getElementById('search').addEventListener 'click', (event) =>
       @geocoderSearch()
 
-  infowindowContent: (data, updateButton) ->
-    gr_books = 'http://www.goodreads.com/book/title/'
-    buy_books = 'http://www.rjjulia.com/book/'
+  sceneFieldsTemplate: ->
     field_format = '<br><span class="pllabel"><%= label %></span>'
     field_format += '<br><span class="plcontent"><%= content %></span>'
-    button_format = '<br><div id="checkin"><button class="btn visited" '
-    button_format += 'id="<%=place_id %>">check-in</button></div>'
-    image_format = '<img src="<%= image_url %>">'
+    return _.template(field_format)
+
+  sceneButtonTemplate: ->
+    gr_books = 'http://www.goodreads.com/book/title/'
+    buy_books = 'http://www.rjjulia.com/book/'
     aff_span = '<span id="affbtns">'
     buybook_button =  '<span class="buybook" id="<%= buy_isbn %>">'
     buybook_button += '<img src="/img/ib.png" id="rjjbuy"/></span>'
     goodrd_button = '<span class="reviewbook" id="<%= gr_isbn %>">'
     goodrd_button += '<img id="grbtn" src="/img/goodrd.png"></span>'
     aff_span += buybook_button + goodrd_button + '</span>'
-    infotemplate = _.template(field_format)
+    return _.template(aff_span)
+
+  sceneCheckinButtonTemplate: ->
+    button_format = '<br><div id="checkin"><button class="btn visited"'
+    button_format += 'id="<%=place_id %>">check-in</button></div>'
+    return _.template(button_format)
+
+  sceneImageTemplate: ->
+    return _.template('<img src="<%= image_url %>">')
+
+  sceneTitleTemplate: ->
+    return _.template('<span class="lead"><%= title %> by <%= author %></span>')
+
+  buildInfowindow: (data, updateButton) ->
     content = '<div class="plinfowindow">'
-    content += '<span class="lead">' + data.title + ' by ' + data.author
-    content += '</span>'
-    if !!data.place_name
-      content += infotemplate({label:'location', content:data.place_name})
-    if !!data.scene_time
-      content += infotemplate({label:'time', content:data.place_time})
-    if !!data.actors
-      content += infotemplate({label:'characters', content:data.actors})
-    if !!data.symbols
-      content += infotemplate({label:'symbols', content:data.symbols})
-    if !!data.description
-      content += infotemplate({label:'description', content:data.description})
-    if !!data.notes
-      content += infotemplate({label:'notes', content:data.notes})
-    content += infotemplate({label:'visits', content:data.visits})
-    if !!data.date_added
-      content += infotemplate({label:'added', content:data.date_added})
+    content += @sceneTitleTemplate()({title: data.title, author:data.author})
     if !!data.image_url
-      content += _.template(image_format, image_url:data.image_url)
+      content += @sceneImageTemplate()(image_url: data.image_url)
+    for field of @field_labels
+      if data[field]
+        content += @sceneFieldsTemplate()({label: field, content:data[field]})
     if updateButton
-      content += _.template(button_format, place_id:data.id )
+      content += @sceneCheckinButtonTemplate()(place_id: data.id)
       @handleCheckinButtonClick()
     if !!data.isbn
-      content += _.template(aff_span,
-                            gr_isbn: data.isbn,
-                            buy_isbn: data.isbn)
+      content += @sceneButtonTemplate()(gr_isbn: data.isbn, buy_isbn: data.isbn)
       @trackButtonEvents()
     content += '</div>'
     return content
 
   openInfowindowForPlace: (place_key, position) ->
     url = '/places/info/' + place_key
-
     $.getJSON url, (data) =>
       @placeInfowindow.close() if @placeInfowindow?
       iw = @infowindow()
       iw.setPosition(position)
-      iw.setContent(@infowindowContent(data, true))
+      iw.setContent(@buildInfowindow(data, true))
       iw.open(@gmap)
       @placeInfowindow = iw
 
@@ -437,14 +442,13 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       @mapEventTracking(tracking)
       window.open('//www.goodreads.com/book/isbn/' + event.currentTarget.id)
 
-
   handleCheckinButtonClick: (event) ->
     $('#map_canvas').on 'click', '.visited', (event) =>
       @isUserLoggedIn( =>
         $('.visited').hide()
         @placeInfowindow.setContent('updating...')
         $.getJSON '/places/visit/'+event.target.id, (data) =>
-          @placeInfowindow.setContent(@infowindowContent(data, false))
+          @placeInfowindow.setContent(@buildInfowindow(data, false))
       )
 
   buildMarkerFromLocation: (location) ->
@@ -471,7 +475,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       url = '/places/info/' + db_key
       $.getJSON url, (data) =>
         iw = @infowindow()
-        iw.setContent(@infowindowContent(data, true))
+        iw.setContent(@buildInfowindow(data, true))
         iw.open(@gmap, marker)
         @placeInfowindow = iw
         @handleCheckinButtonClick
