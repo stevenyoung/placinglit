@@ -30,7 +30,7 @@ class AddPlacesHandler(baseapp.BaseAppHandler):
     agent = self.request.headers['User-Agent']
     user_request.UserRequest.create(ua=agent, user_loc=place_key)
     self.send_response()
-    self.post_to_twitter()
+    self.post_place_to_twitter(scene_key=place_key)
 
   def add_scene_to_user(self, scene_key=None):
     """ update a users added and vistited scenes """
@@ -57,9 +57,23 @@ class AddPlacesHandler(baseapp.BaseAppHandler):
     }
     self.output_json(response_json)
 
-  def post_to_twitter(self):
+  def post_place_to_twitter(self, scene_key=None):
     """ update twitter status """
-    pass
+    scene_data = placedlit.PlacedLit.get_place_from_id(scene_key.id())
+
+    from handlers import twitter
+    CONSUMER_KEY = 'YlEGvCoZXn5Tb8jbVFQQ'
+    CONSUMER_SECRET = 'B7ptDyjww8T0sqR112jaBZ4BILU4gbRwyxipyARLL4'
+    OAUTH_TOKEN = '2287458926-mLpqFWG1GUL2DMECLpfBtY2vvlaGCIGdLe2DWJJ'
+    OAUTH_TOKEN_SECRET = 'dRHsKiz26KHCuGqq1g70tjxXMCLVEDdov7fvEwWaZ4f1i'
+    oauth = twitter.OAuth(token=OAUTH_TOKEN,
+                          token_secret=OAUTH_TOKEN_SECRET,
+                          consumer_key=CONSUMER_KEY,
+                          consumer_secret=CONSUMER_SECRET)
+    t = twitter.Twitter(auth=oauth)
+    status = "{} by {} was mapped on PlacingLiterature.com. #literaryroadtrip"
+    update = status.format(scene_data.title, scene_data.author)
+    t.statuses.update(status=update)
 
 
 class GetPlacesHandler(baseapp.BaseAppHandler):
