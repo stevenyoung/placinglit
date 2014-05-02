@@ -1,13 +1,14 @@
-define(['controllers/controllers', 'leafletmaps'],//, 'googlemaps'],
+define(['controllers/controllers', 'leafletmaps', 'services/scenes'],//, 'googlemaps'],
   function(controllers, leafletEvents) {
-    controllers.controller('MapCtrl', function ($scope, leafletEvents, $location) {
+    controllers.controller('MapCtrl',
+      function ($scope, leafletEvents, $location, SceneService) {
       $scope.eventDetected = 'Nothing'
 
       angular.extend($scope, {
         center: {
           lat: 37.7567412947,
           lng: -122.406781912,
-          zoom: 8
+          zoom: 2
         }
       });
       angular.extend($scope, {
@@ -96,6 +97,18 @@ define(['controllers/controllers', 'leafletmaps'],//, 'googlemaps'],
       $scope.markers=[];
       $scope.$on('leafletDirectiveMap.click', dropMarkerOnMapClick);
       $scope.$on('leafletDirectiveMap.load', showEventsViaBinding);
+      SceneService.getAllScenes().then(function(scenes) {
+        $scope.scenes = scenes;
+        angular.forEach(scenes, function(scene) {
+          console.log(scene);
+          $scope.markers.push({
+            lat: scene.latitude,
+            lng: scene.longitude,
+            message: scene.title + ' by ' + scene.author,
+            draggable: false
+          });
+        });
+      })
     });
   }
 );

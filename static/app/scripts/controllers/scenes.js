@@ -1,14 +1,9 @@
 define(['controllers/controllers','services/scenes'],
   function(controllers){
-    controllers.controller('SceneCtrl', function ($scope, googlemaps) {
-      $scope.awesomeThings = [
-        'HTML5 Boilerplate',
-        'AngularJS',
-        'Karma'
-      ];
-
-      // $scope.map = new google.maps.Map(document.getElementById('#map_canvas'));
-      // console.log('map', $scope.map, googlemaps)
+    controllers.controller('SceneCtrl', function ($scope, SceneService) {
+      SceneService.getAllScenes().then(function(scenes) {
+        console.log(scenes);
+      })
     });
   }
 );
