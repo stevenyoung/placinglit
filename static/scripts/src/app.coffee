@@ -400,8 +400,9 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     if !!data.image_url
       content += @sceneImageTemplate()(image_url: data.image_url)
     for field of @field_labels
+      label = @field_labels[field]
       if data[field]
-        content += @sceneFieldsTemplate()({label: field, content:data[field]})
+        content += @sceneFieldsTemplate()({label: label, content:data[field]})
     if updateButton
       content += @sceneCheckinButtonTemplate()(place_id: data.id)
       @handleCheckinButtonClick()

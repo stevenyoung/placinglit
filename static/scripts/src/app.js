@@ -644,7 +644,7 @@
     };
 
     MapCanvasView.prototype.buildInfowindow = function(data, updateButton) {
-      var content, field;
+      var content, field, label;
       content = '<div class="plinfowindow">';
       content += this.sceneTitleTemplate()({
         title: data.title,
@@ -656,9 +656,10 @@
         });
       }
       for (field in this.field_labels) {
+        label = this.field_labels[field];
         if (data[field]) {
           content += this.sceneFieldsTemplate()({
-            label: field,
+            label: label,
             content: data[field]
           });
         }
