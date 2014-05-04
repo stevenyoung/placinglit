@@ -35,6 +35,32 @@ define(['controllers/controllers', 'leafletmaps', 'services/scenes'],//, 'google
           }
         }
       });
+      // angular.extend($scope,{
+      //   layers: {
+      //     baselayers: {
+      //       cloudmade: {
+      //         name: 'Cloudmade Taiwan map',
+      //         type: 'xyz',
+      //         url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
+      //         layerParams: {
+      //             key: '007b9471b4c74da4a6ec7ff43552b16f',
+      //             styleId: 7
+      //         }
+      //       }
+      //     },
+      //     overlays: {
+      //       northTaiwan: {
+      //         name: "North cities",
+      //         type: "markercluster",
+      //         visible: true
+      //       },
+      //       southTaiwan: {
+      //         name: "South cities",
+      //         type: "markercluster",
+      //         visible: true
+      //       }
+      //     }
+      //   });
 
       $scope.userMarkerLatitude = $scope.center.lat;
       $scope.userMarkerLongitude = $scope.center.lng;
@@ -46,9 +72,8 @@ define(['controllers/controllers', 'leafletmaps', 'services/scenes'],//, 'google
           lng = markerLocation.lng;
         console.log('dropped at ' + lat + ',' + lng);
         console.log($scope.markers[0]);
-        // var edit_iframe = '<iframe src="#/edit" height="400px" width="600px" border="0"></iframe>'
-        // $scope.markers[0].message= edit_iframe;
-
+        var edit_iframe = '<iframe src="#/edit" height="400px" width="600px" border="0"></iframe>'
+        $scope.markers[0].message= edit_iframe;
       }
 
       function dropMarkerOnMapClick(event, args) {
@@ -94,21 +119,26 @@ define(['controllers/controllers', 'leafletmaps', 'services/scenes'],//, 'google
           });
         }
       }
+
+      function showAllScenes() {
+        SceneService.getAllScenes().then(function(scenes) {
+          $scope.scenes = scenes;
+          angular.forEach(scenes, function(scene) {
+            $scope.markers.push({
+              lat: scene.latitude,
+              lng: scene.longitude,
+              message: scene.title + ' by ' + scene.author,
+              draggable: false
+            });
+          });
+
+        });
+      }
+
       $scope.markers=[];
       $scope.$on('leafletDirectiveMap.click', dropMarkerOnMapClick);
       $scope.$on('leafletDirectiveMap.load', showEventsViaBinding);
-      SceneService.getAllScenes().then(function(scenes) {
-        $scope.scenes = scenes;
-        angular.forEach(scenes, function(scene) {
-          console.log(scene);
-          $scope.markers.push({
-            lat: scene.latitude,
-            lng: scene.longitude,
-            message: scene.title + ' by ' + scene.author,
-            draggable: false
-          });
-        });
-      })
+      $scope.$on('leafletDirectiveMap.load', showAllScenes);
     });
   }
 );

@@ -6,7 +6,6 @@ define(['services/services'],
           getAllScenes: function() {
             var d = $q.defer();
             $http({
-              method: GET,
               url: '/places/show',
               cache: true
             }).success(function(data) {

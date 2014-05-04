@@ -25,6 +25,7 @@ require.config({
     // googlemaps: '//maps.google.com/maps/api/js?sensor=true',
     leafletmaps: '//cdn.leafletjs.com/leaflet-0.7/leaflet',
     'leaflet-directive': 'vendor/angular-leaflet-directive.min',
+    'leaflet.markercluster': 'vendor/leaflet.markercluster',
     // 'ui-router': 'vendor/angular-ui-router'
   },
   shim: {
@@ -50,6 +51,9 @@ require.config({
     'leaflet-directive': {
       deps: ['angular']
     },
+    'leaflet.markercluster': {
+      deps: ['leafletmaps']
+    },
     // 'ui-router': {
     //   deps: ['angular']
     // }
@@ -63,6 +67,7 @@ require([
   'app',
   'domReady',
   'leaflet-directive',
+  'leaflet.markercluster',
   // 'googlemaps',
   // 'ui-router',
   // 'angular-resource',
@@ -74,6 +79,7 @@ require([
   'controllers/edit',
   'controllers/leafletmap',
   'controllers/scenes',
+  'controllers/home',
 
   'services/pagination',
   'services/scenes'
@@ -86,7 +92,7 @@ require([
       },
       homeView = {
         templateUrl: 'views/home.html',
-        controller: 'MapCtrl'
+        controller: 'HomeCtrl'
       },
       editView = {
         templateUrl: 'views/placeform.html',
