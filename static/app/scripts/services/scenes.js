@@ -6,13 +6,40 @@ define(['services/services'],
           getAllScenes: function() {
             var d = $q.defer();
             $http({
+              method: GET,
               url: '/places/show',
+              cache: true
             }).success(function(data) {
               d.resolve(data);
             }).error(function(data) {
               d.reject(reason);
-            })
-            return d.promise
+            });
+            return d.promise;
+          },
+          getScene: function(scene_key) {
+            var d = $q.defer();
+            $http({
+              method: GET,
+              url: '/places/info/' + scene_key,
+              cache: true
+            }).success(function(data) {
+              d.resolve(data);
+            }).error(function(data) {
+              d.reject(reason);
+            });
+            return d.promise;
+          },
+          addScene: function() {
+            var d = $q.defer();
+            $http({
+              method: POST,
+              url: 'places/add'
+            }).sucess(function(data) {
+              d.resolve(data);
+            }).error(function(data) {
+              d.reject(reason);
+            });
+            return d.promise;
           }
         };
         return service;
