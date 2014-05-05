@@ -580,6 +580,10 @@ class PlacingLit.Views.Allscenes extends Backbone.View
     link.href += '?key=' + place.get('db_key')
     link.textContent = place.get('title') + ': ' + place.get('location')
     li.appendChild(link)
+    editLink = document.createElement('a')
+    editLink.href = '/admin/edit?key=' + place.get('db_key')
+    editLink.textContent = '(EDIT)'
+    li.appendChild(editLink)
     return li
 
 

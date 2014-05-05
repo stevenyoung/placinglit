@@ -961,7 +961,7 @@
     };
 
     Allscenes.prototype.getPlaceLink = function(place) {
-      var li, link;
+      var editLink, li, link;
       li = document.createElement('li');
       li.id = place.get('db_key');
       link = document.createElement('a');
@@ -969,6 +969,10 @@
       link.href += '?key=' + place.get('db_key');
       link.textContent = place.get('title') + ': ' + place.get('location');
       li.appendChild(link);
+      editLink = document.createElement('a');
+      editLink.href = '/admin/edit?key=' + place.get('db_key');
+      editLink.textContent = '(EDIT)';
+      li.appendChild(editLink);
       return li;
     };
 
