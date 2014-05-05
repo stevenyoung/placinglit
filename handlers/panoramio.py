@@ -11,7 +11,7 @@ from handlers.abstracts import baseapp
 from classes import panoramio
 
 
-class UpdatePhotosHandler(baseapp.BaseAppHandler):
+class UpdateAllPhotosHandler(baseapp.BaseAppHandler):
   def get(self):
     query = db.GqlQuery('SELECT __key__ from PlacedLit')
     for key in query.run(limit=10):
@@ -27,6 +27,6 @@ class UpdatePhotosHandler(baseapp.BaseAppHandler):
                                                   location=map_location)
 
 
-urls = [('/photos/update_all', UpdatePhotosHandler)]
+urls = [('/photos/update_all', UpdateAllPhotosHandler)]
 
 app = webapp.WSGIApplication(urls, debug=True)
