@@ -393,7 +393,7 @@
     };
 
     MapCanvasView.prototype.positionMap = function() {
-      var mapcenter, usaCoords, usacenter;
+      var mapcenter, usaCoords, usacenter, windowOptions;
       if (typeof CENTER !== "undefined" && CENTER !== null) {
         mapcenter = new google.maps.LatLng(CENTER.lat, CENTER.lng);
         this.gmap.setCenter(mapcenter);
@@ -412,7 +412,10 @@
         this.gmap.setZoom(2);
       }
       if (typeof PLACEKEY !== "undefined" && PLACEKEY !== null) {
-        return this.openInfowindowForPlace(PLACEKEY, mapcenter);
+        windowOptions = {
+          position: mapcenter
+        };
+        return this.openInfowindowForPlace(PLACEKEY, windowOptions);
       }
     };
 
@@ -681,9 +684,18 @@
       return content;
     };
 
-    MapCanvasView.prototype.openInfowindowForPlace = function(place_key, position) {
-      var url;
+    MapCanvasView.prototype.openInfowindowForPlace = function(place_key, windowOptions) {
+      var tracking, url;
       url = '/places/info/' + place_key;
+      if (windowOptions.marker) {
+        tracking = {
+          'category': 'marker',
+          'action': 'open window',
+          'label': windowOptions.scene.get('title') + ':' + place_key,
+          'value': 1
+        };
+        this.mapEventTracking(tracking);
+      }
       return $.getJSON(url, (function(_this) {
         return function(data) {
           var iw;
@@ -691,10 +703,15 @@
             _this.placeInfowindow.close();
           }
           iw = _this.infowindow();
-          iw.setPosition(position);
           iw.setContent(_this.buildInfowindow(data, true));
-          iw.open(_this.gmap);
-          return _this.placeInfowindow = iw;
+          if (windowOptions.position) {
+            iw.setPosition(windowOptions.position);
+            iw.open(_this.gmap);
+          } else {
+            iw.open(_this.gmap, windowOptions.marker);
+          }
+          _this.placeInfowindow = iw;
+          return _this.handleCheckinButtonClick;
         };
       })(this));
     };
@@ -763,24 +780,12 @@
     MapCanvasView.prototype.locationMarkerEventHandler = function(location, marker) {
       return google.maps.event.addListener(marker, 'click', (function(_this) {
         return function(event) {
-          var db_key, tracking, url;
-          db_key = location.get('db_key');
-          tracking = {
-            'category': 'marker',
-            'action': 'open window',
-            'label': location.get('title') + ':' + db_key,
-            'value': 1
+          var windowOptions;
+          windowOptions = {
+            marker: marker,
+            scene: location
           };
-          _this.mapEventTracking(tracking);
-          url = '/places/info/' + db_key;
-          return $.getJSON(url, function(data) {
-            var iw;
-            iw = _this.infowindow();
-            iw.setContent(_this.buildInfowindow(data, true));
-            iw.open(_this.gmap, marker);
-            _this.placeInfowindow = iw;
-            return _this.handleCheckinButtonClick;
-          });
+          return _this.openInfowindowForPlace(location.get('db_key'), windowOptions);
         };
       })(this));
     };

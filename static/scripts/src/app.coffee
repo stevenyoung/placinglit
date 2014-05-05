@@ -229,7 +229,8 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       @gmap.setCenter(usacenter)
       @gmap.setZoom(2)
     if PLACEKEY?
-      @openInfowindowForPlace(PLACEKEY, mapcenter)
+      windowOptions = position: mapcenter
+      @openInfowindowForPlace(PLACEKEY, windowOptions)
 
   handleMapClick: (event) ->
     @setUserMapMarker(@gmap, event.latLng)
@@ -412,15 +413,28 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     content += '</div>'
     return content
 
-  openInfowindowForPlace: (place_key, position) ->
+  openInfowindowForPlace: (place_key, windowOptions) ->
+    # this can be triggered by a deep link or map marker click
+    # TODO: marker clicks are tracked as events, deep links as pages- RESOLVE
     url = '/places/info/' + place_key
+    if windowOptions.marker
+      tracking =
+        'category': 'marker'
+        'action': 'open window'
+        'label': windowOptions.scene.get('title') + ':' + place_key
+        'value' : 1
+      @mapEventTracking(tracking)
     $.getJSON url, (data) =>
       @placeInfowindow.close() if @placeInfowindow?
       iw = @infowindow()
-      iw.setPosition(position)
       iw.setContent(@buildInfowindow(data, true))
-      iw.open(@gmap)
+      if windowOptions.position
+        iw.setPosition(windowOptions.position)
+        iw.open(@gmap)
+      else
+        iw.open(@gmap, windowOptions.marker)
       @placeInfowindow = iw
+      @handleCheckinButtonClick
 
   mapEventTracking: (data)->
     ga('send', 'event', data.category, data.action, data.label, data.value)
@@ -466,20 +480,10 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
 
   locationMarkerEventHandler: (location, marker) ->
     google.maps.event.addListener marker, 'click', (event) =>
-      db_key = location.get('db_key')
-      tracking =
-        'category': 'marker'
-        'action': 'open window'
-        'label': location.get('title') + ':' + db_key
-        'value' : 1
-      @mapEventTracking(tracking)
-      url = '/places/info/' + db_key
-      $.getJSON url, (data) =>
-        iw = @infowindow()
-        iw.setContent(@buildInfowindow(data, true))
-        iw.open(@gmap, marker)
-        @placeInfowindow = iw
-        @handleCheckinButtonClick
+      windowOptions =
+        marker: marker
+        scene: location
+      @openInfowindowForPlace(location.get('db_key'), windowOptions)
 
   dropMarkerForStoredLocation: (location) ->
     marker = @buildMarkerFromLocation(location)
