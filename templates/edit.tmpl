@@ -16,7 +16,7 @@
         <input type="text" class="input-block-level" id="scene" name="scene" value="{{ place.scene }}">
       </span>
       <span>description:
-        <input type="text" class="input-block-level" id="image_url" name="image_url" value="{{ place.scenedescription }}">
+        <input type="text" class="input-block-level" id="description" name="description" value="{{ place.scenedescription }}">
       </span>
       <span>notes:
         <input type="text" class="input-block-level" id="notes" name="notes" value="{{ place.notes }}">
@@ -25,22 +25,23 @@
         <input type="text" class="input-block-level" id="image_url" name="image_url" value="{{ place.image_url }}">
       </span>
       <span>actors:
-        <input type="text" class="input-block-level" id="image_url" name="image_url" value="{{ place.actors }}">
+        <input type="text" class="input-block-level" id="actors" name="actors" value="{{ place.actors }}">
       </span>
       <span>time of day:
-        <input type="text" class="input-block-level" id="image_url" name="image_url" value="{{ place.scenetime }}">
+        <input type="text" class="input-block-level" id="scenetime" name="scenetime" value="{{ place.scenetime }}">
       </span>
       <span>symbols:
-        <input type="text" class="input-block-level" id="image_url" name="image_url" value="{{ place.symbols }}">
+        <input type="text" class="input-block-level" id="symbols" name="symbols" value="{{ place.symbols }}">
       </span>
       <span>user-submitted isbn
-        <input type="text" class="input-block-level" id="image_url" name="image_url" value="{{ place.ug_isbn }}">
+        <input type="text" class="input-block-level" id="ug_isbn" name="ug_isbn" value="{{ place.ug_isbn }}">
       </span>
-      <span id="addplacebutton" class="btn placesubmit">Save Place</span>
-      <span id="addplacebutton" class="btn placesubmit">Delete Place</span>
+      <span id="editplacebutton" class="btn placesubmit">Save Place</span>
+      <span id="deleteplacebutton" class="btn placesubmit">Delete Place</span>
     </div>
   </div>
 {% endblock %}
 {% block scripts %}
   <script src="/js/src/app.js"></script>
+  <script src="/js/src/allscenes.js"></script>
 {% endblock %}
