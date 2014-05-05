@@ -72,6 +72,18 @@ class AllscenesHandler(baseapp.BaseAppHandler):
     self.render_template('all.tmpl', template_values)
 
 
+class AdminEditSceneHandler(baseapp.BaseAppHandler):
+  def get(self):
+    template_values = self.basic_template_content()
+    template_values['title'] = 'Edit Scene'
+    place_id = self.request.get('key')
+    logging.info('edit %s', place_id)
+    place = placedlit.PlacedLit.get_place_from_id(place_id)
+    logging.info('place %s', place)
+    template_values['place'] = place
+    self.render_template('edit.tmpl', template_values)
+
+
 class NewhomeHandler(baseapp.BaseAppHandler):
   def get(self):
     template_values = self.basic_template_content()
@@ -103,7 +115,8 @@ urls = [
   ('/map(/?.*)', MapHandler),
   ('/', HomeHandler),
   ('/user/status', UserstatusHandler),
-  ('/top/', NewhomeHandler)
+  ('/top/', NewhomeHandler),
+  ('/admin/edit', AdminEditSceneHandler)
 ]
 
 app = webapp.WSGIApplication(urls, debug=True)
