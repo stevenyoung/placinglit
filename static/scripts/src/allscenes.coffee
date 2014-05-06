@@ -22,5 +22,15 @@ $(document).on 'ready', ->
       type: 'POST'
       data: form_data
 
+  deletePlace = ->
+    console.log('delete')
+    key = window.location.search.split('=')[1]
+    $.ajax
+      url: '/admin/edit?key=' + key
+      type: 'DELETE'
+
   $('#editplacebutton').on 'click', (event) ->
     editPlace()
+
+  $('#deleteplacebutton').on 'click', (event) ->
+    deletePlace()
