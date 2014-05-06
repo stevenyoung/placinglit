@@ -152,6 +152,10 @@ handlers:
   script: handlers.collections.app
   login: admin
 
+- url: /admin/menu
+  script: handlers.home.app
+  login: admin
+
 - url: /admin/edit/(.*)
   script: handlers.home.app
   login: admin

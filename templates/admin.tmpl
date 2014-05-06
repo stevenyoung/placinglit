@@ -1,0 +1,15 @@
+{% extends 'base.tmpl' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+  <div id="allscenes" class="container well">
+    <ul>
+      <li><a href="/blog/update">update blog posts</a></li>
+      <li><a href="/update_isbns">update user-added isbns</a></li>
+      <li><a href="/all">edit/view all scenes</a></li>
+    </ul>
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script src="/js/src/app.js"></script>
+  <script src="/js/src/allscenes.js"></script>
+{% endblock %}

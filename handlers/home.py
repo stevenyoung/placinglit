@@ -123,6 +123,13 @@ class MapFilterHandler(baseapp.BaseAppHandler):
     self.render_template('map.tmpl', template_values)
 
 
+class AdminMenuHandler(baseapp.BaseAppHandler):
+  def get(self):
+    template_values = self.basic_template_content()
+    template_values['title'] = 'Admin Menu'
+    self.render_template('admin.tmpl', template_values)
+
+
 urls = [
   ('/about', AboutHandler),
   ('/all', AllscenesHandler),
@@ -134,6 +141,7 @@ urls = [
   ('/user/status', UserstatusHandler),
   ('/top/', NewhomeHandler),
   ('/admin/edit', AdminEditSceneHandler),
+  ('/admin/menu', AdminMenuHandler),
 ]
 
 app = webapp.WSGIApplication(urls, debug=True)
