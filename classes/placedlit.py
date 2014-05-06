@@ -168,19 +168,17 @@ class PlacedLit(db.Model):
       raise
 
   def update_fields(self, updated_data):
-    logging.info('updating %s %s', self.key().id(), updated_data)
-    self.title = updated_data['title']
-    self.author = updated_data['author']
-    self.actors = updated_data['actors']
-    self.notes = updated_data['notes']
-    self.scenedescription = updated_data['description']
-    self.scenelocation = updated_data['place_name']
-    self.scenetime = updated_data['scenetime']
-    self.symbols = updated_data['symbols']
-    self.ug_isbn = updated_data['ug_isbn']
+    # poorly formed urls raise db.Error.BadValueError for db.LinkProperty
     image_url = urlparse.urlsplit(updated_data['image_url'])
     if image_url.scheme and image_url.netloc:
       self.image_url = urlparse.urlunsplit(image_url)
+    else:
+      self.image_url = None
+
+    for field in updated_data.iterkeys():
+      if field is not 'image_url':
+        setattr(self, field, updated_data[field])
+
     self.put()
     memcache.set(str(self.key().id()), self)
 
