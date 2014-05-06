@@ -1,4 +1,4 @@
 cron:
 - description: user-generated isbn update_isbns
   url: /update_isbns
-  schedule: every 30 minutes
+  schedule: every 24 hours
