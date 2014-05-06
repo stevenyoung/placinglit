@@ -973,6 +973,7 @@
       editImage = document.createElement('img');
       editImage.src = '/img/edit-icon.png';
       editImage.style.height = '16px';
+      editImage.className = 'editicon';
       editLink.appendChild(editImage);
       li.appendChild(editLink);
       li.appendChild(link);
