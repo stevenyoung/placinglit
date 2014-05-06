@@ -86,19 +86,19 @@ class AdminEditSceneHandler(baseapp.BaseAppHandler):
     place = placedlit.PlacedLit.get_place_from_id(self.request.get('key'))
     if place:
       place_data = dict()
-      update_fields = ['title', 'author', 'actors', 'notes', 'description',
-                       'place_name', 'scenetime', 'symbols', 'ug_isbn',
-                       'image_url']
+      update_fields = ['title', 'author', 'scenelocation', 'scenedescription',
+                       'notes', 'image_url', 'actors', 'scenetime', 'symbols',
+                       'ug_isbn']
       for field in update_fields:
         place_data[field] = self.request.get(field)
       place.update_fields(place_data)
-      logging.info('post %s', place_data)
-      self.redirect('/all')
+      self.response.out.write('Saved')
 
   def delete(self):
-    logging.info(self.request.get('key'))
+    logging.info('deleted %s', self.request.get('key'))
     place = placedlit.PlacedLit.get_place_from_id(self.request.get('key'))
     place.delete_scene()
+    self.response.out.write('Deleted')
 
 
 class NewhomeHandler(baseapp.BaseAppHandler):
