@@ -14,7 +14,6 @@ from google.appengine.ext import webapp
 from handlers.abstracts import baseapp
 from classes import placedlit
 import blogposts
-import urlparse
 
 
 class HomeHandler(baseapp.BaseAppHandler):
@@ -78,36 +77,28 @@ class AdminEditSceneHandler(baseapp.BaseAppHandler):
     template_values = self.basic_template_content()
     template_values['title'] = 'Edit Scene'
     place_id = self.request.get('key')
-    logging.info('edit %s', place_id)
     place = placedlit.PlacedLit.get_place_from_id(place_id)
-    logging.info('place %s', place)
     template_values['place'] = place
     self.render_template('edit.tmpl', template_values)
 
   def post(self):
     """ add scene from user submission """
-    logging.info('place_id: %s', self.request.get('key'))
-    logging.info('edit scene: %s', self.request.body)
-    logging.info('title: %s', self.request.get('title'))
     place = placedlit.PlacedLit.get_place_from_id(self.request.get('key'))
-    logging.info('place: %s', place)
     if place:
-      place.title = self.request.get('title')
-      place.author = self.request.get('author')
-      place.actors = self.request.get('actors')
-      place.notes = self.request.get('notes')
-      place.scenedescription = self.request.get('description')
-      place.scenelocation = self.request.get('place_name')
-      place.scenetime = self.request.get('scenetime')
-      place.symbols = self.request.get('symbols')
-      place.ug_isbn = self.request.get('ug_isbn')
+      place_data = dict()
+      update_fields = ['title', 'author', 'actors', 'notes', 'description',
+                       'place_name', 'scenetime', 'symbols', 'ug_isbn',
+                       'image_url']
+      for field in update_fields:
+        place_data[field] = self.request.get(field)
+      place.update_fields(place_data)
+      logging.info('post %s', place_data)
+      self.redirect('/all')
 
-      if place.image_url:
-        image_url = urlparse.urlsplit(place.image_url)
-        if image_url.scheme and image_url.netloc:
-          place.image_url = urlparse.urlunsplit(image_url)
-
-      place.put()
+  def delete(self):
+    logging.info(self.request.get('key'))
+    place = placedlit.PlacedLit.get_place_from_id(self.request.get('key'))
+    place.delete_scene()
 
 
 class NewhomeHandler(baseapp.BaseAppHandler):
@@ -142,7 +133,7 @@ urls = [
   ('/', HomeHandler),
   ('/user/status', UserstatusHandler),
   ('/top/', NewhomeHandler),
-  ('/admin/edit', AdminEditSceneHandler)
+  ('/admin/edit', AdminEditSceneHandler),
 ]
 
 app = webapp.WSGIApplication(urls, debug=True)
