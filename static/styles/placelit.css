@@ -4764,3 +4764,6 @@ body {
 
 .buybook, .reviewbook {
   cursor: pointer; }
+
+#deleteplacebutton {
+  float: right; }
