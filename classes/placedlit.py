@@ -150,8 +150,8 @@ class PlacedLit(db.Model):
     try:
       place_query = cls.all().filter(field, term)
       places = place_query.run()
-      return places
     except UnicodeDecodeError:
+      return places
       logging.error('decode error! places by query: %s %s %s', field,
                     term, type(term))
       place_query = cls.all().filter(field, term.decode('iso-8859-1'))
@@ -166,3 +166,27 @@ class PlacedLit(db.Model):
       return query.run()
     except:
       raise
+
+  def update_fields(self, updated_data):
+    logging.info('updating %s %s', self.key().id(), updated_data)
+    self.title = updated_data['title']
+    self.author = updated_data['author']
+    self.actors = updated_data['actors']
+    self.notes = updated_data['notes']
+    self.scenedescription = updated_data['description']
+    self.scenelocation = updated_data['place_name']
+    self.scenetime = updated_data['scenetime']
+    self.symbols = updated_data['symbols']
+    self.ug_isbn = updated_data['ug_isbn']
+    image_url = urlparse.urlsplit(updated_data['image_url'])
+    if image_url.scheme and image_url.netloc:
+      self.image_url = urlparse.urlunsplit(image_url)
+    self.put()
+    memcache.set(str(self.key().id()), self)
+
+  def delete_scene(self):
+    scene_id = str(self.key().id())
+    memcache.delete(scene_id)
+    self.delete()
+    flushed = memcache.flush_all()
+    logging.info('deleted %s. flushed:%s', scene_id, flushed)
