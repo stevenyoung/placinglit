@@ -961,18 +961,21 @@
     };
 
     Allscenes.prototype.getPlaceLink = function(place) {
-      var editLink, li, link;
+      var editImage, editLink, li, link;
       li = document.createElement('li');
       li.id = place.get('db_key');
       link = document.createElement('a');
       link.href = '/map/' + place.get('latitude') + ',' + place.get('longitude');
       link.href += '?key=' + place.get('db_key');
       link.textContent = place.get('title') + ': ' + place.get('location');
-      li.appendChild(link);
       editLink = document.createElement('a');
       editLink.href = '/admin/edit?key=' + place.get('db_key');
-      editLink.textContent = '(EDIT)';
+      editImage = document.createElement('img');
+      editImage.src = '/img/edit-icon.png';
+      editImage.style.height = '16px';
+      editLink.appendChild(editImage);
       li.appendChild(editLink);
+      li.appendChild(link);
       return li;
     };
 
