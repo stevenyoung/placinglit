@@ -166,7 +166,7 @@ handlers:
 - url: /users/scenes
   script: handlers.export.app
 
-- url: /photos/update_all
+- url: /photos/panoramio/(.*)
   script: handlers.panoramio.app
 
 - url: .*

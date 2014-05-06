@@ -27,6 +27,6 @@ class UpdateAllPhotosHandler(baseapp.BaseAppHandler):
                                                   location=map_location)
 
 
-urls = [('/photos/update_all', UpdateAllPhotosHandler)]
+urls = [('/photos/panoramio/update_all', UpdateAllPhotosHandler)]
 
 app = webapp.WSGIApplication(urls, debug=True)
