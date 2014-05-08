@@ -151,12 +151,11 @@ class PlacedLit(db.Model):
       place_query = cls.all().filter(field, term)
       places = place_query.run()
     except UnicodeDecodeError:
-      return places
       logging.error('decode error! places by query: %s %s %s', field,
                     term, type(term))
       place_query = cls.all().filter(field, term.decode('iso-8859-1'))
       places = place_query.run()
-      return places
+    return places
 
   @classmethod
   def get_all_unresolved_places(cls):
