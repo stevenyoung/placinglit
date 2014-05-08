@@ -5,21 +5,37 @@ define(['controllers/controllers', 'leafletmaps', 'services/scenes'],//, 'google
       $scope.eventDetected = 'Nothing'
 
       angular.extend($scope, {
-        center: {
-          lat: 37.7567412947,
-          lng: -122.406781912,
-          zoom: 2
-        }
-      });
-      angular.extend($scope, {
        defaults: {
           // tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
-          tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          maxZoom: 14,
+          // tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          maxZoom: 10,
           path: {
             weight: 10,
             color: '#800000',
             opacity: 1
+          },
+        }
+      });
+      angular.extend($scope, {
+        center: {
+          lat: 37.7567412947,
+          lng: -122.406781912,
+          zoom: 3
+        }
+      });
+      angular.extend($scope, {
+        layers: {
+          baselayers: {
+            osm: {
+              name: 'OpenStreetMap',
+              type: 'xyz',
+              url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+              layerOptions: {
+                subdomains: ['a', 'b', 'c'],
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                continuousWorld: true
+              }
+            }
           }
         }
       });
@@ -35,32 +51,6 @@ define(['controllers/controllers', 'leafletmaps', 'services/scenes'],//, 'google
           }
         }
       });
-      // angular.extend($scope,{
-      //   layers: {
-      //     baselayers: {
-      //       cloudmade: {
-      //         name: 'Cloudmade Taiwan map',
-      //         type: 'xyz',
-      //         url: 'http://{s}.tile.cloudmade.com/{key}/{styleId}/256/{z}/{x}/{y}.png',
-      //         layerParams: {
-      //             key: '007b9471b4c74da4a6ec7ff43552b16f',
-      //             styleId: 7
-      //         }
-      //       }
-      //     },
-      //     overlays: {
-      //       northTaiwan: {
-      //         name: "North cities",
-      //         type: "markercluster",
-      //         visible: true
-      //       },
-      //       southTaiwan: {
-      //         name: "South cities",
-      //         type: "markercluster",
-      //         visible: true
-      //       }
-      //     }
-      //   });
 
       $scope.userMarkerLatitude = $scope.center.lat;
       $scope.userMarkerLongitude = $scope.center.lng;
@@ -125,6 +115,7 @@ define(['controllers/controllers', 'leafletmaps', 'services/scenes'],//, 'google
           $scope.scenes = scenes;
           angular.forEach(scenes, function(scene) {
             $scope.markers.push({
+              // layer: 'defaultLayer',
               lat: scene.latitude,
               lng: scene.longitude,
               message: scene.title + ' by ' + scene.author,
