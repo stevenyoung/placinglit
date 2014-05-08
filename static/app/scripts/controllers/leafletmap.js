@@ -8,7 +8,7 @@ define(['controllers/controllers', 'leafletmaps', 'services/scenes'],//, 'google
        defaults: {
           // tileLayer: "http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
           // tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          maxZoom: 10,
+          maxZoom: 4,
           path: {
             weight: 10,
             color: '#800000',
@@ -20,7 +20,7 @@ define(['controllers/controllers', 'leafletmaps', 'services/scenes'],//, 'google
         center: {
           lat: 37.7567412947,
           lng: -122.406781912,
-          zoom: 3
+          zoom: 4
         }
       });
       angular.extend($scope, {
@@ -33,7 +33,7 @@ define(['controllers/controllers', 'leafletmaps', 'services/scenes'],//, 'google
               layerOptions: {
                 subdomains: ['a', 'b', 'c'],
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                continuousWorld: true
+                // continuousWorld: true
               }
             }
           }
@@ -115,7 +115,7 @@ define(['controllers/controllers', 'leafletmaps', 'services/scenes'],//, 'google
           $scope.scenes = scenes;
           angular.forEach(scenes, function(scene) {
             $scope.markers.push({
-              // layer: 'defaultLayer',
+              layers: 'osm',
               lat: scene.latitude,
               lng: scene.longitude,
               message: scene.title + ' by ' + scene.author,

@@ -721,6 +721,7 @@
     };
 
     MapCanvasView.prototype.trackButtonEvents = function() {
+      console.log('track buttons');
       $('#map_canvas').on('click', '.buybook', (function(_this) {
         return function(event) {
           var tracking;

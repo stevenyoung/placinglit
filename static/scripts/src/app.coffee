@@ -440,6 +440,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     ga('send', 'event', data.category, data.action, data.label, data.value)
 
   trackButtonEvents: () ->
+    console.log('track buttons')
     $('#map_canvas').on 'click', '.buybook', (event) =>
       tracking =
         'category': 'button'
