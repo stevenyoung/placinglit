@@ -639,7 +639,7 @@
     };
 
     MapCanvasView.prototype.sceneImageTemplate = function() {
-      return _.template('<img src="<%= image_url %>">');
+      return _.template('<img class="infopic" src="<%= image_url %>">');
     };
 
     MapCanvasView.prototype.sceneTitleTemplate = function() {

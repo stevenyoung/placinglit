@@ -4771,3 +4771,9 @@ body {
 .editicon {
   height: 16px;
   padding-right: 10px; }
+
+.infopic {
+  height: 80px;
+  float: right;
+  padding-right: 5px;
+  padding-bottom: 5px; }

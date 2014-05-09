@@ -390,7 +390,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     return _.template(button_format)
 
   sceneImageTemplate: ->
-    return _.template('<img src="<%= image_url %>">')
+    return _.template('<img class="infopic" src="<%= image_url %>">')
 
   sceneTitleTemplate: ->
     return _.template('<span class="lead"><%= title %> by <%= author %></span>')
