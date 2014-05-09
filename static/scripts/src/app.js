@@ -648,16 +648,12 @@
 
     MapCanvasView.prototype.buildInfowindow = function(data, updateButton) {
       var content, field, label;
+      this.clearInfowindowClickEvents();
       content = '<div class="plinfowindow">';
       content += this.sceneTitleTemplate()({
         title: data.title,
         author: data.author
       });
-      if (!!data.image_url) {
-        content += this.sceneImageTemplate()({
-          image_url: data.image_url
-        });
-      }
       for (field in this.field_labels) {
         label = this.field_labels[field];
         if (data[field]) {
@@ -678,7 +674,7 @@
           gr_isbn: data.isbn,
           buy_isbn: data.isbn
         });
-        this.trackButtonEvents();
+        this.handleInfowindowButtonEvents();
       }
       content += '</div>';
       return content;
@@ -720,8 +716,7 @@
       return ga('send', 'event', data.category, data.action, data.label, data.value);
     };
 
-    MapCanvasView.prototype.trackButtonEvents = function() {
-      console.log('track buttons');
+    MapCanvasView.prototype.handleInfowindowButtonEvents = function() {
       $('#map_canvas').on('click', '.buybook', (function(_this) {
         return function(event) {
           var tracking;
@@ -748,6 +743,12 @@
           return window.open('//www.goodreads.com/book/isbn/' + event.currentTarget.id);
         };
       })(this));
+    };
+
+    MapCanvasView.prototype.clearInfowindowClickEvents = function() {
+      $('#map_canvas').off('click', '.visited');
+      $('#map_canvas').off('click', '.buybook');
+      return $('#map_canvas').off('click', '.reviewbook');
     };
 
     MapCanvasView.prototype.handleCheckinButtonClick = function(event) {

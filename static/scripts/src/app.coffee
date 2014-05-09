@@ -396,10 +396,11 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     return _.template('<span class="lead"><%= title %> by <%= author %></span>')
 
   buildInfowindow: (data, updateButton) ->
+    @clearInfowindowClickEvents()
     content = '<div class="plinfowindow">'
     content += @sceneTitleTemplate()({title: data.title, author:data.author})
-    if !!data.image_url
-      content += @sceneImageTemplate()(image_url: data.image_url)
+    # if !!data.image_url
+    #   content += @sceneImageTemplate()(image_url: data.image_url)
     for field of @field_labels
       label = @field_labels[field]
       if data[field]
@@ -409,7 +410,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       @handleCheckinButtonClick()
     if !!data.isbn
       content += @sceneButtonTemplate()(gr_isbn: data.isbn, buy_isbn: data.isbn)
-      @trackButtonEvents()
+      @handleInfowindowButtonEvents()
     content += '</div>'
     return content
 
@@ -439,8 +440,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
   mapEventTracking: (data)->
     ga('send', 'event', data.category, data.action, data.label, data.value)
 
-  trackButtonEvents: () ->
-    console.log('track buttons')
+  handleInfowindowButtonEvents: () ->
     $('#map_canvas').on 'click', '.buybook', (event) =>
       tracking =
         'category': 'button'
@@ -457,6 +457,11 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
         'value' : 1
       @mapEventTracking(tracking)
       window.open('//www.goodreads.com/book/isbn/' + event.currentTarget.id)
+
+  clearInfowindowClickEvents: ->
+    $('#map_canvas').off 'click', '.visited'
+    $('#map_canvas').off 'click', '.buybook'
+    $('#map_canvas').off 'click', '.reviewbook'
 
   handleCheckinButtonClick: (event) ->
     $('#map_canvas').on 'click', '.visited', (event) =>
