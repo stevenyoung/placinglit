@@ -42,14 +42,25 @@ def build_url_for_scene(scene_key):
   max_lng = scene.location.lon + distance
   max_lat = scene.location.lat + distance
 
-  logging.info('scene- {} at {},{}'.format(scene.title, scene.location.lon,
-                                           scene.location.lat))
-  logging.info('min:{},{} max:{},{}'.format(min_lng, min_lat, max_lng, max_lat))
   api_url += '&minx={}&miny={}&maxx={}&maxy={}'.format(min_lng, min_lat,
                                                        max_lng, max_lat)
-  api_url += '&size=small'  # '&mapfilter=true'
-  logging.info('url:%s', api_url)
+  api_url += '&size=medium&mapfilter=true'
   return api_url
+
+
+def retrieved_scenes():
+  """ List of scene for which we already have photo data. """
+  # return PanoramioScenes.scenes
+  return None
+
+
+def get_photos_for_scene(scene_key):
+  query_key = ndb.Key.from_old_key(scene_key)
+  query = Panoramio.query().filter(Panoramio.PLscene == query_key)
+  if len(query.fetch()) < 1:
+    return None
+  photos = [result for result in query.fetch()]
+  return photos
 
 
 class PanoramioScenes(ndb.Model):
@@ -59,6 +70,7 @@ class PanoramioScenes(ndb.Model):
   """
   scenes = ndb.KeyProperty(repeated=True)
   photo_ids = ndb.IntegerProperty(repeated=True)
+  owner_ids = ndb.IntegerProperty(repeated=True)
 
 
 class Panoramio(ndb.Expando):
@@ -81,8 +93,11 @@ class Panoramio(ndb.Expando):
     """ save an image from an api response. """
     # location = data['map_location']
     # count = data['count']
+    query_key = ndb.Key.from_old_key(scene_key)
+    # scene_data = PanoramioScenes(scenes=query_key)
     image = cls(
-      PLscene=ndb.Key.from_old_key(scene_key),
+      id=data['photo_id'],
+      PLscene=query_key,
       photo_id=data['photo_id'],
       photo_title=data['photo_title'],
       photo_url=data['photo_url'],
@@ -93,12 +108,9 @@ class Panoramio(ndb.Expando):
       owner_name=data['owner_name'],
       owner_url=data['owner_url'],
     )
+    # scene_data.photo_ids = data['photo_id']
+    # scene_data.owner_ids = data['owner_id']
+    # scene_data.put()
     if location:
       image.map_location = ndb.GeoPt(lat=location['lat'], lon=location['lon'])
     image.put()
-
-  def get_photo_for_scene(scene_key):
-    query = Panoramio.query().filter(Panoramio.PLscene == scene_key)
-    for result in query.fetch():
-      logging.info(result)
-
