@@ -5,6 +5,7 @@
 from datetime import datetime
 import itertools
 import logging
+import random
 import urlparse
 
 from google.appengine.ext import db
@@ -14,6 +15,7 @@ ALL_PLACES_LOCATION_KEY = 'show_all_places'
 
 import books
 import site_users
+import panoramio
 
 
 class PlacedLit(db.Model):
@@ -187,3 +189,10 @@ class PlacedLit(db.Model):
     self.delete()
     flushed = memcache.flush_all()
     logging.info('deleted %s. flushed:%s', scene_id, flushed)
+
+  def get_image_data(self):
+    images = panoramio.get_photos_for_scene(self.key())
+    if not images:
+      return None
+    image = random.choice(images)
+    return {'photo_id': image.photo_id, 'owner': image.owner_id}
