@@ -389,18 +389,31 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     button_format += 'id="<%=place_id %>">check-in</button></div>'
     return _.template(button_format)
 
-  sceneImageTemplate: ->
-    return _.template('<img class="infopic" src="<%= image_url %>">')
+  sceneUserImageTemplate: ->
+    img += '<img class="infopic" src="<%= image_url %>"'
+    return _.template(img)
+
+  sceneAPIImageTemplate: ->
+    img = '<a target="_blank" href="//www.panoramio.com/photo/<%= image_id %>">'
+    img += '<img class="infopic" src="//mw2.google.com/mw-panoramio/photos/'
+    img += 'small/<%= image_id %>.jpg"></a>'
+    return _.template(img)
 
   sceneTitleTemplate: ->
     return _.template('<span class="lead"><%= title %> by <%= author %></span>')
 
   buildInfowindow: (data, updateButton) ->
+    console.log('info:', data)
     @clearInfowindowClickEvents()
     content = '<div class="plinfowindow">'
+
+    if !!data.image_url
+      content += @sceneUserImageTemplate()(image_url: data.image_url)
+
+    if !!data.image_data
+      content += @sceneAPIImageTemplate()(image_id: data.image_data.photo_id)
+
     content += @sceneTitleTemplate()({title: data.title, author:data.author})
-    # if !!data.image_url
-    #   content += @sceneImageTemplate()(image_url: data.image_url)
     for field of @field_labels
       label = @field_labels[field]
       if data[field]

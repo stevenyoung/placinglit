@@ -638,8 +638,17 @@
       return _.template(button_format);
     };
 
-    MapCanvasView.prototype.sceneImageTemplate = function() {
-      return _.template('<img class="infopic" src="<%= image_url %>">');
+    MapCanvasView.prototype.sceneUserImageTemplate = function() {
+      img += '<img class="infopic" src="<%= image_url %>"';
+      return _.template(img);
+    };
+
+    MapCanvasView.prototype.sceneAPIImageTemplate = function() {
+      var img;
+      img = '<a target="_blank" href="//www.panoramio.com/photo/<%= image_id %>">';
+      img += '<img class="infopic" src="//mw2.google.com/mw-panoramio/photos/';
+      img += 'small/<%= image_id %>.jpg"></a>';
+      return _.template(img);
     };
 
     MapCanvasView.prototype.sceneTitleTemplate = function() {
@@ -648,8 +657,19 @@
 
     MapCanvasView.prototype.buildInfowindow = function(data, updateButton) {
       var content, field, label;
+      console.log('info:', data);
       this.clearInfowindowClickEvents();
       content = '<div class="plinfowindow">';
+      if (!!data.image_url) {
+        content += this.sceneUserImageTemplate()({
+          image_url: data.image_url
+        });
+      }
+      if (!!data.image_data) {
+        content += this.sceneAPIImageTemplate()({
+          image_id: data.image_data.photo_id
+        });
+      }
       content += this.sceneTitleTemplate()({
         title: data.title,
         author: data.author
