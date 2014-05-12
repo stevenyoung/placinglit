@@ -1,6 +1,7 @@
 """ request handler for panaramio photos """
 
 import json
+import logging
 import urllib2
 
 from google.appengine.ext import db
@@ -9,13 +10,79 @@ from google.appengine.ext import webapp
 from handlers.abstracts import baseapp
 
 from classes import panoramio
+from classes import placedlit
+
+
+def build_url_for_scene(scene_key):
+  """
+  for "set" you can use:
+    public (popular photos)
+    full (all photos)
+    user ID number
+
+  for "size" you can use:
+    original
+    medium (default value)
+    small
+    thumbnail
+    square
+    mini_square
+
+    minx, miny, maxx, maxy define the area to show photos from
+    (minimum longitude, latitude, maximum longitude and latitude)
+
+    number of photos to be displayed using "from=X" and "to=Y",
+    where Y-X is the number of photos included.
+    The value 0 represents the latest photo uploaded to Panoramio.
+    "from=0 to=20" will extract a set of the last 20 photos uploaded to
+    Panoramio, "from=20 to=40" the previous set of 20 photos and so on.
+    The maximum number of photos you can retrieve in one query is 100.
+  """
+
+  scene = placedlit.PlacedLit.get(scene_key)
+  logging.info('scene: %s %s', scene_key, scene)
+  distance = 0.005
+
+  api_url = 'http://www.panoramio.com/map/get_panoramas.php?'
+  api_url += 'set=public&from=0&to=20'
+
+  min_lng = scene.location.lon - distance
+  min_lat = scene.location.lat - distance
+  max_lng = scene.location.lon + distance
+  max_lat = scene.location.lat + distance
+
+  api_url += '&minx={}&miny={}&maxx={}&maxy={}'.format(min_lng, min_lat,
+                                                       max_lng, max_lat)
+  api_url += '&size=medium&mapfilter=true'
+  return api_url
+
+
+def get_api_data(url):
+    request = urllib2.Request(url)
+    response = json.loads(urllib2.urlopen(request).read())
+    return response
+
+
+class UpdateScenePhotoHandler(baseapp.BaseAppHandler):
+  def get(self, scene_id):
+    key = db.Key.from_path('PlacedLit', scene_id)
+    logging.info('scene %s key %s', scene_id, key)
+    panoramio_data = get_api_data(panoramio.build_url_for_scene(scene_key=key))
+    photos = panoramio_data['photos']
+    map_location = None
+    if 'map_location' in panoramio_data:
+      map_location = panoramio_data['map_location']
+    for photo in photos:
+        panoramio.Panoramio.save_images_for_scene(scene_key=key, data=photo,
+                                                  location=map_location)
 
 
 class UpdateAllPhotosHandler(baseapp.BaseAppHandler):
+  """ get panaramio photos for scenes without photos """
   def get(self):
-    query = db.GqlQuery('SELECT __key__ from PlacedLit')
-    for key in query.run(limit=10):
-      url = panoramio.build_url_for_scene(scene_key=key)
+    scene_query = db.GqlQuery('SELECT __key__ from PlacedLit')
+    for key in scene_query.run():
+      url = build_url_for_scene(scene_key=key)
       request = urllib2.Request(url)
       response = json.loads(urllib2.urlopen(request).read())
       photos = response['photos']
@@ -27,6 +94,9 @@ class UpdateAllPhotosHandler(baseapp.BaseAppHandler):
                                                   location=map_location)
 
 
-urls = [('/photos/panoramio/update_all', UpdateAllPhotosHandler)]
+urls = [
+  ('/photos/panoramio/update_all', UpdateAllPhotosHandler),
+  ('/photos/panoramio/(.*)', UpdateScenePhotoHandler)
+]
 
 app = webapp.WSGIApplication(urls, debug=True)

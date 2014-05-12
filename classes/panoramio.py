@@ -3,50 +3,6 @@ import logging
 
 from google.appengine.ext import ndb
 
-import placedlit
-
-
-def build_url_for_scene(scene_key):
-  """
-  for "set" you can use:
-    public (popular photos)
-    full (all photos)
-    user ID number
-
-  for "size" you can use:
-    original
-    medium (default value)
-    small
-    thumbnail
-    square
-    mini_square
-
-    minx, miny, maxx, maxy define the area to show photos from
-    (minimum longitude, latitude, maximum longitude and latitude)
-
-    number of photos to be displayed using "from=X" and "to=Y",
-    where Y-X is the number of photos included.
-    The value 0 represents the latest photo uploaded to Panoramio.
-    "from=0 to=20" will extract a set of the last 20 photos uploaded to
-    Panoramio, "from=20 to=40" the previous set of 20 photos and so on.
-    The maximum number of photos you can retrieve in one query is 100.
-  """
-  scene = placedlit.PlacedLit.get(scene_key)
-  distance = 0.005
-
-  api_url = 'http://www.panoramio.com/map/get_panoramas.php?'
-  api_url += 'set=public&from=0&to=20'
-
-  min_lng = scene.location.lon - distance
-  min_lat = scene.location.lat - distance
-  max_lng = scene.location.lon + distance
-  max_lat = scene.location.lat + distance
-
-  api_url += '&minx={}&miny={}&maxx={}&maxy={}'.format(min_lng, min_lat,
-                                                       max_lng, max_lat)
-  api_url += '&size=medium&mapfilter=true'
-  return api_url
-
 
 def retrieved_scenes():
   """ List of scene for which we already have photo data. """
