@@ -7,11 +7,12 @@ import ast
 import json
 import logging
 
+from datetime import datetime
+
 from google.appengine.api import users
 from google.appengine.ext import db
 # from google.appengine.ext import ndb
 from google.appengine.ext import webapp
-
 
 from handlers.abstracts import baseapp
 from classes import placedlit
@@ -71,26 +72,48 @@ class CSVImportPlacesHandler(baseapp.BaseAppHandler):
 class ImportPlacesHandler(baseapp.BaseAppHandler):
   """ import scenes from json """
   def post(self):
-    data = {'actors': self.request.get('actors'),
-            'author': self.request.get('author'),
-            'current_checkin_count': int(self.request.get('checkins')),
-            'notes': self.request.get('notes'),
-            'scene': self.request.get('scenedescription'),
-            'place_name': self.request.get('scenelocation'),
-            'title': self.request.get('title'),
-            'email': self.request.get('user_email')
-            }
-    if not data['email']:
-      data['email'] = 'info@placingliterature.com'
-    data['user'] = users.User(data['email'])
+    # data = {'actors': self.request.get('actors'),
+    #         'author': self.request.get('author'),
+    #         'current_checkin_count': int(self.request.get('checkins')),
+    #         'notes': self.request.get('notes'),
+    #         'scene': self.request.get('scenedescription'),
+    #         'place_name': self.request.get('scenelocation'),
+    #         'title': self.request.get('title'),
+    #         'email': self.request.get('user_email')
+    #         }
+    # if not data['email']:
+    #   data['email'] = 'info@placingliterature.com'
+    # data['user'] = users.User(data['email'])
     location = ast.literal_eval(self.request.get('location'))
-    data['longitude'] = location['longitude']
-    data['latitude'] = location['latitude']
-    if self.request.get('ts'):
-      data['timestamp'] = self.request.get('ts')
-    if self.request.get('ug_isbn'):
-      data['ug_isbn'] = self.request.get('ug_isbn')
-    placedlit.PlacedLit.create_from_dict(data)
+    # data['longitude'] = location['longitude']
+    # data['latitude'] = location['latitude']
+    # if self.request.get('ts'):
+    #   data['timestamp'] = self.request.get('ts')
+    # if self.request.get('ug_isbn'):
+    #   data['ug_isbn'] = self.request.get('ug_isbn')
+
+    # place = placedlit.PlacedLit(key_name=self.request.get('db_key'))
+    place = placedlit.PlacedLit(id=self.request.get('db_key'))
+    # place = placedlit.PlacedLit()
+    # place.id = self.request.get('db_key')
+    place.location = db.GeoPt('{},{}'.format(location['latitude'],
+                                             location['longitude']))
+    place.timestamp = self.request.get('ts')
+    if self.request.get('user_email'):
+      place.user_email = self.request.get('user_email')
+    else:
+      place.user_email = 'info@placingliterature.com'
+    place.google_user = users.User(place.user_email)
+    # place.image_url = None
+    # if self.request.get('image_url') is not None:
+    #   logging.info('got image: %s', self.request.get('image_url'))
+    #   place.image_url = self.request.get('image_url')
+    place.ts = datetime.strptime(self.request.get('ts'), '%Y-%m-%d %X.%f')
+    fields = ['actors', 'author', 'notes', 'scenedescription', 'scenelocation',
+              'title', 'ug_isbn']
+    for field in fields:
+      setattr(place, field, self.request.get(field))
+    place.put()
 
 
 class MissingBookSceneHandler(baseapp.BaseAppHandler):
