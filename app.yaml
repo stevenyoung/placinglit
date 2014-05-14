@@ -1,5 +1,5 @@
 application: placingliterature
-version: may2014
+version: panoramio
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -140,10 +140,6 @@ handlers:
   script: handlers.update_scenes.app
   login: admin
 
-- url: /update_titles
-  script: handlers.update_scenes.app
-  login: admin
-
 - url: /reset_isbns
   script: handlers.update_scenes.app
   login: admin
@@ -168,6 +164,14 @@ handlers:
 
 - url: /photos/panoramio/(.*)
   script: handlers.panoramio.app
+
+- url: /update_authors
+  script: handlers.may_updates.app
+  login: admin
+
+- url: /update_titles
+  script: handlers.may_updates.app
+  login: admin
 
 - url: .*
   script: handlers.home.app
