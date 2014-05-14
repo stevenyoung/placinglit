@@ -2,3 +2,8 @@ cron:
 - description: user-generated isbn update_isbns
   url: /update_isbns
   schedule: every 24 hours
+
+- description: datastore backups
+  url: /_ah/datastore_admin/backup.create?name=AllEntitiesBackup&kind=Author&kind=Book&kind=Collection&kind=PlacedLit&kind=User&kind=UserRequest&filesystem=blobstore
+  schedule: every 24 hours
+  target: ah-builtin-python-bundle
