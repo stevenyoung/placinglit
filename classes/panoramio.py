@@ -1,6 +1,4 @@
 """ Datastore model for scene photos from panoramio. """
-import logging
-
 from google.appengine.ext import ndb
 
 
@@ -11,6 +9,7 @@ def retrieved_scenes():
 
 
 def get_photos_for_scene(scene_key):
+  """ get photos associated with a scene """
   query_key = ndb.Key.from_old_key(scene_key)
   query = Panoramio.query().filter(Panoramio.PLscene == query_key)
   if len(query.fetch()) < 1:
