@@ -85,6 +85,4 @@ app = webapp.WSGIApplication([
   ('/update_books', UpdateBooksHandler),
   ('/update_isbns', UpdateUserISBNHandler),
   ('/reset_isbns', ResetUserISBNHandler),
-  ('/update_titles', UpdateTitlesHandler),
-  ('/update_authors', UpdateAuthorsHandler)
-  ])
+])
