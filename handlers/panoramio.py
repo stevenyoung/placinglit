@@ -66,7 +66,6 @@ def get_api_data(url):
 class UpdateScenePhotoHandler(baseapp.BaseAppHandler):
   def get(self, scene_id):
     key = db.Key.from_path('PlacedLit', scene_id)
-    logging.info('scene %s key %s', scene_id, key)
     panoramio_data = get_api_data(panoramio.build_url_for_scene(scene_key=key))
     photos = panoramio_data['photos']
     map_location = None
