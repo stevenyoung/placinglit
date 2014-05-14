@@ -639,7 +639,8 @@
     };
 
     MapCanvasView.prototype.sceneUserImageTemplate = function() {
-      img += '<img class="infopic" src="<%= image_url %>"';
+      var img;
+      img = '<img class="infopic" src="<%= image_url %>">';
       return _.template(img);
     };
 
@@ -657,7 +658,6 @@
 
     MapCanvasView.prototype.buildInfowindow = function(data, updateButton) {
       var content, field, label;
-      console.log('info:', data);
       this.clearInfowindowClickEvents();
       content = '<div class="plinfowindow">';
       if (!!data.image_url) {

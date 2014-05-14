@@ -390,7 +390,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     return _.template(button_format)
 
   sceneUserImageTemplate: ->
-    img += '<img class="infopic" src="<%= image_url %>"'
+    img = '<img class="infopic" src="<%= image_url %>">'
     return _.template(img)
 
   sceneAPIImageTemplate: ->
@@ -403,7 +403,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     return _.template('<span class="lead"><%= title %> by <%= author %></span>')
 
   buildInfowindow: (data, updateButton) ->
-    console.log('info:', data)
     @clearInfowindowClickEvents()
     content = '<div class="plinfowindow">'
 
