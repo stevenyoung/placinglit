@@ -64,6 +64,7 @@ class AddPlacesHandler(baseapp.BaseAppHandler):
   def post_place_to_twitter(self, scene_key=None):
     """ update twitter status """
     import os
+    # do not post to twitter if running on dev
     if not os.environ['SERVER_SOFTWARE'].startswith('Dev'):
       scene_data = placedlit.PlacedLit.get_place_from_id(scene_key.id())
       from handlers import twitter

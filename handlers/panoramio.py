@@ -39,22 +39,27 @@ def build_url_for_scene(scene_key):
     The maximum number of photos you can retrieve in one query is 100.
   """
 
-  scene = placedlit.PlacedLit.get(scene_key)
-  logging.info('scene: %s %s', scene_key, scene)
   distance = 0.005
+  count = 10
 
   api_url = 'http://www.panoramio.com/map/get_panoramas.php?'
-  api_url += 'set=public&from=0&to=20'
+  api_url += 'set=public&from=0&to={}'.format(count)
 
-  min_lng = scene.location.lon - distance
-  min_lat = scene.location.lat - distance
-  max_lng = scene.location.lon + distance
-  max_lat = scene.location.lat + distance
+  scene = placedlit.PlacedLit.get(scene_key)
+  if scene:
+    logging.info('scene: %s %s', scene_key, scene)
 
-  api_url += '&minx={}&miny={}&maxx={}&maxy={}'.format(min_lng, min_lat,
-                                                       max_lng, max_lat)
-  api_url += '&size=medium&mapfilter=true'
-  return api_url
+    min_lng = scene.location.lon - distance
+    min_lat = scene.location.lat - distance
+    max_lng = scene.location.lon + distance
+    max_lat = scene.location.lat + distance
+
+    api_url += '&minx={}&miny={}&maxx={}&maxy={}'.format(min_lng, min_lat,
+                                                         max_lng, max_lat)
+    api_url += '&size=medium&mapfilter=true'
+    return api_url
+  else:
+    return None
 
 
 def get_api_data(url):
@@ -66,32 +71,42 @@ def get_api_data(url):
 class UpdateScenePhotoHandler(baseapp.BaseAppHandler):
   def get(self, scene_id):
     key = db.Key.from_path('PlacedLit', scene_id)
-    panoramio_data = get_api_data(panoramio.build_url_for_scene(scene_key=key))
-    photos = panoramio_data['photos']
-    map_location = None
-    if 'map_location' in panoramio_data:
-      map_location = panoramio_data['map_location']
-    for photo in photos:
-        panoramio.Panoramio.save_images_for_scene(scene_key=key, data=photo,
-                                                  location=map_location)
+    panoramio_data = get_api_data(build_url_for_scene(scene_key=key))
+    if panoramio_data:
+      photos = panoramio_data['photos']
+      map_location = None
+      if 'map_location' in panoramio_data:
+        map_location = panoramio_data['map_location']
+      for photo in photos:
+          panoramio.Panoramio.save_images_for_scene(scene_key=key, data=photo,
+                                                    location=map_location)
 
 
 class UpdateAllPhotosHandler(baseapp.BaseAppHandler):
   """ get panaramio photos for scenes without photos """
   def get(self):
+    photo_query = panoramio.Panoramio.query()
+    finished_scenes = ([result.PLscene for result in photo_query.fetch()])
     scene_query = db.GqlQuery('SELECT __key__ from PlacedLit')
+    scene_count = 0
+    photo_count = 0
+    logging.info('finished %s',
+                 len(finished_scenes))
     for key in scene_query.run():
-      url = build_url_for_scene(scene_key=key)
-      request = urllib2.Request(url)
-      response = json.loads(urllib2.urlopen(request).read())
-      photos = response['photos']
-      map_location = None
-      if 'map_location' in response:
-        map_location = response['map_location']
-      for photo in photos:
-        panoramio.Panoramio.save_images_for_scene(scene_key=key, data=photo,
-                                                  location=map_location)
-
+      if key not in finished_scenes:
+        url = build_url_for_scene(scene_key=key)
+        request = urllib2.Request(url)
+        response = json.loads(urllib2.urlopen(request).read())
+        photos = response['photos']
+        map_location = None
+        if 'map_location' in response:
+          map_location = response['map_location']
+        for photo in photos:
+          photo_count += 1
+          panoramio.Panoramio.save_images_for_scene(scene_key=key, data=photo,
+                                                    location=map_location)
+        scene_count += 1
+        logging.info('%s pix for %s scenes', photo_count, scene_count)
 
 urls = [
   ('/photos/panoramio/update_all', UpdateAllPhotosHandler),
