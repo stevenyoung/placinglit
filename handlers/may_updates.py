@@ -604,7 +604,7 @@ class UpdateAuthorsHandler(webapp.RequestHandler):
     for key, value in author_names.iteritems():
       try:
         query = db.GqlQuery('SELECT __key__ from PlacedLit WHERE author = :1',
-                            key)
+                            unicode(key))
         for scene_key in query.run():
           self.response.out.write('{}:{}<br/>'.format(key, value))
           place = placedlit.PlacedLit.get(scene_key)
@@ -631,6 +631,7 @@ class UpdateTitlesHandler(webapp.RequestHandler):
           # updated_scenes.append(place)
           place.put()
       except UnicodeError:
+        raise
         self.response.out.write('{}:{}<br/>'.format(key, value))
         # logging.info('%s:%s', key, value)
 
