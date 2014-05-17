@@ -333,6 +333,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
           error: (model, xhr, options) =>
             console.log('add place error', model, xhr, options)
           success: (model, response, options) =>
+            console.log('added', model, response, options)
             @updateInfowindowWithMessage(@userInfowindow, response, true)
       )
     else

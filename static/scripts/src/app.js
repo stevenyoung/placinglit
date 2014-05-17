@@ -559,6 +559,7 @@
           })(this),
           success: (function(_this) {
             return function(model, response, options) {
+              console.log('added', model, response, options);
               return _this.updateInfowindowWithMessage(_this.userInfowindow, response, true);
             };
           })(this)
