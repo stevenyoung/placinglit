@@ -82,7 +82,8 @@ require([
   'controllers/home',
 
   'services/pagination',
-  'services/scenes'
+  'services/scenes',
+  'services/geolocation'
   ],
   function (angular, app, domReady) {
     'use strict';

@@ -82,5 +82,13 @@ define(['angularMocks',
           // expect(scope.eventDetected).toEqual('click');
         });
       });
+      describe('#using scene markers', function() {
+        it('should listen for a marker click', function() {
+          // expect(scope.events.marker.enable).toContain('click');
+        });
+      });
+      describe('#using scene popup window', function() {
+
+      })
     });
   });

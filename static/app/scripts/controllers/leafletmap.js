@@ -1,9 +1,12 @@
-define(['controllers/controllers', 'leafletmaps', 'services/scenes'],//, 'googlemaps'],
+define(['controllers/controllers',
+        'leafletmaps',
+        'services/scenes',
+        'services/geolocation'],//, 'googlemaps'],
   function(controllers, leafletEvents) {
     controllers.controller('MapCtrl',
-      function ($scope, leafletEvents, $location, SceneService) {
+      function ($scope, leafletEvents, $location, SceneService,
+                GeolocationService) {
       $scope.eventDetected = 'Nothing'
-
       angular.extend($scope, {
        defaults: {
           tileLayer: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -17,9 +20,11 @@ define(['controllers/controllers', 'leafletmaps', 'services/scenes'],//, 'google
       });
       angular.extend($scope, {
         center: {
-          lat: 37.7567412947,
-          lng: -122.406781912,
-          zoom: 4
+          lat: 31.653381399664,
+          lng: -39.375,
+          // lat: 0,
+          // lng: 0,
+          zoom: 2
         }
       });
       angular.extend($scope, {
@@ -32,17 +37,9 @@ define(['controllers/controllers', 'leafletmaps', 'services/scenes'],//, 'google
               layerOptions: {
                 subdomains: ['a', 'b', 'c'],
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                // continuousWorld: true
               }
-            }
+            },
           },
-          overlays: {
-            scene: {
-              name: 'Scenes',
-              type: 'markercluster',
-              visible: false
-            }
-          }
         }
       });
       angular.extend($scope, {
@@ -116,19 +113,28 @@ define(['controllers/controllers', 'leafletmaps', 'services/scenes'],//, 'google
         }
       }
 
+
+      function getUserLocation() {
+        GeolocationService.getLocation().then(function(data){
+          $scope.coords = {lat:data.coords.latitude, long:data.coords.longitude};
+        });
+      }
+
       function showAllScenes() {
         SceneService.getAllScenes().then(function(scenes) {
           $scope.scenes = scenes;
           angular.forEach(scenes, function(scene) {
             $scope.markers.push({
-              group: 'center',
+              group: 'cluster',
               lat: scene.latitude,
               lng: scene.longitude,
               message: scene.title + ' by ' + scene.author,
               draggable: false
             });
           });
-
+          $scope.$on('leafletDirectiveMarker.click', function(e, args) {
+            console.log('scene marker click', e, args);
+          })
         });
       }
 
@@ -136,6 +142,7 @@ define(['controllers/controllers', 'leafletmaps', 'services/scenes'],//, 'google
       $scope.$on('leafletDirectiveMap.click', dropMarkerOnMapClick);
       $scope.$on('leafletDirectiveMap.load', showEventsViaBinding);
       $scope.$on('leafletDirectiveMap.load', showAllScenes);
+      $scope.$on('leafletDirectiveMap.load', getUserLocation);
     });
   }
 );
