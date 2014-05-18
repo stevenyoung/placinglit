@@ -48,8 +48,6 @@ def build_url_for_scene(scene_key):
 
   scene = placedlit.PlacedLit.get(scene_key)
   if scene:
-    logging.info('scene: %s %s', scene_key, scene)
-
     min_lng = scene.location.lon - distance
     min_lat = scene.location.lat - distance
     max_lng = scene.location.lon + distance
@@ -70,6 +68,7 @@ def get_api_data(url):
 
 
 class UpdateScenePhotoHandler(baseapp.BaseAppHandler):
+  """ add photo for a scene """
   def get(self, scene_id):
     key = db.Key.from_path('PlacedLit', scene_id)
     panoramio_data = get_api_data(build_url_for_scene(scene_key=key))
@@ -90,24 +89,40 @@ class UpdateAllPhotosHandler(baseapp.BaseAppHandler):
     scene_count = 0
     photo_count = 0
     for key in scene_query.run():
-      if not photo_index.has_panoramio_photos(key.id()):
+      if photo_index.has_panoramio_photos(key.id()):
+        logging.info('%s already has photos', key.id())
+      else:
         url = build_url_for_scene(scene_key=key)
-        request = urllib2.Request(url)
-        response = json.loads(urllib2.urlopen(request).read())
+        response = get_api_data(url)
         photos = response['photos']
         map_location = None
         if 'map_location' in response:
           map_location = response['map_location']
-        for photo in photos:
-          photo_count += 1
-          panoramio.Panoramio.save_images_for_scene(scene_key=key, data=photo,
-                                                    location=map_location)
-        scene_count += 1
-        logging.info('%s pix for %s scenes', photo_count, scene_count)
+          for photo in photos:
+            photo_count += 1
+            panoramio.Panoramio.save_images_for_scene(scene_key=key, data=photo,
+                                                      location=map_location)
+      scene_count += 1
+    logging.info('added %s pix for %s scenes', photo_count, scene_count)
 
-urls = [
+
+class EmptyPhotoIndexHandler(webapp.RequestHandler):
+  """ empty photo index """
+  def get(self):
+    photo_index.empty_panoramio_index()
+
+
+class PhotoIndexInfoHandler(webapp.RequestHandler):
+  """ index info """
+  def get(self):
+    photo_index.index_info()
+
+
+handler_urls = [
   ('/photos/panoramio/update_all', UpdateAllPhotosHandler),
-  ('/photos/panoramio/(.*)', UpdateScenePhotoHandler)
+  ('/photos/panoramio/empty', EmptyPhotoIndexHandler),
+  ('/photos/panoramio/info', PhotoIndexInfoHandler),
+  ('/photos/panoramio/(.*)', UpdateScenePhotoHandler),
 ]
 
-app = webapp.WSGIApplication(urls, debug=True)
+app = webapp.WSGIApplication(handler_urls, debug=True)
