@@ -67,7 +67,7 @@ handlers:
   login: admin
 
 - url: /places/add
-  script: handlers.places.app
+  script: handlers.new_scene.app
 
 - url: /places/show
   script: handlers.places.app
