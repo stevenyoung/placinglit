@@ -1,6 +1,8 @@
 """ Datastore model for scene photos from panoramio. """
 from google.appengine.ext import ndb
 
+import photo_index
+
 
 def retrieved_scenes():
   """ List of scene for which we already have photo data. """
@@ -49,7 +51,10 @@ class Panoramio(ndb.Expando):
     # location = data['map_location']
     # count = data['count']
     query_key = ndb.Key.from_old_key(scene_key)
-    # scene_data = PanoramioScenes(scenes=query_key)
+    scene_id = scene_key.id()
+    photo_index.add_scene_to_panoramio_index(scene_id,
+                                             data['photo_id'],
+                                             data['owner_id'])
     image = cls(
       id=data['photo_id'],
       PLscene=query_key,
@@ -63,9 +68,6 @@ class Panoramio(ndb.Expando):
       owner_name=data['owner_name'],
       owner_url=data['owner_url'],
     )
-    # scene_data.photo_ids = data['photo_id']
-    # scene_data.owner_ids = data['owner_id']
-    # scene_data.put()
     if location:
       image.map_location = ndb.GeoPt(lat=location['lat'], lon=location['lon'])
     image.put()

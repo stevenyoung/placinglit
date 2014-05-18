@@ -10,6 +10,7 @@ from google.appengine.ext import webapp
 from handlers.abstracts import baseapp
 
 from classes import panoramio
+from classes import photo_index
 from classes import placedlit
 
 
@@ -85,15 +86,11 @@ class UpdateScenePhotoHandler(baseapp.BaseAppHandler):
 class UpdateAllPhotosHandler(baseapp.BaseAppHandler):
   """ get panaramio photos for scenes without photos """
   def get(self):
-    photo_query = panoramio.Panoramio.query()
-    finished_scenes = ([result.PLscene for result in photo_query.fetch()])
     scene_query = db.GqlQuery('SELECT __key__ from PlacedLit')
     scene_count = 0
     photo_count = 0
-    logging.info('finished %s',
-                 len(finished_scenes))
     for key in scene_query.run():
-      if key not in finished_scenes:
+      if not photo_index.has_panoramio_photos(key.id()):
         url = build_url_for_scene(scene_key=key)
         request = urllib2.Request(url)
         response = json.loads(urllib2.urlopen(request).read())
