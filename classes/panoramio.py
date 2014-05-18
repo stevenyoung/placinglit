@@ -1,7 +1,66 @@
 """ Datastore model for scene photos from panoramio. """
+# pylint: disable=W0403, R0904, C0103
+
+import json
+import urllib2
+
 from google.appengine.ext import ndb
 
 import photo_index
+import placedlit
+
+
+def build_url_for_scene(scene_key):
+  """
+  for "set" you can use:
+    public (popular photos)
+    full (all photos)
+    user ID number
+
+  for "size" you can use:
+    original
+    medium (default value)
+    small
+    thumbnail
+    square
+    mini_square
+
+    minx, miny, maxx, maxy define the area to show photos from
+    (minimum longitude, latitude, maximum longitude and latitude)
+
+    number of photos to be displayed using "from=X" and "to=Y",
+    where Y-X is the number of photos included.
+    The value 0 represents the latest photo uploaded to Panoramio.
+    "from=0 to=20" will extract a set of the last 20 photos uploaded to
+    Panoramio, "from=20 to=40" the previous set of 20 photos and so on.
+    The maximum number of photos you can retrieve in one query is 100.
+  """
+
+  distance = 0.005
+  count = 10
+
+  api_url = 'http://www.panoramio.com/map/get_panoramas.php?'
+  api_url += 'set=public&from=0&to={}'.format(count)
+
+  scene = placedlit.PlacedLit.get(scene_key)
+  if scene:
+    min_lng = scene.location.lon - distance
+    min_lat = scene.location.lat - distance
+    max_lng = scene.location.lon + distance
+    max_lat = scene.location.lat + distance
+
+    api_url += '&minx={}&miny={}&maxx={}&maxy={}'.format(min_lng, min_lat,
+                                                         max_lng, max_lat)
+    api_url += '&size=medium&mapfilter=true'
+    return api_url
+  else:
+    return None
+
+
+def get_api_data(url):
+    request = urllib2.Request(url)
+    response = json.loads(urllib2.urlopen(request).read())
+    return response
 
 
 def retrieved_scenes():
@@ -18,16 +77,6 @@ def get_photos_for_scene(scene_key):
     return None
   photos = [result for result in query.fetch()]
   return photos
-
-
-class PanoramioScenes(ndb.Model):
-  """
-    scenes: list of scenes that have photos
-    photo_ids: list of photo_ids
-  """
-  scenes = ndb.KeyProperty(repeated=True)
-  photo_ids = ndb.IntegerProperty(repeated=True)
-  owner_ids = ndb.IntegerProperty(repeated=True)
 
 
 class Panoramio(ndb.Expando):

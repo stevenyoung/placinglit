@@ -1,5 +1,10 @@
-import json
+""" request handler for new scenes """
+# pylint: disable=W0403, R0904, C0103
 
+import json
+import logging
+
+from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.api import users
 
@@ -8,6 +13,7 @@ from handlers.abstracts import baseapp
 from classes import user_request
 from classes import placedlit
 from classes import site_users
+from classes import panoramio
 
 
 def post_place_to_twitter(scene_key=None):
@@ -28,6 +34,20 @@ def post_place_to_twitter(scene_key=None):
     t.statuses.update(status=update)
 
 
+def add_panoramio_photo_to_new_scene(scene_id=None):
+  key = db.Key.from_path('PlacedLit', scene_id)
+  url = panoramio.build_url_for_scene(scene_key=key)
+  panoramio_data = panoramio.get_api_data(url)
+  if panoramio_data:
+    photos = panoramio_data['photos']
+    map_location = None
+    if 'map_location' in panoramio_data:
+      map_location = panoramio_data['map_location']
+    for photo in photos:
+        panoramio.Panoramio.save_images_for_scene(scene_key=key, data=photo,
+                                                  location=map_location)
+
+
 class AddPlacesHandler(baseapp.BaseAppHandler):
   """ adding a place from user interaction """
   def post(self):
@@ -41,6 +61,7 @@ class AddPlacesHandler(baseapp.BaseAppHandler):
     user_request.UserRequest.create(ua=agent, user_loc=place_key)
     self.send_response()
     post_place_to_twitter(scene_key=place_key)
+    add_panoramio_photo_to_new_scene(place_key.id())
 
   def add_scene_to_user(self, scene_key=None):
     """ update a users added and vistited scenes """
@@ -66,7 +87,6 @@ class AddPlacesHandler(baseapp.BaseAppHandler):
       'geopt': {'lat': scene_data['latitude'], 'lng': scene_data['longitude']}
     }
     self.output_json(response_json)
-
 
 
 urls = [
