@@ -1,35 +1,36 @@
+""" Index of panoramio photos """
 import logging
 
 from google.appengine.api import search
 
-photo_index = search.Index(name='PanoramioIndex')
+PHOTO_INDEX = search.Index(name='PanoramioIndex')
 
 
 def add_scene_to_panoramio_index(scene_id, photo_id, owner_id):
-  scene_id = str(scene_id)
-  owner_id = str(owner_id)
+  """ keep track of which scenes we have photo data for """
   document = search.Document(
-    # doc_id=photo_id,
     fields=[
-      search.AtomField(name='scene_id', value=scene_id),
-      search.AtomField(name='owner_id', value=owner_id),
+      search.AtomField(name='owner_id', value=str(owner_id)),
+      search.AtomField(name='photo_id', value=str(photo_id)),
+      search.AtomField(name='scene_id', value=str(scene_id))
     ])
   try:
-    photo_index.put(document)
+    PHOTO_INDEX.put(document)
   except search.Error:
     logging.info('put failed')
     raise
 
 
 def has_panoramio_photos(scene_id):
+  """ does this scene have photos? """
   query_string = 'scene_id = {}'.format(scene_id)
-  return photo_index.search(query_string).number_found > 0
+  return PHOTO_INDEX.search(query_string).number_found > 0
 
 
 def empty_panoramio_index():
   """Delete all the docs in the given index."""
   logging.info('empty photo index')
-  doc_index = photo_index
+  doc_index = PHOTO_INDEX
 
   # looping because get_range by default returns up to 100 documents at a time
   while True:
@@ -43,6 +44,7 @@ def empty_panoramio_index():
 
 
 def index_info():
+  """ tell me something good """
   logging.info('photo_index info')
   indices = list()
   for index in search.get_indexes(fetch_schema=True):

@@ -164,6 +164,7 @@ handlers:
 
 - url: /photos/panoramio/(.*)
   script: handlers.panoramio.app
+  login: admin
 
 - url: /update_authors
   script: handlers.may_updates.app
@@ -172,6 +173,10 @@ handlers:
 - url: /update_titles
   script: handlers.may_updates.app
   login: admin
+
+- url: /scene_index/(.*)
+  script: handlers.scene_index.app
+
 
 - url: .*
   script: handlers.home.app

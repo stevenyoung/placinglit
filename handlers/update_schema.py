@@ -9,9 +9,11 @@ from google.appengine.ext import ndb
 from classes import placedlit
 from classes import books
 from classes import site_users
-# from classes import authors
 
-BATCH_SIZE = 100  # ideal batch size may vary based on entity size.
+from classes import panoramio
+from classes import photo_index
+
+BATCH_SIZE = 50  # ideal batch size may vary based on entity size.
 TITLE_ISBNS = dict()
 
 
@@ -91,5 +93,57 @@ def update_book_data(cursor=None, num_updated=0):
       len(to_put), num_updated)
     deferred.defer(
       update_book_data, cursor=query.cursor(), num_updated=num_updated)
+  else:
+    logging.debug('UpdateSchema complete with %d updates!', num_updated)
+
+
+def update_photo_data(cursor=None, num_updated=0):
+  """ Set ISBNdb reference for places """
+  query = placedlit.PlacedLit.all()
+  if cursor:
+    query.with_cursor(cursor)
+
+  to_put = []
+  for place in query.fetch(limit=BATCH_SIZE):
+    scene_id = place.key().id()
+    if photo_index.has_panoramio_photos(scene_id):
+        logging.info('%s already has photos', scene_id)
+    else:
+      api_url = panoramio.build_url_for_scene(place.key())
+      api_response = panoramio.get_api_data(api_url)
+      if 'map_location' in api_response:
+        map_location = api_response['map_location']
+        for photo in api_response['photos']:
+          image = panoramio.Panoramio()
+          image.id = photo['photo_id']
+          image.PLscene = ndb.Key.from_old_key(place.key())
+          image.photo_id = photo['photo_id']
+          image.photo_title = photo['photo_title']
+          image.photo_url = photo['photo_url']
+          image.photo_file_url = photo['photo_file_url']
+          image.width = photo['width']
+          image.height = photo['height']
+          image.owner_id = photo['owner_id']
+          image.owner_name = photo['owner_name']
+          image.owner_url = photo['owner_url']
+          image.map_location = ndb.GeoPt(lat=map_location['lat'],
+                                         lon=map_location['lon'])
+
+          num_updated += 1
+          to_put.append(image)
+
+  if to_put:
+    ndb.put_multi(to_put)
+    for image in to_put:
+      db_key = image.PLscene.to_old_key()
+      photo_index.add_scene_to_panoramio_index(db_key.id(),
+                                               image.id,
+                                               image.owner_id)
+    num_updated += len(to_put)
+    logging.debug(
+      'Put %d entities to Datastore for a total of %d',
+      len(to_put), num_updated)
+    deferred.defer(
+      update_photo_data, cursor=query.cursor(), num_updated=num_updated)
   else:
     logging.debug('UpdateSchema complete with %d updates!', num_updated)

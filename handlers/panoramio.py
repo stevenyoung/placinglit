@@ -4,12 +4,21 @@
 import logging
 
 from google.appengine.ext import db
+from google.appengine.ext import deferred
 from google.appengine.ext import webapp
 
 from handlers.abstracts import baseapp
 
 from classes import panoramio
 from classes import photo_index
+
+import update_schema
+
+
+class UpdatePhotosBatchHandler(webapp.RequestHandler):
+  def get(self):
+    deferred.defer(update_schema.update_photo_data)
+    self.response.out.write('Schema migration successfully initiated.')
 
 
 class UpdateAllPhotosHandler(baseapp.BaseAppHandler):
@@ -47,7 +56,8 @@ class PhotoIndexInfoHandler(webapp.RequestHandler):
 
 
 handler_urls = [
-  ('/photos/panoramio/update_all', UpdateAllPhotosHandler),
+  # ('/photos/panoramio/update_all', UpdateAllPhotosHandler),
+  ('/photos/panoramio/update_all', UpdatePhotosBatchHandler),
   ('/photos/panoramio/empty', EmptyPhotoIndexHandler),
   ('/photos/panoramio/info', PhotoIndexInfoHandler)
 ]
