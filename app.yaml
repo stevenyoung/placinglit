@@ -174,8 +174,8 @@ handlers:
   script: handlers.may_updates.app
   login: admin
 
-- url: /scene_index/(.*)
-  script: handlers.scene_index.app
+- url: /location_index/(.*)
+  script: handlers.location_index.app
 
 
 - url: .*
