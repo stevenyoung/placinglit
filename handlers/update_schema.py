@@ -98,7 +98,13 @@ def update_book_data(cursor=None, num_updated=0):
 
 
 def update_photo_data(cursor=None, num_updated=0):
-  """ Set ISBNdb reference for places """
+  """
+  Get photos for scenes lacking photos.
+  This is done by getting all scenes in a cursored query, iterating through the
+  scenes and querying the Panoramio API with the scene's location data.
+  This will create a number of Panoramio entities for each scene as well as a
+  search.Document for the photo_index for each photo.
+  """
   query = placedlit.PlacedLit.all()
   if cursor:
     query.with_cursor(cursor)
