@@ -63,9 +63,11 @@ def location_query(lat, lon):
   index = search.Index(name="SceneIndex")
   query_format = 'distance(scene_location, geopoint({}, {})) < {}'
   query_string = query_format.format(lat, lon, distance)
+  query_options = search.QueryOptions(limit=200)
+  query = search.Query(query_string=query_string, options=query_options)
   logging.info('location query %s', query_string)
   try:
-    results = index.search(query_string)
+    results = index.search(query)
     total_matches = results.number_found
     number_of_docs_returned = len(results.results)
     logging.info('%s locations found', results.number_found)
