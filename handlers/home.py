@@ -11,8 +11,10 @@ import logging
 
 from google.appengine.ext import webapp
 
-from handlers.abstracts import baseapp
 from classes import placedlit
+
+from handlers.abstracts import baseapp
+
 import blogposts
 
 
