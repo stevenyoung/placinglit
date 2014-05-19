@@ -16,6 +16,11 @@ ALL_PLACES_LOCATION_KEY = 'show_all_places'
 import books
 import site_users
 import panoramio
+import scene_index
+
+
+def get_nearby_places(lat, lon):
+  return scene_index.location_query(lat, lon)
 
 
 class PlacedLit(db.Model):

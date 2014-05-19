@@ -59,7 +59,7 @@ def delete_all_in_index(index_name):
 
 
 def location_query(lat, lon):
-  distance = 1000000
+  distance = 6000000
   index = search.Index(name="SceneIndex")
   query_format = 'distance(scene_location, geopoint({}, {})) < {}'
   query_string = query_format.format(lat, lon, distance)

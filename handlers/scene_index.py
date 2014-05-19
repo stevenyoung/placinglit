@@ -21,7 +21,13 @@ class IndexInfoHandler(webapp.RequestHandler):
     self.response.write(indices)
 
 
+class EmptySceneIndexHandler(webapp.RequestHandler):
+  def get(self):
+    scene_index.delete_all_in_index('SceneIndex')
+
+
 class GetPlacesHandler(baseapp.BaseAppHandler):
+  """ get places nearby """
   def get(self, query=None):
     lat = self.request.get('lat')
     lon = self.request.get('lon')
@@ -37,11 +43,6 @@ class GetPlacesHandler(baseapp.BaseAppHandler):
           place_dict[field.name] = field.value
       loc_json.append(place_dict)
     self.output_json(loc_json)
-
-
-class EmptySceneIndexHandler(webapp.RequestHandler):
-  def get(self):
-    scene_index.delete_all_in_index('SceneIndex')
 
 
 urls = [
