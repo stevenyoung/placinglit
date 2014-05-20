@@ -1,4 +1,6 @@
-""" Index of panoramio photos """
+""" Datastore model for panoramio photo location documents """
+# pylint: disable=W0403, R0904, C0103
+
 import logging
 
 from google.appengine.api import search
@@ -19,6 +21,23 @@ def add_scene_to_panoramio_index(scene_id, photo_id, owner_id):
   except search.Error:
     logging.info('put failed')
     raise
+
+
+def get_panoramio_photo_id(scene_id):
+  query_string = 'scene_id = {}'.format(scene_id)
+  logging.info('get photo id %s', query_string)
+  query_options = search.QueryOptions(limit=1)
+  query = search.Query(query_string, options=query_options)
+  try:
+    results = PHOTO_INDEX.search(query)
+    total_matches = results.number_found
+    number_of_docs_returned = len(results.results)
+    logging.info('%s images found', results.number_found)
+    logging.info('%s total matches found', total_matches)
+    logging.info('%s docs returned', number_of_docs_returned)
+    return results.results
+  except search.Error:
+    logging.exception('get panoramio photo search failed')
 
 
 def has_panoramio_photos(scene_id):
