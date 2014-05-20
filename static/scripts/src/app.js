@@ -160,7 +160,7 @@
       }
     };
 
-    MapCanvasView.prototype.initialize = function(scenes) {
+    MapCanvasView.prototype.initialize = function() {
       if (this.collection == null) {
         this.collection = new PlacingLit.Collections.Locations();
       }
@@ -187,8 +187,29 @@
           return _this.handleMapClick(event);
         };
       })(this));
+      google.maps.event.addListener(this.gmap, 'bounds_changed', (function(_this) {
+        return function(event) {
+          return _this.handleViewportChange(event);
+        };
+      })(this));
+      google.maps.event.addListener(this.gmap, 'center_changed', (function(_this) {
+        return function(event) {
+          return _this.handleViewportChange(event);
+        };
+      })(this));
+      google.maps.event.addListener(this.gmap, 'zoom_changed', (function(_this) {
+        return function(event) {
+          return _this.handleViewportChange(event);
+        };
+      })(this));
       return this.gmap;
     };
+
+    MapCanvasView.prototype.handleViewportChange = function(event) {
+      return console.log('viewport updated', this.gmap.getCenter());
+    };
+
+    MapCanvasView.prototype.updateCollection = function() {};
 
     MapCanvasView.prototype.marker = function() {
       if (this.placeInfowindow != null) {
@@ -891,8 +912,9 @@
       li = document.createElement('li');
       li.id = place.get('db_key');
       link = document.createElement('a');
-      link.href = '/map/' + place.get('latitude') + ',' + place.get('longitude');
-      link.href += '?key=' + place.get('db_key');
+      link.href = '/map?lat=' + place.get('latitude');
+      link.href += '&lon=' + place.get('longitude');
+      link.href += '&key=' + place.get('db_key');
       title = place.get('title');
       link.textContent = title;
       if (place.get('location') != null) {

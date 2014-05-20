@@ -88,7 +88,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     panControlOptions:
       position: google.maps.ControlPosition.TOP_LEFT
 
-  initialize: (scenes) ->
+  initialize: () ->
     @collection ?= new PlacingLit.Collections.Locations()
     @listenTo @collection, 'all', @render
     @collection.fetch()
@@ -102,10 +102,30 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     return @gmap if @gmap?
     map_elem = document.getElementById(@$el.selector)
     @gmap = new google.maps.Map(map_elem, @mapOptions)
+    # @mapCenter = @gmap.getCenter()
     google.maps.event.addListener(@gmap, 'click', (event) =>
       @handleMapClick(event)
     )
+    google.maps.event.addListener(@gmap, 'bounds_changed', (event) =>
+      @handleViewportChange(event)
+    )
+    google.maps.event.addListener(@gmap, 'center_changed', (event) =>
+      @handleViewportChange(event)
+    )
+    google.maps.event.addListener(@gmap, 'zoom_changed', (event) =>
+      @handleViewportChange(event)
+    )
     return @gmap
+
+
+  handleViewportChange: (event) ->
+    console.log('viewport updated', @gmap.getCenter())
+
+
+  updateCollection: () ->
+
+
+
 
   marker: ->
     @placeInfowindow.close() if @placeInfowindow?
@@ -541,8 +561,10 @@ class PlacingLit.Views.RecentPlaces extends Backbone.View
     li = document.createElement('li')
     li.id = place.get('db_key')
     link = document.createElement('a')
-    link.href = '/map/' + place.get('latitude') + ',' + place.get('longitude')
-    link.href += '?key=' + place.get('db_key')
+    # link.href = '/map/' + place.get('latitude') + ',' + place.get('longitude')
+    link.href = '/map?lat=' + place.get('latitude')
+    link.href +=  '&lon=' + place.get('longitude')
+    link.href += '&key=' + place.get('db_key')
     title = place.get('title')
     link.textContent = title
     if place.get('location')?
