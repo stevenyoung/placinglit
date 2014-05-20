@@ -19,9 +19,12 @@ import panoramio
 import location_index
 
 
-def get_nearby_places(lat, lon):
+def get_nearby_places(lat, lon, sorted=False):
   """ run location query """
-  return location_index.location_query(lat, lon)
+  if sorted:
+    return location_index.sorted_location_query(lat, lon)
+  else:
+    return location_index.location_query(lat, lon)
 
 
 class PlacedLit(db.Model):
