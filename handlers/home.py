@@ -1,11 +1,5 @@
-"""
-handlers.home description.
-
-Created on Nov 19, 2012
-"""
-
-__author__ = 'steven@eyeballschool.com (Steven)'
-
+""" home page request handlers """
+# pylint
 import json
 import logging
 
@@ -43,17 +37,22 @@ class FundingHandler(baseapp.BaseAppHandler):
 
 
 class MapHandler(baseapp.BaseAppHandler):
+  # def get(self, location=None, key=None):
   def get(self, location=None, key=None):
     key = self.request.get('key')
+    lat = self.request.get('lat')
+    lng = self.request.get('lon')  # FIXIT- Pick one: 'lon', 'lng'
     template_values = self.basic_template_content()
     template_values['title'] = 'Map'
-    if location:
-      if ',' in location:
-        (lat, lng) = location.replace('/', '').split(',')
-        template_values['center'] = '{lat:%s,lng:%s}' % (lat, lng)
-        # use scene index to select places
-        places = placedlit.get_nearby_places(lat, lng)
-        loc_json = []
+    if lat and lng:
+    # if location:
+      # if ',' in location:
+        # (lat, lng) = location.replace('/', '').split(',')
+      template_values['center'] = '{lat:%s,lng:%s}' % (lat, lng)
+      # use scene index to select places
+      places = placedlit.get_nearby_places(lat, lng, sorted=True)
+      loc_json = []
+      if places:
         for doc in places:
           place_dict = {'db_key': doc.doc_id}
           for field in doc.fields:
@@ -63,8 +62,10 @@ class MapHandler(baseapp.BaseAppHandler):
             else:
               place_dict[field.name] = field.value
           loc_json.append(place_dict)
-        if loc_json:
-          template_values['scenes'] = json.dumps(loc_json)
+          logging.info('%s:%s:%s:%s', doc.doc_id, place_dict['title'],
+                       place_dict['latitude'], place_dict['longitude'])
+      if loc_json:
+        template_values['scenes'] = json.dumps(loc_json)
     if key:
       template_values['key'] = key
     # FIXIT: pass all scenes to template for map markers
