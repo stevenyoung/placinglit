@@ -51,19 +51,7 @@ class MapHandler(baseapp.BaseAppHandler):
       template_values['center'] = '{lat:%s,lng:%s}' % (lat, lng)
       # use scene index to select places
       places = placedlit.get_nearby_places(lat, lng, sorted=True)
-      loc_json = []
-      if places:
-        for doc in places:
-          place_dict = {'db_key': doc.doc_id}
-          for field in doc.fields:
-            if field.name == 'scene_location':
-              place_dict['latitude'] = field.value.latitude
-              place_dict['longitude'] = field.value.longitude
-            else:
-              place_dict[field.name] = field.value
-          loc_json.append(place_dict)
-          logging.info('%s:%s:%s:%s', doc.doc_id, place_dict['title'],
-                       place_dict['latitude'], place_dict['longitude'])
+      loc_json = self.format_location_index_results(places)
       if loc_json:
         template_values['scenes'] = json.dumps(loc_json)
     if key:
