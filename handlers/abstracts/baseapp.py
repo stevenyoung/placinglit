@@ -99,3 +99,16 @@ class BaseAppHandler(webapp.RequestHandler):
       'location': capwords(place.scenelocation),
       'db_key': key.id()}
     return export
+
+  def format_location_index_results(self, results):
+    location = list()
+    for doc in results:
+      place_dict = {'db_key': doc.doc_id}
+      for field in doc.fields:
+        if field.name == 'scene_location':
+          place_dict['latitude'] = field.value.latitude
+          place_dict['longitude'] = field.value.longitude
+        elif field.name != 'date_added':
+          place_dict[field.name] = field.value
+      location.append(place_dict)
+    return location
