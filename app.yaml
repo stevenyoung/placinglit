@@ -177,6 +177,11 @@ handlers:
 - url: /location_index/(.*)
   script: handlers.location_index.app
 
+- url: /places/near
+  script: handlers.location_index.app
+
+- url: /places/latest
+  script: handlers.location_index.app
 
 - url: .*
   script: handlers.home.app
