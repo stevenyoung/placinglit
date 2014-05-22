@@ -80,7 +80,7 @@
       return NewestLocationsByDate.__super__.constructor.apply(this, arguments);
     }
 
-    NewestLocationsByDate.prototype.model = PlacingLit.Models.Location;
+    NewestLocationsByDate.prototype.model = PlacingLit.Models.Locationpo;
 
     NewestLocationsByDate.prototype.url = '/places/allbydate';
 
@@ -187,29 +187,50 @@
           return _this.handleMapClick(event);
         };
       })(this));
-      google.maps.event.addListener(this.gmap, 'bounds_changed', (function(_this) {
-        return function(event) {
-          return _this.handleViewportChange(event);
-        };
-      })(this));
-      google.maps.event.addListener(this.gmap, 'center_changed', (function(_this) {
-        return function(event) {
-          return _this.handleViewportChange(event);
-        };
-      })(this));
-      google.maps.event.addListener(this.gmap, 'zoom_changed', (function(_this) {
-        return function(event) {
-          return _this.handleViewportChange(event);
-        };
-      })(this));
       return this.gmap;
     };
 
     MapCanvasView.prototype.handleViewportChange = function(event) {
-      return console.log('viewport updated', this.gmap.getCenter());
+      var center, centerGeoPt, zoom;
+      center = this.gmap.getCenter();
+      centerGeoPt = {
+        lat: center[Object.keys(center)[0]],
+        lon: center[Object.keys(center)[1]]
+      };
+      zoom = this.gmap.getZoom();
+      return console.log('center_changed', center, centerGeoPt, zoom);
     };
 
-    MapCanvasView.prototype.updateCollection = function() {};
+    MapCanvasView.prototype.updateCollection = function(event) {
+      var center, centerGeoPt, collection_url, query, update, zoom;
+      center = this.gmap.getCenter();
+      centerGeoPt = {
+        lat: center[Object.keys(center)[0]],
+        lng: center[Object.keys(center)[1]]
+      };
+      zoom = this.gmap.getZoom();
+      console.log('pan/zoom idle', centerGeoPt, zoom);
+      if (window.CENTER != null) {
+        console.log(window.CENTER);
+        console.log(Math.abs(window.CENTER.lat - centerGeoPt.lat));
+        console.log(Math.abs(window.CENTER.lng - centerGeoPt.lng));
+      } else {
+        window.CENTER = centerGeoPt;
+      }
+      query = '?lat=' + centerGeoPt.lat + '&lon=' + centerGeoPt.lng;
+      collection_url = '/places/near' + query;
+      update = false;
+      if (Math.abs(window.CENTER.lat - centerGeoPt.lat) > 5) {
+        update = true;
+      }
+      if (Math.abs(window.CENTER.lng - centerGeoPt.lng) > 5) {
+        update = true;
+      }
+      if (update) {
+        window.CENTER = centerGeoPt;
+        return this.collection.reset(collection_url);
+      }
+    };
 
     MapCanvasView.prototype.marker = function() {
       if (this.placeInfowindow != null) {
@@ -436,7 +457,8 @@
         windowOptions = {
           position: mapcenter
         };
-        return this.openInfowindowForPlace(PLACEKEY, windowOptions);
+        this.openInfowindowForPlace(PLACEKEY, windowOptions);
+        return window.PLACEKEY = null;
       }
     };
 
@@ -874,7 +896,7 @@
     RecentPlaces.prototype.initialize = function() {
       this.collection = new PlacingLit.Collections.Locations;
       this.collection.fetch({
-        url: '/places/recent'
+        url: '/places/latest'
       });
       return this.listenTo(this.collection, 'all', this.render);
     };
@@ -912,9 +934,8 @@
       li = document.createElement('li');
       li.id = place.get('db_key');
       link = document.createElement('a');
-      link.href = '/map?lat=' + place.get('latitude');
-      link.href += '&lon=' + place.get('longitude');
-      link.href += '&key=' + place.get('db_key');
+      link.href = '/map/' + place.get('latitude') + ',' + place.get('longitude');
+      link.href += '?key=' + place.get('db_key');
       title = place.get('title');
       link.textContent = title;
       if (place.get('location') != null) {

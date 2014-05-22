@@ -32,7 +32,7 @@ class PlacingLit.Collections.NewestLocations extends Backbone.Collection
 
 
 class PlacingLit.Collections.NewestLocationsByDate extends Backbone.Collection
-  model: PlacingLit.Models.Location
+  model: PlacingLit.Models.Locationpo
 
   url :'/places/allbydate'
 
@@ -106,26 +106,54 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     google.maps.event.addListener(@gmap, 'click', (event) =>
       @handleMapClick(event)
     )
-    google.maps.event.addListener(@gmap, 'bounds_changed', (event) =>
-      @handleViewportChange(event)
-    )
-    google.maps.event.addListener(@gmap, 'center_changed', (event) =>
-      @handleViewportChange(event)
-    )
-    google.maps.event.addListener(@gmap, 'zoom_changed', (event) =>
-      @handleViewportChange(event)
-    )
+    # google.maps.event.addListener(@gmap, 'bounds_changed', (event) =>
+    #   @handleViewportChange(event)
+    # )
+    # google.maps.event.addListener(@gmap, 'center_changed', (event) =>
+    #   @handleViewportChange(event)
+    # )
+    # google.maps.event.addListener(@gmap, 'zoom_changed', (event) =>
+    #   @handleViewportChange(event)
+    # )
+    # google.maps.event.addListener(@gmap, 'idle', (event) =>
+    #   @updateCollection(event)
+    # )
     return @gmap
 
-
   handleViewportChange: (event) ->
-    console.log('viewport updated', @gmap.getCenter())
+    center = @gmap.getCenter()
+    centerGeoPt =
+      lat: center[Object.keys(center)[0]]
+      lon: center[Object.keys(center)[1]]
+    zoom = @gmap.getZoom()
+    console.log('center_changed', center, centerGeoPt, zoom)
 
+  updateCollection: (event) ->
+    center = @gmap.getCenter()
+    centerGeoPt =
+      lat: center[Object.keys(center)[0]]
+      lng: center[Object.keys(center)[1]]
+    zoom = @gmap.getZoom()
+    console.log('pan/zoom idle', centerGeoPt, zoom)
+    if window.CENTER?
+      console.log(window.CENTER)
+      console.log(Math.abs(window.CENTER.lat - centerGeoPt.lat))
+      console.log(Math.abs(window.CENTER.lng - centerGeoPt.lng))
+    else
+      window.CENTER = centerGeoPt
 
-  updateCollection: () ->
+    query = '?lat=' + centerGeoPt.lat + '&lon=' + centerGeoPt.lng
+    collection_url = '/places/near' + query
+    update = false
+    if Math.abs(window.CENTER.lat - centerGeoPt.lat) > 5
+      update = true
+    if Math.abs(window.CENTER.lng - centerGeoPt.lng) > 5
+      update = true
 
-
-
+    # window.CENTER = centerGeoPt
+    if update
+      window.CENTER = centerGeoPt
+      @collection.reset(collection_url)
 
   marker: ->
     @placeInfowindow.close() if @placeInfowindow?
@@ -239,6 +267,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       @gmap.setCenter(mapcenter)
       if (window.location.pathname.indexOf('collections') != -1)
         @gmap.setZoom(@settings.zoomLevel.wide)
+
       else
         @gmap.setZoom(@settings.zoomLevel.default)
     else
@@ -251,6 +280,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     if PLACEKEY?
       windowOptions = position: mapcenter
       @openInfowindowForPlace(PLACEKEY, windowOptions)
+      window.PLACEKEY = null
 
   handleMapClick: (event) ->
     @setUserMapMarker(@gmap, event.latLng)
@@ -542,7 +572,8 @@ class PlacingLit.Views.RecentPlaces extends Backbone.View
 
   initialize: () ->
     @collection = new PlacingLit.Collections.Locations
-    @collection.fetch(url: '/places/recent')
+    # @collection.fetch(url: '/places/recent')
+    @collection.fetch(url: '/places/latest')
     @listenTo @collection, 'all', @render
 
   render: (event) ->
@@ -561,10 +592,11 @@ class PlacingLit.Views.RecentPlaces extends Backbone.View
     li = document.createElement('li')
     li.id = place.get('db_key')
     link = document.createElement('a')
-    # link.href = '/map/' + place.get('latitude') + ',' + place.get('longitude')
-    link.href = '/map?lat=' + place.get('latitude')
-    link.href +=  '&lon=' + place.get('longitude')
-    link.href += '&key=' + place.get('db_key')
+    link.href = '/map/' + place.get('latitude') + ',' + place.get('longitude')
+    link.href += '?key=' + place.get('db_key')
+    # link.href = '/map?lat=' + place.get('latitude')
+    # link.href +=  '&lon=' + place.get('longitude')
+    # link.href += '&key=' + place.get('db_key')
     title = place.get('title')
     link.textContent = title
     if place.get('location')?

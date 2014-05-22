@@ -44,16 +44,15 @@ class MapHandler(baseapp.BaseAppHandler):
     lng = self.request.get('lon')  # FIXIT- Pick one: 'lon', 'lng'
     template_values = self.basic_template_content()
     template_values['title'] = 'Map'
-    if lat and lng:
-    # if location:
-      # if ',' in location:
-        # (lat, lng) = location.replace('/', '').split(',')
+    # if lat and lng:
+    if location and  ',' in location:
+      (lat, lng) = location.replace('/', '').split(',')
       template_values['center'] = '{lat:%s,lng:%s}' % (lat, lng)
       # use scene index to select places
-      places = placedlit.get_nearby_places(lat, lng, sorted=True)
-      loc_json = self.format_location_index_results(places)
-      if loc_json:
-        template_values['scenes'] = json.dumps(loc_json)
+      # places = placedlit.get_nearby_places(lat, lng, sorted=True)
+      # loc_json = self.format_location_index_results(places)
+      # if loc_json:
+      #   template_values['scenes'] = json.dumps(loc_json)
     if key:
       template_values['key'] = key
     # FIXIT: pass all scenes to template for map markers
