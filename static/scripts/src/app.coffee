@@ -267,7 +267,8 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       @gmap.setCenter(mapcenter)
       if (window.location.pathname.indexOf('collections') != -1)
         @gmap.setZoom(@settings.zoomLevel.wide)
-
+      else if (window.location.pathname.indexOf('author') != -1)
+        @gmap.setZoom(@settings.zoomLevel.wide)
       else
         @gmap.setZoom(@settings.zoomLevel.default)
     else

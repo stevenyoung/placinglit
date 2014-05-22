@@ -441,6 +441,8 @@
         this.gmap.setCenter(mapcenter);
         if (window.location.pathname.indexOf('collections') !== -1) {
           this.gmap.setZoom(this.settings.zoomLevel.wide);
+        } else if (window.location.pathname.indexOf('author') !== -1) {
+          this.gmap.setZoom(this.settings.zoomLevel.wide);
         } else {
           this.gmap.setZoom(this.settings.zoomLevel["default"]);
         }
