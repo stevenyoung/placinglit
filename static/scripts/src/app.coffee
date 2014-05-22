@@ -666,6 +666,35 @@ class PlacingLit.Views.Allscenes extends Backbone.View
 
 
 class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
+  #TODO - FIX THIS MONSTROSITY!!!
+  filteredViewGeocoderSearch: () ->
+    console.log('geocoder search')
+    address = document.getElementById('gcf').value
+    console.log('address')
+    if address
+      geocoder = new google.maps.Geocoder()
+      geocoder.geocode {'address':address}, (results, status) =>
+        if (status == google.maps.GeocoderStatus.OK)
+          position = results[0].geometry.location
+          lat = position[Object.keys(position)[0]]
+          lng = position[Object.keys(position)[1]]
+          mapUrl = window.location.protocol + '//' + window.location.host
+          mapUrl += '/map/' + lat + ',' + lng
+          # mapUrl += '/map?lat=' + lat + '&lon=' + lng
+          window.location = mapUrl
+        else
+          alert("geocode was not successful: " + status)
+
+  attachFilteredViewSearchHandler: ->
+    document.getElementById('gcf').addEventListener('keydown',
+      (event) =>
+        if (event.which == 13 || event.keyCode == 13)
+          event.preventDefault()
+          @filteredViewGeocoderSearch()
+      )
+    document.getElementById('search').addEventListener 'click', (event) =>
+      @filteredViewGeocoderSearch()
+
   initialize: (scenes) ->
     @collection ?= new PlacingLit.Collections.Locations()
     @listenTo @collection, 'all', @render
@@ -673,3 +702,4 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
 
   render: (event) ->
     @mapWithMarkers()
+    @attachFilteredViewSearchHandler()

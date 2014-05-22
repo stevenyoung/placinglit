@@ -1059,6 +1059,49 @@
       return MapFilterView.__super__.constructor.apply(this, arguments);
     }
 
+    MapFilterView.prototype.filteredViewGeocoderSearch = function() {
+      var address, geocoder;
+      console.log('geocoder search');
+      address = document.getElementById('gcf').value;
+      console.log('address');
+      if (address) {
+        geocoder = new google.maps.Geocoder();
+        return geocoder.geocode({
+          'address': address
+        }, (function(_this) {
+          return function(results, status) {
+            var lat, lng, mapUrl, position;
+            if (status === google.maps.GeocoderStatus.OK) {
+              position = results[0].geometry.location;
+              lat = position[Object.keys(position)[0]];
+              lng = position[Object.keys(position)[1]];
+              mapUrl = window.location.protocol + '//' + window.location.host;
+              mapUrl += '/map/' + lat + ',' + lng;
+              return window.location = mapUrl;
+            } else {
+              return alert("geocode was not successful: " + status);
+            }
+          };
+        })(this));
+      }
+    };
+
+    MapFilterView.prototype.attachFilteredViewSearchHandler = function() {
+      document.getElementById('gcf').addEventListener('keydown', (function(_this) {
+        return function(event) {
+          if (event.which === 13 || event.keyCode === 13) {
+            event.preventDefault();
+            return _this.filteredViewGeocoderSearch();
+          }
+        };
+      })(this));
+      return document.getElementById('search').addEventListener('click', (function(_this) {
+        return function(event) {
+          return _this.filteredViewGeocoderSearch();
+        };
+      })(this));
+    };
+
     MapFilterView.prototype.initialize = function(scenes) {
       if (this.collection == null) {
         this.collection = new PlacingLit.Collections.Locations();
@@ -1068,7 +1111,8 @@
     };
 
     MapFilterView.prototype.render = function(event) {
-      return this.mapWithMarkers();
+      this.mapWithMarkers();
+      return this.attachFilteredViewSearchHandler();
     };
 
     return MapFilterView;
