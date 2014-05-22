@@ -5,7 +5,6 @@ $(document).on('ready', ->
     address = gcfield.value
     geocoder = new google.maps.Geocoder()
     geocoder.geocode {'address':address}, (results, status) =>
-      console.log('geocode', results, status)
       if (status == google.maps.GeocoderStatus.OK)
         position = results[0].geometry.location
         lat = position[Object.keys(position)[0]]
