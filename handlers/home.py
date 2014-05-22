@@ -2,6 +2,7 @@
 # pylint
 import json
 import logging
+import random
 
 from google.appengine.ext import webapp
 
@@ -45,7 +46,7 @@ class MapHandler(baseapp.BaseAppHandler):
     template_values = self.basic_template_content()
     template_values['title'] = 'Map'
     # if lat and lng:
-    if location and  ',' in location:
+    if location and ',' in location:
       (lat, lng) = location.replace('/', '').split(',')
       template_values['center'] = '{lat:%s,lng:%s}' % (lat, lng)
       # use scene index to select places
@@ -120,7 +121,14 @@ class MapFilterHandler(baseapp.BaseAppHandler):
     places = placedlit.PlacedLit.places_by_query(field, term)
     loc_json = []
     if places:
-      loc_json = [self.export_place_fields(place) for place in places]
+      if field == 'author':
+        loc_json = self.format_location_index_results(places)
+      else:
+        loc_json = [self.export_place_fields(place) for place in places]
+    if loc_json:
+      some_scene = random.choice(loc_json)
+      template_values['center'] = '{{lat:{}, lng:{}}}'.format(
+        some_scene['latitude'], some_scene['longitude'])
     template_values['scenes'] = json.dumps(loc_json)
     self.render_template('map.tmpl', template_values)
 
