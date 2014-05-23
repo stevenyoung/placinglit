@@ -14,6 +14,7 @@ from classes import user_request
 from classes import placedlit
 from classes import site_users
 from classes import panoramio
+from classes import location_index
 
 
 def post_place_to_twitter(scene_key=None):
@@ -48,6 +49,10 @@ def add_panoramio_photo_to_new_scene(scene_id=None):
                                                   location=map_location)
 
 
+def add_scene_to_location_index(scene_id=None):
+  location_index.update_scene_index(scene_id)
+
+
 class AddPlacesHandler(baseapp.BaseAppHandler):
   """ adding a place from user interaction """
   def post(self):
@@ -62,6 +67,7 @@ class AddPlacesHandler(baseapp.BaseAppHandler):
     self.send_response()
     post_place_to_twitter(scene_key=place_key)
     add_panoramio_photo_to_new_scene(place_key.id())
+    add_scene_to_location_index(place_key.id())
 
   def add_scene_to_user(self, scene_key=None):
     """ update a users added and vistited scenes """
