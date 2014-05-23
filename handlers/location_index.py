@@ -63,7 +63,7 @@ class NewestPlacesHandler(baseapp.BaseAppHandler):
 
 
 urls = [
-  ('/location_index/update_scenes', UpdateSceneLocationIndexHandler),
+  ('/location_index/update_scenes', BatchUpdateLocationsIndexHandler),
   ('/location_index/info', IndexInfoHandler),
   ('/location_index/empty', EmptySceneLocationIndexHandler),
   ('/places/near(/?.*)', NearbyPlacesHandler),
