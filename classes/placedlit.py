@@ -158,14 +158,17 @@ class PlacedLit(db.Model):
   @classmethod
   def places_by_query(cls, field=None, term=None):
     """ Get scenes matching an arbitrary query. """
-    try:
-      place_query = cls.all().filter(field, term)
-      places = place_query.run()
-    except UnicodeDecodeError:
-      logging.error('decode error! places by query: %s %s %s', field,
-                    term, type(term))
-      place_query = cls.all().filter(field, term.decode('iso-8859-1'))
-      places = place_query.run()
+    if field == 'author':
+      places = location_index.author_query(author_name=term)
+    else:
+      try:
+        place_query = cls.all().filter(field, term)
+        places = place_query.run()
+      except UnicodeDecodeError:
+        logging.error('decode error! places by query: %s %s %s', field,
+                      term, type(term))
+        place_query = cls.all().filter(field, term.decode('iso-8859-1'))
+        places = place_query.run()
     return places
 
   @classmethod
