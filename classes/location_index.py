@@ -16,6 +16,14 @@ sort_distance = default_distance + 1
 result_limit = 500
 
 
+def author_query(author_name=None):
+  query_string = 'author = \"{}\"'.format(author_name)
+  doc_index = search.Index(name=INDEX_NAME)
+  query = search.Query(query_string=query_string)
+  results = doc_index.search(query)
+  return results
+
+
 def get_index_info():
   indices = list()
   for index in search.get_indexes(fetch_schema=True):
@@ -29,8 +37,8 @@ def get_index_info():
   return indices
 
 
-def delete_all_in_index(index_name=INDEX_NAME):
-  """Delete all the docs in the given index."""
+def empty_scene_index(index_name=INDEX_NAME):
+  """ Delete all the docs in this index. Docs are deleted in batches of 100. """
   doc_index = search.Index(name=index_name)
 
   # looping because get_range by default returns up to 100 documents at a time
