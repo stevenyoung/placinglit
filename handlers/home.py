@@ -49,13 +49,16 @@ class MapHandler(baseapp.BaseAppHandler):
     if location and ',' in location:
       (lat, lng) = location.replace('/', '').split(',')
       template_values['center'] = '{lat:%s,lng:%s}' % (lat, lng)
+    elif lat and lng:
       # use scene index to select places
-      # places = placedlit.get_nearby_places(lat, lng, sorted=True)
-      # loc_json = self.format_location_index_results(places)
-      # if loc_json:
-      #   template_values['scenes'] = json.dumps(loc_json)
+      places = placedlit.get_nearby_places(lat, lng, sorted=True)
+      loc_json = self.format_location_index_results(places)
+      if loc_json:
+        template_values['scenes'] = json.dumps(loc_json)
+        template_values['center'] = '{lat:%s,lng:%s}' % (lat, lng)
     if key:
       template_values['key'] = key
+
     # FIXIT: pass all scenes to template for map markers
     # places = placedlit.PlacedLit.get_all_places()
     # loc_json = [self.export_place_fields(place) for place in places]
