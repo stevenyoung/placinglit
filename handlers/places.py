@@ -94,12 +94,11 @@ class InfoHandler(baseapp.BaseAppHandler):
         place_info['isbn'] = place.ug_isbn
       elif place.book_data:
         place_info['isbn'] = place.book_data.isbn13
-      if place.image_url:
+      if place.get_image_data():
+        place_info['image_data'] = place.get_image_data()
+      elif place.image_url:
         if is_image_url(place.image_url):
           place_info['image_url'] = place.image_url.replace('http://', '//')
-      else:
-        # place_info['image_url'] = place.get_image_url()
-        place_info['image_data'] = place.get_image_data()
       self.output_json(place_info)
 
 
