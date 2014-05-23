@@ -692,9 +692,11 @@
 
     MapCanvasView.prototype.sceneAPIImageTemplate = function() {
       var img;
-      img = '<a target="_blank" href="//www.panoramio.com/photo/<%= image_id %>">';
+      img = '<div class="panoimg">';
+      img += '<a target="_blank" href="//www.panoramio.com/photo/<%= image_id %>">';
       img += '<img class="infopic" src="//mw2.google.com/mw-panoramio/photos/';
       img += 'small/<%= image_id %>.jpg"></a>';
+      img += '</div>';
       return _.template(img);
     };
 

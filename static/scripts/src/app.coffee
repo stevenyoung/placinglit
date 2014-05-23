@@ -446,9 +446,12 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     return _.template(img)
 
   sceneAPIImageTemplate: ->
-    img = '<a target="_blank" href="//www.panoramio.com/photo/<%= image_id %>">'
+    img = '<div class="panoimg">'
+    img += '<a target="_blank" href="//www.panoramio.com/photo/<%= image_id %>">'
     img += '<img class="infopic" src="//mw2.google.com/mw-panoramio/photos/'
     img += 'small/<%= image_id %>.jpg"></a>'
+    # img += '<br><a href="//www.panoramio.com"><img src="/img/pano-tos.png"></a>'
+    img += '</div>'
     return _.template(img)
 
   sceneTitleTemplate: ->

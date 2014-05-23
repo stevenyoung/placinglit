@@ -346,9 +346,12 @@ body { height: $full; margin:0%; padding:0; }
   height: 16px;
   padding-right: 10px;
 }
-.infopic {
-  height: 80px;
+.panoimg {
   float: left;
   padding-right: 5px;
   padding-bottom: 5px;
+  text-align: center;
+}
+.panoimg .infopic {
+  height: 80px;
 }
