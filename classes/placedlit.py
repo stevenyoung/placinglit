@@ -27,6 +27,11 @@ def get_nearby_places(lat, lon, sorted=False):
     return location_index.location_query(lat, lon)
 
 
+def get_search_doc_for_scene(scene_id):
+  """ get fod from index by id """
+  return location_index.get_document_for_scene(scene_id)
+
+
 class PlacedLit(db.Model):
   """ Scenes represented. """
   title = db.StringProperty()
