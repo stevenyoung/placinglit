@@ -14,6 +14,7 @@ INDEX_NAME = 'LocationIndex'
 default_distance = 804500  # 500 miles, ~ map zoom level 6
 sort_distance = default_distance + 1
 result_limit = 500
+BATCH_SIZE = 200
 
 
 def author_query(author_name=None):
@@ -109,7 +110,11 @@ def sorted_location_query(lat, lon, distance=default_distance):
   return _do_proximity_query(query)
 
 
-def search_document_for_scene(scene_id):
+def get_document_for_scene(scene_id):
+  return search.Index(name=INDEX_NAME).get(scene_id)
+
+
+def create_document_for_scene(scene_id):
   scene_data = placedlit.PlacedLit.get_place_from_id(scene_id)
   geopoint = search.GeoPoint(scene_data.location.lat, scene_data.location.lon)
   return search.Document(
@@ -124,7 +129,7 @@ def search_document_for_scene(scene_id):
 
 
 def update_scene_index(scene_id):
-  document = search_document_for_scene(scene_id)
+  document = create_document_for_scene(scene_id)
   try:
     index = search.Index(name=INDEX_NAME)
     index.put(document)
@@ -138,10 +143,10 @@ def batch_update_all_scenes(cursor=None, num_updated=0):
   if cursor:
     query.with_cursor(cursor)
 
-  to_put = []
-  for place in query.fetch(limit=200):
+  to_put = list()
+  for place in query.fetch(limit=BATCH_SIZE):
     scene_id = place.key().id()
-    document = search_document_for_scene(scene_id)
+    document = create_document_for_scene(scene_id)
     to_put.append(document)
 
   if to_put:
