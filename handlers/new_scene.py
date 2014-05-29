@@ -2,7 +2,6 @@
 # pylint: disable=W0403, R0904, C0103
 
 import json
-import logging
 
 from google.appengine.ext import db
 from google.appengine.ext import webapp
@@ -15,6 +14,7 @@ from classes import placedlit
 from classes import site_users
 from classes import panoramio
 from classes import location_index
+from classes import status_updates
 
 
 def post_place_to_twitter(scene_key=None):
@@ -23,16 +23,18 @@ def post_place_to_twitter(scene_key=None):
   # do not post to twitter if running on dev
   if not os.environ['SERVER_SOFTWARE'].startswith('Dev'):
     scene_data = placedlit.PlacedLit.get_place_from_id(scene_key.id())
-    from handlers import twitter
-    from handlers.abstracts import keys
-    oauth = twitter.OAuth(token=keys.tw_keys['OAUTH_TOKEN'],
-                          token_secret=keys.tw_keys['OAUTH_TOKEN_SECRET'],
-                          consumer_key=keys.tw_keys['CONSUMER_KEY'],
-                          consumer_secret=keys.tw_keys['CONSUMER_SECRET'])
-    t = twitter.Twitter(auth=oauth)
     status = "{} by {} was mapped on PlacingLiterature.com. #literaryroadtrip"
     update = status.format(scene_data.title, scene_data.author)
-    t.statuses.update(status=update)
+    if not status_updates.matches_last_twitter_status_update(update):
+      from handlers import twitter
+      from handlers.abstracts import keys
+      oauth = twitter.OAuth(token=keys.tw_keys['OAUTH_TOKEN'],
+                            token_secret=keys.tw_keys['OAUTH_TOKEN_SECRET'],
+                            consumer_key=keys.tw_keys['CONSUMER_KEY'],
+                            consumer_secret=keys.tw_keys['CONSUMER_SECRET'])
+      t = twitter.Twitter(auth=oauth)
+      t.statuses.update(status=update)
+      status_updates.set_last_twitter_status_update(update)
 
 
 def add_panoramio_photo_to_new_scene(scene_id=None):
