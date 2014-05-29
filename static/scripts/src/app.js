@@ -80,7 +80,7 @@
       return NewestLocationsByDate.__super__.constructor.apply(this, arguments);
     }
 
-    NewestLocationsByDate.prototype.model = PlacingLit.Models.Locationpo;
+    NewestLocationsByDate.prototype.model = PlacingLit.Models.Location;
 
     NewestLocationsByDate.prototype.url = '/places/allbydate';
 
@@ -160,7 +160,7 @@
       }
     };
 
-    MapCanvasView.prototype.initialize = function() {
+    MapCanvasView.prototype.initialize = function(scenes) {
       if (this.collection == null) {
         this.collection = new PlacingLit.Collections.Locations();
       }
@@ -441,8 +441,6 @@
         this.gmap.setCenter(mapcenter);
         if (window.location.pathname.indexOf('collections') !== -1) {
           this.gmap.setZoom(this.settings.zoomLevel.wide);
-        } else if (window.location.pathname.indexOf('author') !== -1) {
-          this.gmap.setZoom(this.settings.zoomLevel.wide);
         } else {
           this.gmap.setZoom(this.settings.zoomLevel["default"]);
         }
@@ -459,8 +457,7 @@
         windowOptions = {
           position: mapcenter
         };
-        this.openInfowindowForPlace(PLACEKEY, windowOptions);
-        return window.PLACEKEY = null;
+        return this.openInfowindowForPlace(PLACEKEY, windowOptions);
       }
     };
 
@@ -604,7 +601,6 @@
           })(this),
           success: (function(_this) {
             return function(model, response, options) {
-              console.log('added', model, response, options);
               return _this.updateInfowindowWithMessage(_this.userInfowindow, response, true);
             };
           })(this)
@@ -692,11 +688,9 @@
 
     MapCanvasView.prototype.sceneAPIImageTemplate = function() {
       var img;
-      img = '<div class="panoimg">';
-      img += '<a target="_blank" href="//www.panoramio.com/photo/<%= image_id %>">';
+      img = '<a target="_blank" href="//www.panoramio.com/photo/<%= image_id %>">';
       img += '<img class="infopic" src="//mw2.google.com/mw-panoramio/photos/';
       img += 'small/<%= image_id %>.jpg"></a>';
-      img += '</div>';
       return _.template(img);
     };
 
@@ -708,16 +702,6 @@
       var content, field, label;
       this.clearInfowindowClickEvents();
       content = '<div class="plinfowindow">';
-      if (!!data.image_url) {
-        content += this.sceneUserImageTemplate()({
-          image_url: data.image_url
-        });
-      }
-      if (!!data.image_data) {
-        content += this.sceneAPIImageTemplate()({
-          image_id: data.image_data.photo_id
-        });
-      }
       content += this.sceneTitleTemplate()({
         title: data.title,
         author: data.author
@@ -900,7 +884,7 @@
     RecentPlaces.prototype.initialize = function() {
       this.collection = new PlacingLit.Collections.Locations;
       this.collection.fetch({
-        url: '/places/latest'
+        url: '/places/recent'
       });
       return this.listenTo(this.collection, 'all', this.render);
     };

@@ -32,7 +32,7 @@ class PlacingLit.Collections.NewestLocations extends Backbone.Collection
 
 
 class PlacingLit.Collections.NewestLocationsByDate extends Backbone.Collection
-  model: PlacingLit.Models.Locationpo
+  model: PlacingLit.Models.Location
 
   url :'/places/allbydate'
 
@@ -88,7 +88,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     panControlOptions:
       position: google.maps.ControlPosition.TOP_LEFT
 
-  initialize: () ->
+  initialize: (scenes) ->
     @collection ?= new PlacingLit.Collections.Locations()
     @listenTo @collection, 'all', @render
     @collection.fetch()
@@ -267,8 +267,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       @gmap.setCenter(mapcenter)
       if (window.location.pathname.indexOf('collections') != -1)
         @gmap.setZoom(@settings.zoomLevel.wide)
-      else if (window.location.pathname.indexOf('author') != -1)
-        @gmap.setZoom(@settings.zoomLevel.wide)
       else
         @gmap.setZoom(@settings.zoomLevel.default)
     else
@@ -281,7 +279,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     if PLACEKEY?
       windowOptions = position: mapcenter
       @openInfowindowForPlace(PLACEKEY, windowOptions)
-      window.PLACEKEY = null
 
   handleMapClick: (event) ->
     @setUserMapMarker(@gmap, event.latLng)
@@ -384,7 +381,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
           error: (model, xhr, options) =>
             console.log('add place error', model, xhr, options)
           success: (model, response, options) =>
-            console.log('added', model, response, options)
             @updateInfowindowWithMessage(@userInfowindow, response, true)
       )
     else
@@ -446,12 +442,9 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     return _.template(img)
 
   sceneAPIImageTemplate: ->
-    img = '<div class="panoimg">'
-    img += '<a target="_blank" href="//www.panoramio.com/photo/<%= image_id %>">'
+    img = '<a target="_blank" href="//www.panoramio.com/photo/<%= image_id %>">'
     img += '<img class="infopic" src="//mw2.google.com/mw-panoramio/photos/'
     img += 'small/<%= image_id %>.jpg"></a>'
-    # img += '<br><a href="//www.panoramio.com"><img src="/img/pano-tos.png"></a>'
-    img += '</div>'
     return _.template(img)
 
   sceneTitleTemplate: ->
@@ -461,11 +454,11 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @clearInfowindowClickEvents()
     content = '<div class="plinfowindow">'
 
-    if !!data.image_url
-      content += @sceneUserImageTemplate()(image_url: data.image_url)
+    # if !!data.image_url
+    #   content += @sceneUserImageTemplate()(image_url: data.image_url)
 
-    if !!data.image_data
-      content += @sceneAPIImageTemplate()(image_id: data.image_data.photo_id)
+    # if !!data.image_data
+    #   content += @sceneAPIImageTemplate()(image_id: data.image_data.photo_id)
 
     content += @sceneTitleTemplate()({title: data.title, author:data.author})
     for field of @field_labels
@@ -576,8 +569,7 @@ class PlacingLit.Views.RecentPlaces extends Backbone.View
 
   initialize: () ->
     @collection = new PlacingLit.Collections.Locations
-    # @collection.fetch(url: '/places/recent')
-    @collection.fetch(url: '/places/latest')
+    @collection.fetch(url: '/places/recent')
     @listenTo @collection, 'all', @render
 
   render: (event) ->
@@ -598,9 +590,6 @@ class PlacingLit.Views.RecentPlaces extends Backbone.View
     link = document.createElement('a')
     link.href = '/map/' + place.get('latitude') + ',' + place.get('longitude')
     link.href += '?key=' + place.get('db_key')
-    # link.href = '/map?lat=' + place.get('latitude')
-    # link.href +=  '&lon=' + place.get('longitude')
-    # link.href += '&key=' + place.get('db_key')
     title = place.get('title')
     link.textContent = title
     if place.get('location')?
