@@ -38,31 +38,37 @@ class FundingHandler(baseapp.BaseAppHandler):
 
 
 class MapHandler(baseapp.BaseAppHandler):
-  # def get(self, location=None, key=None):
   def get(self, location=None, key=None):
+    template_values = self.basic_template_content()
+    template_values['title'] = 'Map'
     key = self.request.get('key')
     lat = self.request.get('lat')
     lng = self.request.get('lon')  # FIXIT- Pick one: 'lon', 'lng'
-    template_values = self.basic_template_content()
-    template_values['title'] = 'Map'
-    # if lat and lng:
-    if location and ',' in location:
+    if lat and lng:  # lat, lng with no scene
+      template_values['center'] = '{lat:%s,lng:%s}' % (lat, lng)
+      # places = placedlit.get_nearby_places(lat, lng, sorted=True)
+      # if places:
+      #   loc_json = self.format_location_index_results(places)
+      #   template_values['scenes'] = json.dumps(loc_json)
+    # elif key:  # scene but no lat, lng
+    #   template_values['key'] = key
+    #   scene_doc = placedlit.get_search_doc_for_scene(key)
+    #   scene = self.format_location_index_doc(scene_doc)
+    #   lat = scene['latitude']
+    #   lng = scene['longitude']
+    #   template_values['center'] = '{lat:%s,lng:%s}' % (lat, lng)
+    #   places = placedlit.get_nearby_places(lat, lng, sorted=True)
+    #   if places:
+    #     loc_json = self.format_location_index_results(places)
+    #     template_values['scenes'] = json.dumps(loc_json)
+    elif location and ',' in location:
       (lat, lng) = location.replace('/', '').split(',')
       template_values['center'] = '{lat:%s,lng:%s}' % (lat, lng)
-    elif lat and lng:
-      # use scene index to select places
-      places = placedlit.get_nearby_places(lat, lng, sorted=True)
-      loc_json = self.format_location_index_results(places)
-      if loc_json:
-        template_values['scenes'] = json.dumps(loc_json)
-        template_values['center'] = '{lat:%s,lng:%s}' % (lat, lng)
-    if key:
       template_values['key'] = key
 
     # FIXIT: pass all scenes to template for map markers
     # places = placedlit.PlacedLit.get_all_places()
     # loc_json = [self.export_place_fields(place) for place in places]
-
     self.render_template('map.tmpl', template_values)
 
 
