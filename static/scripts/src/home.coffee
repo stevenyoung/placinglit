@@ -10,8 +10,8 @@ $(document).on('ready', ->
         lat = position[Object.keys(position)[0]]
         lng = position[Object.keys(position)[1]]
         mapUrl = window.location.protocol + '//' + window.location.host
-        # mapUrl += '/map/' + lat + ',' + lng
-        mapUrl += '/map?lat=' + lat + '&lon=' + lng
+        # mapUrl += '/map?lat=' + lat + '&lon=' + lng
+        mapUrl += '/map/' + lat + ',' + lng
         window.location = mapUrl
       else
         alert("geocode was not successful: " + status)
