@@ -147,21 +147,18 @@ class CountPlacesHandler(baseapp.BaseAppHandler):
 class PlacesAuthors(baseapp.BaseAppHandler):
   """ get authors."""
   def get(self):
-    author_places = placedlit.PlacedLit.get_all_authors()
-    author_json = []
-    for places in author_places:
-      author_json.append({'author': places.author})
-    self.output_json(author_json)
+    authors = placedlit.PlacedLit.get_all_authors()
+    self.output_json(authors)
 
 
 class PlacesTitles(baseapp.BaseAppHandler):
   """ get titles. """
   def get(self):
-    title_places = placedlit.PlacedLit.get_all_titles()
-    title_json = []
-    for places in title_places:
-      title_json.append({'title': places.title.replace('\"', '')})
-    self.output_json(title_json)
+    titles = placedlit.PlacedLit.get_all_titles()
+    # title_json = []
+    # for places in title_places:
+    #   title_json.append({'title': places.title.replace('\"', '')})
+    self.output_json(titles)
 
 
 urls = [

@@ -146,7 +146,12 @@ class PlacedLit(db.Model):
     try:
       pl_query = db.GqlQuery('SELECT DISTINCT author FROM PlacedLit')
       author_query = db.GqlQuery('SELECT DISTINCT author FROM Author')
-      return itertools.chain(pl_query.run(), author_query.run())
+      user_authors = set([result.author for result in pl_query.run()])
+      isbndb_authors = set([result.author for result in author_query.run()])
+      author_list = list()
+      for author in user_authors.union(isbndb_authors):
+        author_list.append({'author': author})
+      return author_list
     except:
       raise
 
@@ -156,7 +161,12 @@ class PlacedLit(db.Model):
     try:
       pl_query = db.GqlQuery('SELECT DISTINCT title FROM PlacedLit')
       book_query = db.GqlQuery('SELECT DISTINCT title FROM Book')
-      return itertools.chain(pl_query.run(), book_query.run())
+      user_titles = set([result.title for result in pl_query.run()])
+      isbndb_titles = set([result.title for result in book_query.run()])
+      title_list = list()
+      for title in user_titles.union(isbndb_titles):
+        title_list.append({'title': title})
+      return title_list
     except:
       raise
 
