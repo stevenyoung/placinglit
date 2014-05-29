@@ -100,7 +100,7 @@ class BaseAppHandler(webapp.RequestHandler):
       'db_key': key.id()}
     return export
 
-  def format_location_index_doc(doc):
+  def format_location_index_doc(self, doc):
     scene = {'db_key': doc.doc_id}
     for field in doc.fields:
       if field.name == 'scene_location':
