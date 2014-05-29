@@ -1,6 +1,5 @@
 """ handle scene location indexes """
 from string import capwords
-import logging
 
 from google.appengine.ext import webapp
 
@@ -34,7 +33,7 @@ class IndexInfoHandler(webapp.RequestHandler):
 class EmptySceneLocationIndexHandler(webapp.RequestHandler):
   """ removing scene location indexes """
   def get(self):
-    location_index.delete_all_in_index()
+    location_index.empty_scene_index()
 
 
 class NearbyPlacesHandler(baseapp.BaseAppHandler):
@@ -56,7 +55,7 @@ class NewestPlacesHandler(baseapp.BaseAppHandler):
     for result in formatted_results:
       scene = placedlit.PlacedLit.get_place_from_id(result['db_key'])
       result['location'] = capwords(scene.scenelocation)
-      logging.info('result: %s', result)
+      # logging.info('result: %s', result)
       output.append(result)
     # self.output_json(formatted_results)
     self.output_json(output)
