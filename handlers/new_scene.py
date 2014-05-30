@@ -17,24 +17,29 @@ from classes import location_index
 from classes import status_updates
 
 
-def post_place_to_twitter(scene_key=None):
-  """ update twitter status """
+def do_twitter_post(status=None):
   import os
   # do not post to twitter if running on dev
   if not os.environ['SERVER_SOFTWARE'].startswith('Dev'):
-    scene_data = placedlit.PlacedLit.get_place_from_id(scene_key.id())
-    status = "{} by {} was mapped on PlacingLiterature.com. #literaryroadtrip"
-    update = status.format(scene_data.title, scene_data.author)
-    if not status_updates.matches_last_twitter_status_update(update):
-      from handlers import twitter
-      from handlers.abstracts import keys
-      oauth = twitter.OAuth(token=keys.tw_keys['OAUTH_TOKEN'],
-                            token_secret=keys.tw_keys['OAUTH_TOKEN_SECRET'],
-                            consumer_key=keys.tw_keys['CONSUMER_KEY'],
-                            consumer_secret=keys.tw_keys['CONSUMER_SECRET'])
-      t = twitter.Twitter(auth=oauth)
-      t.statuses.update(status=update)
-      status_updates.set_last_twitter_status_update(update)
+    from handlers import twitter
+    from handlers.abstracts import keys
+    oauth = twitter.OAuth(token=keys.tw_keys['OAUTH_TOKEN'],
+                          token_secret=keys.tw_keys['OAUTH_TOKEN_SECRET'],
+                          consumer_key=keys.tw_keys['CONSUMER_KEY'],
+                          consumer_secret=keys.tw_keys['CONSUMER_SECRET'])
+    t = twitter.Twitter(auth=oauth)
+    t.statuses.update(status=status)
+
+
+def post_place_to_twitter(scene_key=None):
+  """ update twitter status """
+  scene_data = placedlit.PlacedLit.get_place_from_id(scene_key.id())
+  status = "{} by {} was mapped on PlacingLiterature.com. #literaryroadtrip"
+  status_text = status.format(scene_data.title, scene_data.author)
+  update = status_updates.StatusUpdate()
+  if not update.is_duplicate_update(status_text=status_text):
+    update.add_update(status_text=status_text)
+    do_twitter_post(status=status_text)
 
 
 def add_panoramio_photo_to_new_scene(scene_id=None):
