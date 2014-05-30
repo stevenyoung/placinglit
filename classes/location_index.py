@@ -20,7 +20,8 @@ BATCH_SIZE = 200
 def author_query(author_name=None):
   query_string = 'author = \"{}\"'.format(author_name)
   doc_index = search.Index(name=INDEX_NAME)
-  query = search.Query(query_string=query_string)
+  options = search.QueryOptions(limit=result_limit)
+  query = search.Query(query_string=query_string, options=options)
   results = doc_index.search(query)
   return results
 
