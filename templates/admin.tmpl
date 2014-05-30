@@ -1,0 +1,19 @@
+{% extends 'base.tmpl' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+  <div id="allscenes" class="container well">
+    <ul>
+      <li><a href="/blog/update">update blog posts</a></li>
+      <li><a href="/update_isbns">update user-added isbns</a></li>
+      <li><a href="/all">edit/view all scenes</a></li>
+      <li><a href="/location_index/update_scenes">update scene location index</a></li>
+      <li><a href="/location_index/empty">empty scene location index</a></li>
+      <li><a href="/photos/panoramio/update_all">update scene photos</a></li>
+      <li><a href="/photos/panoramio/empty">empty scene photo index</a></li>
+    </ul>
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script src="/js/src/app.js"></script>
+  <script src="/js/src/allscenes.js"></script>
+{% endblock %}

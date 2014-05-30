@@ -1,0 +1,113 @@
+  <div id="hpcontent">
+    <div id="hpbuttons">
+      <a href="/map?modal=1"><button id="mapscene" class="btn btn-large btn-info" type="button">Map a Scene from a Novel</button></a>
+      <a href="/map?modal=1"><button id="explore" class="btn btn-large btn-info" type="button">Explore a Place Through Its Literature</button></a>
+    </div>
+    <div id="hpfeatured" class="carousel slide">
+      <ol class="carousel-indicators">
+        <li data-target="#hpfeatured" data-slide-to="0" class="active"></li>
+        <li data-target="#hpfeatured" data-slide-to="1"></li>
+        <li data-target="#hpfeatured" data-slide-to="2"></li>
+        <li data-target="#hpfeatured" data-slide-to="3"></li>
+      </ol>
+      <div class="carousel-inner">
+        <div class="active item">
+          <a href="/map/filter/author/Bianca%20Turetsky">
+            <img src="/img/may2014_turetsky.png" />
+            <div class="carousel-caption">
+              <h5>R.J. Julia&apos;s Author Spotlight: </h5>
+              <h4>Bianca Turetsky, <em>The Time-Traveling Fashionista</em></h4>
+              <h5><a target="_blank" class="smlink" href="//twitter.com/BiancaTuretsky">
+              (Follow on Twitter)</a></h5>
+            </div>
+          </a>
+        </div>
+        <div class="item">
+          <a href="/map/filter/author/Harry%20Groome">
+            <img src="/img/may2014_groome.png" />
+            <div class="carousel-caption">
+              <h5>IndieReader Author Spotlight: </h5>
+              <h4>Harry Groome, <em>Thirty Below</em></h4>
+              <h5><a target="_blank" class="smlink" href="//www.harrygroome.com">(Visit Author&apos;s Website)</a></h5>
+            </div>
+          </a>
+        </div>
+        <div class="item">
+          <a href="/collections/catalan">
+            <img src="/img/apr2014_catalan.png" />
+            <div class="carousel-caption">
+              <h4>Placing Literature Collections: </h4>
+              <h5>Catalan literature curated by Espais Escrits</h5>
+            </div>
+          </a>
+        </div>
+        <div class="item">
+          <a href="/collections/slq">
+            <img src="/img/apr2014_slq.png" />
+            <div class="carousel-caption">
+              <h4>Collections: </h4>
+              <h5>Literature that takes place in Queensland, Australia curated by the State Library of Queensland</h5>
+            </div>
+          </a>
+        </div>
+      </div>
+      <a class="carousel-control left" href="#hpfeatured" data-slide="prev">&lsaquo;</a>
+      <a class="carousel-control right" href="#hpfeatured" data-slide="next">&rsaquo;</a>
+    </div>
+    <div id="recentcontent">
+      <h4>Newest Places Added:</h4>
+      <h5 id="count"></h5>
+      <ul><li>loading...</li></ul>
+    </div>
+  </div>
+  <div id="hplower">
+    <div id="cities">
+      <h4>Cities</h4>
+        <form id="geocodersearch">
+          <input type="text" id="gcf" placeholder="Type city name. Hit enter." class="search-query"/>
+        </form>
+      <div>
+        <p/>
+        <p><a href="/map/41.3060969411,-72.9260498285">New Haven, USA</a></p>
+        <p><a href="/map/51.508515,-0.12548719999995228">London, England</a></p>
+        <p><a href="/map/37.7750,-122.4183">San Francisco, USA</a></p>
+        <p><a href="/map/41.3850639,2.1734034999999494">Barcelona, Spain</a></p>
+        <p><a href="/map/40.7143528,-74.0059731">New York, USA</a></p>
+        <p><a href="/map/48.856614,2.3522219000000177">Paris, France</a></p>
+      </div>
+    </div>
+    <div id="hpauthors">
+      <h4>Authors</h4>
+        <form id="plauthorsearch">
+          <span>
+          <input type="text" id="authorq" placeholder="Type author name. Hit tab then enter." class="search-query"/>
+          </span>
+        </form>
+      <div>
+        <p/>
+        <p><a href="/map/filter/author/Arthur%20Conan%20Doyle">Arthur Conan Doyle</a></p>
+        <p><a href="/map/filter/author/Mark%20Haskell%20Smith">Mark Haskell Smith</a></p>
+        <p><a href="/map/filter/author/Bernat%20Metge">Bernat Metge</a></p>
+        <p><a href="/map/filter/author/Danielle%20Sosin">Danielle Sosin</a></p>
+        <p><a href="/map/filter/author/William%20Shakespeare">William Shakespeare</a></p>
+        <p><a href="/map/filter/author/Khaled%20Hosseini">Khaled Hosseini</a></p>
+      </div>
+    </div>
+    <div id="hptabs">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#blogposts" data-toggle="tab">
+          <h4>Blog Posts</h4></a></li>
+        <li><a href="#hpvideowrapper" data-toggle="tab"><h4>Videos</h4></a></li>
+      </ul>
+      <div class="tab-content">
+        <div id="blogposts" class="tab-pane active">
+          {% for post in posts %}
+            <p><a href="{{ post.link }}" target="_blank">{{ post.title }}</a></p>
+          {% endfor %}
+        </div>
+        <div id="hpvideowrapper" class="tab-pane">
+          <iframe src="http://www.youtube.com/embed/NV0Qdo6ImJo?rel=0" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>

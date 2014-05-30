@@ -1,0 +1,57 @@
+{% extends 'base.tmpl' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+  <div class="container">
+    <div id="editform">
+      <span>title:
+        <input type="text" class="input-block-level" id="title" name="title"
+        value="{{ place.title }}">
+      </span>
+      <span>author:
+        <input type="text" class="input-block-level" id="author" name="author"
+        value="{{ place.author }}">
+      </span>
+      <span>location:
+        <input type="text" class="input-block-level" id="scenelocation"
+        name="scenelocation"
+        value="{% if place.scenelocation and place.scenelocation != "None" %}{{ place.scenelocation }}{% endif %}">
+      </span>
+      <span>description:
+        <input type="text" class="input-block-level" id="scenedescription"
+        name="scenedescription"
+        value="{% if place.scenedescription and place.scenedescription != "None" %}{{ place.scenedescription }}{% endif %}">
+      </span>
+      <span>notes:
+        <input type="text" class="input-block-level" id="notes" name="notes"
+        value="{% if place.notes and place.notes != "None" %}{{ place.notes }}{% endif %}">
+      </span>
+      <span>image url:
+        <input type="text" class="input-block-level" id="image_url"
+        name="image_url" value="{% if place.image_url and place.image_url != "None" %}{{ place.image_url }}{% endif %}">
+      </span>
+      <span>actors:
+        <input type="text" class="input-block-level" id="actors" name="actors"
+        value="{% if place.actors and place.actors != "None" %}{{ place.actors }}{% endif %}">
+      </span>
+      <span>time of day:
+        <input type="text" class="input-block-level" id="scenetime"
+        name="scenetime" value="{% if place.scenetime and place.scenetime != "None" %}{{ place.scenetime }}{% endif %}">
+      </span>
+      <span>symbols:
+        <input type="text" class="input-block-level" id="symbols" name="symbols"
+        value="{% if place.symbols and place.symbols != "None" %}{{ place.symbols }}{% endif %}">
+      </span>
+      <span>user-submitted isbn
+        <input type="text" class="input-block-level" id="ug_isbn" name="ug_isbn"
+        value="{% if place.ug_isbn and place.ug_isbn != "None" %}{{ place.ug_isbn }}{% endif %}">
+      </span>
+      <span id="editplacebutton" class="btn placesubmit">Save Place</span>
+      <a href="/all"><span class="btn placesubmit">All Places</span></a>
+      <span id="deleteplacebutton" class="btn placesubmit">Delete Place</span>
+    </div>
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script src="/js/src/app.js"></script>
+  <script src="/js/src/allscenes.js"></script>
+{% endblock %}

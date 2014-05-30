@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>{{ title }}</title>
+<link href="/static/styles/map_canvas.css" rel="stylesheet" type="text/css" />
+<link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{{ maps_api }}"></script>
+<script type="text/javascript" src="{{ gears_api }}"></script>
+<script type="text/javascript" src="/static/scripts/mapdemo.js"></script>
+</head>
+<body onload="initialize()">
+  <a href="{{ url }}">{{ url_linktext }}</a>
+  {{ body }}
+  <div id="location_info"></div>
+  <form action="/locate/share" method="post">
+    <input type="hidden" name="latitude" id="latitude" value=""/>
+    <input type="hidden" name="longitude" id="longitude" value=""/>
+    {% if submit_text %}
+      <input type="submit" value="{{ submit_text }}"></form>
+    {% endif %}
+  </form>
+  <div id="map_canvas"></div>
+</body>
+</html>

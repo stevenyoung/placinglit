@@ -1,0 +1,21 @@
+<div id="mapcontainer" ng-controller="MapCtrl">
+  <!-- <div id="map" class="map leaflet-container leaflet-fade-anim"> -->
+    <leaflet
+      defaults="defaults"
+      center="center"
+      event-broadcast="events"
+      markers="markers"
+      layers="layers"
+      >
+    <h3 class="alert alert-info">loading places...</h3>
+    </leaflet>
+    <ul>
+      <li><strong ng-bind="eventDetected"></strong> caught in listener.</li>
+      <li>
+        lat: <strong ng-bind="userMarkerLatitude"></strong>
+        lng: <strong ng-bind="userMarkerLongitude"></strong>
+        zoom: <strong ng-bind="zoomLevel"></strong>
+      </li>
+    </ul>
+  <!-- </div> -->
+</div>

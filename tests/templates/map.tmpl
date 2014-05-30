@@ -1,0 +1,115 @@
+{% extends 'base.tmpl' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+  <div id="mapcontainer">
+    <div id="plpageheader">
+      <h3><img id="weblogo" src="/img/webicon.png">Placing Literature: Where Your Book Meets the Map</h3>
+      <div id="mapnavcontainer">
+        <div id="uppernav">
+          <ul id="sitelinks">
+            <form class="navbar-form pull-left">
+              <input type="text" id="gcf" placeholder="search location" class="search-query"/>
+              <span id="search" class="btn">search</span></li>
+            </form>
+            <li class="divider-vertical"></li>
+            <li><a href="#maphelp" data-toggle="modal">help</a></li>
+            <li class="divider-vertical"></li>
+            <li><a href="/home">home</a></li>
+            <li class="divider-vertical"></li>
+            <li class="active"><a href="#">map</a></li>
+            <li class="divider-vertical"></li>
+            <li><a href="/pages/about.html">about</a></li>
+            <li class="divider-vertical"></li>
+            <li><a href="/pages/funding.html">funding</a></li>
+            <li class="divider-vertical"></li>
+            <li><a id="loginlink"  href="{{ url }}">{{ url_text }}</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div id="map_canvas"><h3 class="alert alert-info">loading places...</h3></div>
+    <div id="lowernav">
+      <span class="sitelinks">
+        <span><a mailto="info@placingliterature.com" >report map error</a> | </span>
+        <span><a href="//placingliterature.wordpress.com" target="_blank">blog</a> | </span>
+        <span><a href="/places/export">download</a> | </span>
+        <span><a href="/pages/funding.html">Funding provided by the Arts Council of Greater New Haven</a> | </span>
+        <span>&copy; 2013. All rights reserved</span>
+      </span>
+    </div>
+  </div>
+  <div id="iwcontainer">
+    <div class="infowindowform">
+      <span id="formtitle">Enter Place Information</span>
+      <span>
+        <input type="text" class="input-block-level" id="title" name="title"
+               placeholder="Book Title: (example: The Wedding of the Two Headed Woman)"/>
+      </span>
+      <span>
+        <input type="text" class="input-block-level" id="author" name="author"
+               placeholder="Author: (example: Alice Mattison)"/>
+      </span>
+      <span>
+        <input type="text" class="input-block-level" id="place_name" name="place_name"
+               placeholder="Location Where Scene Takes Place: (example: College Woods)"/>
+      </span>
+      <span>
+        <input type="text" class="input-block-level" id="date" name="date"
+               placeholder="Time of Day When Scene Takes Place: (example: Evening)"/>
+      </span>
+      <span>
+        <input type="text" class="input-block-level" id="actors" name="actors"
+               placeholder="Characters Present: (example: Daisy, Pekko)"/>
+      </span>
+      <span>
+        <input type="text" class="input-block-level" id="symbols" name="symbols"
+               placeholder="Symbols Nearby: (example: Winding river)"/>
+      </span>
+      <span>
+        <input type="text" class="input-block-level" id="scene" name="scene"
+               placeholder="Scene Descriptions: (100 characters)"/>
+      </span>
+      <span>
+        <input type="text" class="input-block-level" id="notes" name="notes"
+               placeholder="Special Notes: (example: The benches where Daisy and Pekko are sitting are next to a placard that explains the geologic history of East Rock.)"/>
+      </span>
+      <span>
+        <input type="text" class="input-block-level" id="image_url" name="image_url"
+               placeholder="Image Url: Book Cover (e.g. http://upload.wikimedia.org/wikipedia/commons/a/af/AlicesAdventuresInWonderlandTitlePage.jpg)"/>
+      </span>
+      <span>
+        <label class="checkbox"><input id="check_in" name="check_in" type="checkbox"/> I've Been Here! </label>
+      </span>
+      <span class="btn placesubmit">Add Place</span>
+    </div>
+  </div>
+  <div id="mapmodal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4>Placing Literature: Where Your Book Meets The Map</h4>
+  </div>
+  <div class="modal-body">
+    <h4>Click on the map to plot a point.</h4>
+    <h4>Type a city into the search bar to explore its literature.</h4>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{% if center %}
+  <script type="text/javascript">
+    var CENTER = {{center}};
+  </script>
+{% endif %}
+{% if key %}
+  <script type="text/javascript">
+    var PLACEKEY = {{key}};
+  </script>
+{% endif %}
+{% comment %}
+<script type="text/javascript" src="/js/src/models/location.js"></script>
+<script type="text/javascript" src="/js/src/views/mapview.js"></script>
+<script type="text/javascript" src="/js/src/views/mapcanvasview.js"></script>
+{% endcomment %}
+<script type="text/javascript" src="/js/src/app.js"></script>
+<script type="text/javascript" src="/js/src/placelit.js"></script>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'base.tmpl' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+  <div id="iwcontainer">
+    <div class="infowindowform">
+      <span id="formtitle">Enter Place Information: </span>
+      <span>(* required fields)</span>
+      <span id="guidelines"><a href="#">guidelines</a></span>
+      <span>
+        <input type="text" class="input-block-level" id="title" name="title"
+               placeholder=" * Book Title: (example: The Wedding of the Two Headed Woman)"
+               required/>
+      </span>
+      <span>
+        <input type="text" class="input-block-level" id="author" name="author"
+               placeholder=" * Author: (example: Alice Mattison)"
+               required/>
+      </span>
+      <span>
+        <input type="text" class="input-block-level" id="place_name" name="place_name"
+               placeholder=" * Location Where Scene Takes Place: (example: College Woods)"
+               required/>
+      </span>
+      <span>
+        <input type="text" class="input-block-level" id="scene" name="scene"
+               placeholder=" * Scene Descriptions: (100 characters)" required/>
+      </span>
+      <span>
+        <input type="text" class="input-block-level" id="notes" name="notes"
+               placeholder=" * Notes: (example: The benches where Daisy and Pekko are sitting are next to a placard that explains the geologic history of East Rock.)" required/>
+      </span>
+      <span>
+        <input type="text" class="input-block-level" id="image_url" name="image_url"
+               placeholder="Image Url: Book Cover (e.g. http://upload.wikimedia.org/wikipedia/commons/a/af/AlicesAdventuresInWonderlandTitlePage.jpg)"/>
+      </span>
+      <span>
+        <label class="checkbox"><input id="check_in" name="check_in" type="checkbox"/> I've Been Here! </label>
+      </span>
+      <span id="addplacebutton" class="btn placesubmit">Add Place</span>
+    </div>
+  </div>
+  <div id="mapmodal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="map mapmodal" aria-hidden="true">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4>Placing Literature: Where Your Book Meets The Map</h4>
+    </div>
+    <div class="modal-body">
+    <h4>Click on the map to plot a point.</h4>
+    <h4>Type a city into the search bar to explore its literature.</h4>
+    </div>
+  </div>
+  <div id="helpmodal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="map guidelines" aria-hidden="true">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4>Consistency is important. Follow these guidelines</h4>
+    </div>
+    <div class="modal-body">
+    <h5>- Be brief and specific in the 'Location' field</h5>
+    <h5>- Use Autofill where possible</h5>
+    <h5>- Double check spelling and grammar</h5>
+    <h5>- Reserve opinions, comments and asides for the Notes field</h5>
+    <h5>- Let us know if you make or see an error</h5>
+    </div>
+  </div>
+  <div id="querymodal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="map query" aria-hidden="true">
+    <div class="modal-body">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h4>Your search results are being displayed.</h4>
+      <h4>To see all available places for every author click 'see all places'</h4>
+    </div>
+  </div>
+  <div id="mapsearchcontainer" class="navbar">
+    <div id="maponly">
+      <ul id="maplinks" class="nav navbar-inner">
+        <li>
+          <form id="geocodersearch">
+            <input type="text" id="gcf" placeholder="search location" class="search-query"/>
+            <span id="search" class="btn">search</span>
+          </form>
+        </li>
+        <li class="divider-vertical"></li>
+        <li><a href="#maphelp" data-toggle="modal">help</a></li>
+        <li class="divider-vertical"></li>
+        <!-- <li id="allscenes"><a href="#">see all places</a></li> -->
+        <li id="allscenes"><a href="/map">see all places</a></li>
+      </ul>
+    </div>
+  </div>
+  <div id="mapcontainer">
+    <div id="map_canvas">
+      <h3 class="alert alert-info">loading places...</h3>
+      <img class="loading" src="/img/loading.gif"/>
+    </div>
+  </div>
+  <div id="lowernav">
+<!--
+    <span id="hidemarkers">hide</span>
+    <span> | </span>
+    <span id="showmarkers">show</span>
+    <span> | </span>
+ -->
+    <span>
+      <a href="mailto:info@placingliterature.com">contact us</a> | <a href="/funding">funding provided by the Arts Council of Greater New Haven</a> | </span>
+    <span>&copy; 2014. all rights reserved</span>
+  </div>
+{% endblock %}
+{% block scripts %}
+{% if center %}
+  <script type="text/javascript">var CENTER = {{center}};</script>
+{% endif %}
+{% if key %}
+  <script type="text/javascript">var PLACEKEY = {{key}};</script>
+{% endif %}
+{% if scenes %}
+  <script>window.SCENES = {{scenes|safe}};</script>
+{% endif %}
+<script type="text/javascript" src="/js/src/app.js"></script>
+<script type="text/javascript" src="/js/src/placelit.js"></script>
+{% endblock %}

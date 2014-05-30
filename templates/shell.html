@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title> Interactive Shell </title>
+	<script src="/static/scripts/shell.js"></script>
+	<script src="/static/scripts/goog/base.js"></script>
+  <script>goog.require('goog.ui.Dialog');</script>
+  <script src="/static/scripts/helpdialog.js"></script>
+<!--
+  <script src="/static/scripts/dialog-compiled.js"></script>
+-->
+  <link rel="stylesheet" href="/static/styles/shell.css">
+  <link rel="stylesheet" href="/static/styles/dialog.css">
+</head>
+
+<body>
+
+<p> Interactive server-side Python shell for
+<a href="http://code.google.com/appengine/">Google App Engine</a>.
+(<a href="http://code.google.com/p/google-app-engine-samples/downloads/list">source</a>)
+<a href="#" onclick="showDialog(helpdialog);">help</a>
+</p>
+
+<textarea id="output" rows="22" readonly="readonly">
+{{ server_software }}
+Python {{ python_version }}
+</textarea>
+
+<form id="form" action="shell.do" method="get">
+  <nobr>
+  <textarea class="prompt" id="caret" readonly="readonly" rows="4"
+            onfocus="document.getElementById('statement').focus()"
+            >&gt;&gt;&gt;</textarea>
+  <textarea class="prompt" name="statement" id="statement" rows="4"
+            onkeypress="return shell.onPromptKeyPress(event);"></textarea>
+  </nobr>
+  <input type="hidden" name="session" value="{{ session }}" />
+  <input type="submit" style="display: none" />
+</form>
+
+<p id="ajax-status"></p>
+
+<p id="toolbar">
+{% if user %}
+  <span class="username">{{ user.nickname }}</span>
+  (<a href="{{ logout_url }}">log out</a>)
+{% else %}
+  <a href="{{ login_url }}">log in</a>
+{% endif %}
+ | Ctrl-Up for history | Shift-Enter for newline
+ | <a href="http://code.google.com/appengine/">
+      <img src="/static/images/appengine_button_noborder.gif"
+           style="vertical-align: middle" /></a>
+</p>
+
+<script type="text/javascript">
+	document.getElementById('statement').focus();
+</script>
+
+</body>
+</html>
+

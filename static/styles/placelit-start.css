@@ -1,0 +1,64 @@
+  <style>
+    html { height:100% }
+    body { height:100%; margin:0%; padding:0; }
+    #uppernav {
+      top: 0%;
+      height: 10%;
+      width: 100%;
+      border-bottom: solid black 3px;
+      background-color: cyan;
+    }
+    #uppernav h4,
+    #uppernav span,
+    #lowernav span {
+      position: relative;
+      left: 1%;
+      display: inline;
+    }
+    #gcf {
+      margin-bottom: 0px;
+    }
+    #map_canvas {
+      height:80%;
+      width:100%;
+      position:relative;
+      top:0%;
+      z-index: 0;
+    }
+    /*#map_canvas div{*/
+    /*  overflow: hidden;*/
+    /*}*/
+    #lowernav {
+      width: 100%;
+      /*text-align: center;*/
+      background-color: white;
+      position: absolute;
+      height: 9%;
+      border-top: solid black 3px;
+      background-color: pink;
+    }
+    #iwcontainer {
+      display:none;
+      z-index: 0;
+    }
+    .infowindowform {
+      overflow: auto;
+      width:90%;
+      margin: auto;
+    }
+    #uppernav .sitelinks {
+      text-align: left;
+    }
+    .contentpadding {
+      margin-left: 3%;
+      margin-top: 1%;
+    }
+    #contentcontainer {
+      background-color: lightgray;
+    }
+    #contentcontainer div{
+      background-color: grey;
+    }
+
+    #
+  </style>

@@ -1,0 +1,11 @@
+[0717/121015:INFO:chromedriver_server.cc(76)] Handling request: /session {"sessionId": null, "desiredCapabilities": {"platform": "ANY", "browserName": "chrome", "version": "", "javascriptEnabled": true, "chromeOptions": {"args": [], "extensions": []}}}
+[0717/121015:INFO:chrome_launcher.cc(74)] Using chrome from /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+[0717/121016:INFO:chromedriver_server.cc(81)] Done handling request: 303 
+[0717/121016:INFO:chromedriver_server.cc(76)] Handling request: /session/1ce265f30f4d6d566efb531b70e68754 
+[0717/121016:INFO:chromedriver_server.cc(81)] Done handling request: 200 {"sessionId":"1ce265f30f4d6d566efb531b70e68754","status":0,"value":{"acceptSslCerts":true,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"browserName":"chrome","cssSelectorsEnabled":true,"databaseEnabled":true,"driverVersion":"0.8","handlesAlerts":true,"javascriptEnabled":true,"locationContextEnabled":true,"nativeEvents":true,"platform":"Mac OS X","rotatable":false,"takesScreenshot":true,"version":"28.0.1500.71","webStorageEnabled":true}}
+[0717/121049:INFO:chromedriver_server.cc(76)] Handling request: /session/1ce265f30f4d6d566efb531b70e68754/url {"url": "http://localhost/newhome2", "sessionId": "1ce265f30f4d6d566efb531b70e68754"}
+[0717/121050:INFO:chromedriver_server.cc(81)] Done handling request: 200 {"sessionId":"1ce265f30f4d6d566efb531b70e68754","status":0,"value":null}
+[0717/121105:INFO:chromedriver_server.cc(76)] Handling request: /session/1ce265f30f4d6d566efb531b70e68754/url {"url": "http://localhost:9999/newhome2", "sessionId": "1ce265f30f4d6d566efb531b70e68754"}
+[0717/121106:INFO:chromedriver_server.cc(81)] Done handling request: 200 {"sessionId":"1ce265f30f4d6d566efb531b70e68754","status":0,"value":null}
+[0717/121122:INFO:chromedriver_server.cc(76)] Handling request: /session/1ce265f30f4d6d566efb531b70e68754/url {"url": "http://localhost:9999/", "sessionId": "1ce265f30f4d6d566efb531b70e68754"}
+[0717/121125:INFO:chromedriver_server.cc(81)] Done handling request: 200 {"sessionId":"1ce265f30f4d6d566efb531b70e68754","status":0,"value":null}

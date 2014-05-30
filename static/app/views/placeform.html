@@ -1,0 +1,36 @@
+<div class="container">
+  <form role="form" id="newplace">
+    <div><label>Enter Place Information </label><span class="text-info"><em> *required fields</em></span></div>
+    <div>
+      <input type="text" class="form-control" id="title" name="title"
+             placeholder=" * Book Title: (example: The Wedding of the Two Headed Woman)"
+             required/>
+    </div>
+    <div>
+      <input type="text" class="form-control" id="author" name="author"
+             placeholder=" * Author: (example: Alice Mattison)"
+             required/>
+    </div>
+    <div>
+      <input type="text" class="form-control" id="place_name" name="place_name"
+             placeholder=" * Location Where Scene Takes Place: (example: College Woods)"
+             required/>
+    </div>
+    <div>
+      <input type="text" class="form-control" id="scene" name="scene"
+             placeholder=" * Scene Descriptions: (100 characters)" required/>
+    </div>
+    <div>
+      <input type="text" class="form-control" id="notes" name="notes"
+             placeholder=" * Notes: (example: The benches where Daisy and Pekko are sitting are next to a placard that explains the geologic history of East Rock.)" required/>
+    </div>
+    <div>
+      <input type="text" class="form-control" id="image_url" name="image_url"
+             placeholder="Image Url: Book Cover (e.g. http://upload.wikimedia.org/wikipedia/commons/a/af/AlicesAdventuresInWonderlandTitlePage.jpg)"/>
+    </div>
+    <div>
+      <label class="checkbox"><input id="check_in" name="check_in" type="checkbox"/> I've Been Here! </label>
+    </div>
+    <button id="addplacebutton" class="btn btn-primary" ng-click="savePlace()">Add Place</button>
+  </form>
+</div>

@@ -1,0 +1,21 @@
+[0511/113900:INFO:chromedriver_server.cc(76)] Handling request: /session {"sessionId": null, "desiredCapabilities": {"platform": "ANY", "browserName": "chrome", "version": "", "javascriptEnabled": true, "chromeOptions": {"args": [], "extensions": []}}}
+[0511/113900:INFO:chrome_launcher.cc(74)] Using chrome from /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+[0511/113901:INFO:chromedriver_server.cc(81)] Done handling request: 303 
+[0511/113901:INFO:chromedriver_server.cc(76)] Handling request: /session/2a262e3af8340f96db7a8847c31baf7a 
+[0511/113901:INFO:chromedriver_server.cc(81)] Done handling request: 200 {"sessionId":"2a262e3af8340f96db7a8847c31baf7a","status":0,"value":{"acceptSslCerts":true,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"browserName":"chrome","cssSelectorsEnabled":true,"databaseEnabled":true,"driverVersion":"0.8","handlesAlerts":true,"javascriptEnabled":true,"locationContextEnabled":true,"nativeEvents":true,"platform":"Mac OS X","rotatable":false,"takesScreenshot":true,"version":"26.0.1410.65","webStorageEnabled":true}}
+[0511/113901:INFO:chromedriver_server.cc(76)] Handling request: /session/2a262e3af8340f96db7a8847c31baf7a/url {"url": "http://localhost:9999/map", "sessionId": "2a262e3af8340f96db7a8847c31baf7a"}
+[0511/113903:INFO:chromedriver_server.cc(81)] Done handling request: 200 {"sessionId":"2a262e3af8340f96db7a8847c31baf7a","status":0,"value":null}
+[0511/113903:INFO:chromedriver_server.cc(76)] Handling request: /session/2a262e3af8340f96db7a8847c31baf7a/element {"using": "id", "sessionId": "2a262e3af8340f96db7a8847c31baf7a", "value": "map_canvas"}
+[0511/113903:INFO:chromedriver_server.cc(81)] Done handling request: 200 {"sessionId":"2a262e3af8340f96db7a8847c31baf7a","status":0,"value":{"ELEMENT":"0.827781681669876:1"}}
+[0511/113903:INFO:chromedriver_server.cc(76)] Handling request: /session/2a262e3af8340f96db7a8847c31baf7a/element/0.827781681669876:1/click {"sessionId": "2a262e3af8340f96db7a8847c31baf7a", "id": "0.827781681669876:1"}
+[0511/113904:INFO:chromedriver_server.cc(81)] Done handling request: 200 {"sessionId":"2a262e3af8340f96db7a8847c31baf7a","status":0,"value":null}
+[0511/113904:INFO:chromedriver_server.cc(76)] Handling request: /session/2a262e3af8340f96db7a8847c31baf7a/element {"using": "id", "sessionId": "2a262e3af8340f96db7a8847c31baf7a", "value": "title"}
+[0511/113904:INFO:chromedriver_server.cc(81)] Done handling request: 200 {"sessionId":"2a262e3af8340f96db7a8847c31baf7a","status":0,"value":{"ELEMENT":"0.827781681669876:2"}}
+[0511/113904:INFO:chromedriver_server.cc(76)] Handling request: /session/2a262e3af8340f96db7a8847c31baf7a/element/0.827781681669876:2/attribute/placeholder 
+[0511/113904:INFO:chromedriver_server.cc(81)] Done handling request: 200 {"sessionId":"2a262e3af8340f96db7a8847c31baf7a","status":0,"value":"Book Title (example: The Wedding of the Two Headed Woman)"}
+[0511/113904:INFO:chromedriver_server.cc(76)] Handling request: /session/2a262e3af8340f96db7a8847c31baf7a/element/0.827781681669876:2/value {"sessionId": "2a262e3af8340f96db7a8847c31baf7a", "id": "0.827781681669876:2", "value": ["f", "i", "n", "d", " ", "m", "y", " ", "p", "o", "s", "t", "a", "g", "e", " ", "s", "t", "a", "m", "p", "s"]}
+[0511/113904:INFO:chromedriver_server.cc(81)] Done handling request: 200 {"sessionId":"2a262e3af8340f96db7a8847c31baf7a","status":11,"value":{"message":"element not visible\n  (Session info: chrome=26.0.1410.65)\n  (Driver info: chromedriver=0.8,platform=Mac OS X 10.8.3 x86_64)"}}
+[0511/113904:INFO:chromedriver_server.cc(76)] Handling request: /session/2a262e3af8340f96db7a8847c31baf7a 
+[0511/113904:INFO:chromedriver_server.cc(81)] Done handling request: 200 {"sessionId":"2a262e3af8340f96db7a8847c31baf7a","status":0,"value":null}
+[0511/113904:INFO:chromedriver_server.cc(76)] Handling request: /shutdown 
+[0511/113904:INFO:chromedriver_server.cc(81)] Done handling request: 200 {"sessionId":"","status":0,"value":null}
