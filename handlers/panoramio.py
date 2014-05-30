@@ -14,7 +14,7 @@ import update_schema
 class UpdatePhotosBatchHandler(webapp.RequestHandler):
   def get(self):
     deferred.defer(update_schema.update_photo_data)
-    self.response.out.write('Schema migration successfully initiated.')
+    self.response.out.write('photo update successfully initiated.')
 
 
 #FIXIT - Is this necessary any longer?
