@@ -4772,11 +4772,9 @@ body {
   height: 16px;
   padding-right: 10px; }
 
-.panoimg {
+.infopic {
+  height: 80px;
   float: left;
   padding-right: 5px;
-  padding-bottom: 5px;
+  padding-bottom: 2px;
   text-align: center; }
-
-.infopic {
-  height: 80px; }
