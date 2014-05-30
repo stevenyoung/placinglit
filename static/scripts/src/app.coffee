@@ -454,11 +454,11 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @clearInfowindowClickEvents()
     content = '<div class="plinfowindow">'
 
-    # if !!data.image_url
-    #   content += @sceneUserImageTemplate()(image_url: data.image_url)
+    if !!data.image_url
+      content += @sceneUserImageTemplate()(image_url: data.image_url)
 
-    # if !!data.image_data
-    #   content += @sceneAPIImageTemplate()(image_id: data.image_data.photo_id)
+    if !!data.image_data
+      content += @sceneAPIImageTemplate()(image_id: data.image_data.photo_id)
 
     content += @sceneTitleTemplate()({title: data.title, author:data.author})
     for field of @field_labels

@@ -702,6 +702,16 @@
       var content, field, label;
       this.clearInfowindowClickEvents();
       content = '<div class="plinfowindow">';
+      if (!!data.image_url) {
+        content += this.sceneUserImageTemplate()({
+          image_url: data.image_url
+        });
+      }
+      if (!!data.image_data) {
+        content += this.sceneAPIImageTemplate()({
+          image_id: data.image_data.photo_id
+        });
+      }
       content += this.sceneTitleTemplate()({
         title: data.title,
         author: data.author
