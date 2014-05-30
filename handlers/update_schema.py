@@ -13,7 +13,8 @@ from classes import site_users
 from classes import panoramio
 from classes import photo_index
 
-BATCH_SIZE = 50  # ideal batch size may vary based on entity size.
+DB_BATCH_SIZE = 50  # ideal batch size may vary based on entity size.
+INDEX_BATCH_SIZE = 200
 TITLE_ISBNS = dict()
 
 
@@ -62,7 +63,7 @@ def update_book_data(cursor=None, num_updated=0):
     query.with_cursor(cursor)
 
   to_put = []
-  for place in query.fetch(limit=BATCH_SIZE):
+  for place in query.fetch(limit=DB_BATCH_SIZE):
     place.ISBNdb = None
     query_title = place.title.lower().replace(' ', '_')
     query_author = transform_author_name_for_query(place.author)
@@ -97,7 +98,7 @@ def update_book_data(cursor=None, num_updated=0):
     logging.debug('UpdateSchema complete with %d updates!', num_updated)
 
 
-def update_photo_data(cursor=None, num_updated=0):
+def update_photo_data(cursor=None, num_updated=0, previous_cursor=None):
   """
   Get photos for scenes lacking photos.
   This is done by getting all scenes in a cursored query, iterating through the
@@ -105,24 +106,27 @@ def update_photo_data(cursor=None, num_updated=0):
   This will create a number of Panoramio entities for each scene as well as a
   search.Document for the photo_index for each photo.
   """
-  query = placedlit.PlacedLit.all()
+  query = placedlit.PlacedLit.all(keys_only=True)
   if cursor:
     query.with_cursor(cursor)
 
   to_put = []
-  for place in query.fetch(limit=BATCH_SIZE):
-    scene_id = place.key().id()
+  for key in query.fetch(limit=INDEX_BATCH_SIZE):
+    # scene_id = place.key().id()
+    scene_id = key.id()
     if photo_index.has_panoramio_photos(scene_id):
-        logging.info('%s already has photos', scene_id)
+        logging.debug('%s already has photos', scene_id)
     else:
-      api_url = panoramio.build_url_for_scene(place.key())
+      # api_url = panoramio.build_url_for_scene(place.key())
+      api_url = panoramio.build_url_for_scene(key)
       api_response = panoramio.get_api_data(api_url)
       if 'map_location' in api_response:
         map_location = api_response['map_location']
         for photo in api_response['photos']:
           image = panoramio.Panoramio()
           image.id = photo['photo_id']
-          image.PLscene = ndb.Key.from_old_key(place.key())
+          # image.PLscene = ndb.Key.from_old_key(place.key())
+          image.PLscene = ndb.Key.from_old_key(key)
           image.photo_id = photo['photo_id']
           image.photo_title = photo['photo_title']
           image.photo_url = photo['photo_url']
@@ -149,7 +153,13 @@ def update_photo_data(cursor=None, num_updated=0):
     logging.debug(
       'Put %d entities to Datastore for a total of %d',
       len(to_put), num_updated)
+  previous_cursor = cursor
+
+  if previous_cursor != query.cursor():
     deferred.defer(
-      update_photo_data, cursor=query.cursor(), num_updated=num_updated)
+      update_photo_data,
+      cursor=query.cursor(),
+      num_updated=num_updated,
+      previous_cursor=previous_cursor)
   else:
-    logging.debug('UpdateSchema complete with %d updates!', num_updated)
+    logging.debug('photo update complete with %d updates!', num_updated)
