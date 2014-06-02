@@ -269,6 +269,8 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
         @gmap.setZoom(@settings.zoomLevel.wide)
       else
         @gmap.setZoom(@settings.zoomLevel.default)
+      if (window.location.pathname.indexOf('author') != -1)
+        @gmap.setZoom(@settings.zoomLevel.wide)
     else
       usaCoords =
         lat: 39.8282

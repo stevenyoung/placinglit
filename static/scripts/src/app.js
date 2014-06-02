@@ -444,6 +444,9 @@
         } else {
           this.gmap.setZoom(this.settings.zoomLevel["default"]);
         }
+        if (window.location.pathname.indexOf('author') !== -1) {
+          this.gmap.setZoom(this.settings.zoomLevel.wide);
+        }
       } else {
         usaCoords = {
           lat: 39.8282,
