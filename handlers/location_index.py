@@ -27,13 +27,14 @@ class IndexInfoHandler(webapp.RequestHandler):
   """ get info on indexes """
   def get(self):
     indices = location_index.get_index_info()
-    self.response.write(indices)
+    self.response.out.write(indices)
 
 
 class EmptySceneLocationIndexHandler(webapp.RequestHandler):
   """ removing scene location indexes """
   def get(self):
     location_index.empty_scene_index()
+    self.response.out.write('tried to empty scene index')
 
 
 class NearbyPlacesHandler(baseapp.BaseAppHandler):
