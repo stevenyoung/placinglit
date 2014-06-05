@@ -95,7 +95,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @collection.fetch()
     # setup handler for geocoder searches
     @attachSearchHandler()
-    console.log('first time view load', initialMapView)
+    console.log('first time view load', @initialMapView)
 
   render: (event) ->
     @mapWithMarkers() if event is 'sync'

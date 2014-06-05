@@ -169,7 +169,7 @@
       this.listenTo(this.collection, 'all', this.render);
       this.collection.fetch();
       this.attachSearchHandler();
-      return console.log('first time view load', initialMapView);
+      return console.log('first time view load', this.initialMapView);
     };
 
     MapCanvasView.prototype.render = function(event) {
