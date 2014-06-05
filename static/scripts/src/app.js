@@ -116,6 +116,8 @@
 
     MapCanvasView.prototype.allMarkers = [];
 
+    MapCanvasView.prototype.initialMapView = true;
+
     MapCanvasView.prototype.field_labels = {
       place_name: 'location',
       scene_time: 'time',
@@ -166,7 +168,8 @@
       }
       this.listenTo(this.collection, 'all', this.render);
       this.collection.fetch();
-      return this.attachSearchHandler();
+      this.attachSearchHandler();
+      return console.log('first time view load', initialMapView);
     };
 
     MapCanvasView.prototype.render = function(event) {
@@ -187,6 +190,26 @@
           return _this.handleMapClick(event);
         };
       })(this));
+      google.maps.event.addListener(this.gmap, 'bounds_changed', (function(_this) {
+        return function(event) {
+          return _this.handleViewportChange(event);
+        };
+      })(this));
+      google.maps.event.addListener(this.gmap, 'center_changed', (function(_this) {
+        return function(event) {
+          return _this.handleViewportChange(event);
+        };
+      })(this));
+      google.maps.event.addListener(this.gmap, 'zoom_changed', (function(_this) {
+        return function(event) {
+          return _this.handleViewportChange(event);
+        };
+      })(this));
+      google.maps.event.addListener(this.gmap, 'idle', (function(_this) {
+        return function(event) {
+          return _this.updateCollection(event);
+        };
+      })(this));
       return this.gmap;
     };
 
@@ -197,8 +220,7 @@
         lat: center[Object.keys(center)[0]],
         lon: center[Object.keys(center)[1]]
       };
-      zoom = this.gmap.getZoom();
-      return console.log('center_changed', center, centerGeoPt, zoom);
+      return zoom = this.gmap.getZoom();
     };
 
     MapCanvasView.prototype.updateCollection = function(event) {
@@ -431,13 +453,16 @@
       }
       this.allMarkers = this.markerArrayFromCollection(this.collection);
       this.markerClustersForScenes(this.allMarkers);
-      return this.positionMap();
+      console.log('first view display?', this.initialMapView);
+      if (this.initialMapView === true) {
+        return this.positionMap();
+      }
     };
 
     MapCanvasView.prototype.positionMap = function() {
       var mapcenter, usaCoords, usacenter, windowOptions;
-      if (typeof CENTER !== "undefined" && CENTER !== null) {
-        mapcenter = new google.maps.LatLng(CENTER.lat, CENTER.lng);
+      if (window.CENTER != null) {
+        mapcenter = new google.maps.LatLng(window.CENTER.lat, window.CENTER.lng);
         this.gmap.setCenter(mapcenter);
         if (window.location.pathname.indexOf('collections') !== -1) {
           this.gmap.setZoom(this.settings.zoomLevel.wide);
@@ -456,12 +481,13 @@
         this.gmap.setCenter(usacenter);
         this.gmap.setZoom(2);
       }
-      if (typeof PLACEKEY !== "undefined" && PLACEKEY !== null) {
+      if (window.PLACEKEY != null) {
         windowOptions = {
           position: mapcenter
         };
-        return this.openInfowindowForPlace(PLACEKEY, windowOptions);
+        this.openInfowindowForPlace(window.PLACEKEY, windowOptions);
       }
+      return this.initialMapView = false;
     };
 
     MapCanvasView.prototype.handleMapClick = function(event) {
@@ -748,6 +774,8 @@
     MapCanvasView.prototype.openInfowindowForPlace = function(place_key, windowOptions) {
       var tracking, url;
       url = '/places/info/' + place_key;
+      console.log('place key?', window.PLACEKEY);
+      window.PLACEKEY = null;
       if (windowOptions.marker) {
         tracking = {
           'category': 'marker',

@@ -48,6 +48,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
   placeInfowindow: null
   userMapsMarker: null
   allMarkers: []
+  initialMapView: true
 
   field_labels:
     place_name: 'location'
@@ -94,6 +95,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @collection.fetch()
     # setup handler for geocoder searches
     @attachSearchHandler()
+    console.log('first time view load', initialMapView)
 
   render: (event) ->
     @mapWithMarkers() if event is 'sync'
@@ -106,18 +108,18 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     google.maps.event.addListener(@gmap, 'click', (event) =>
       @handleMapClick(event)
     )
-    # google.maps.event.addListener(@gmap, 'bounds_changed', (event) =>
-    #   @handleViewportChange(event)
-    # )
-    # google.maps.event.addListener(@gmap, 'center_changed', (event) =>
-    #   @handleViewportChange(event)
-    # )
-    # google.maps.event.addListener(@gmap, 'zoom_changed', (event) =>
-    #   @handleViewportChange(event)
-    # )
-    # google.maps.event.addListener(@gmap, 'idle', (event) =>
-    #   @updateCollection(event)
-    # )
+    google.maps.event.addListener(@gmap, 'bounds_changed', (event) =>
+      @handleViewportChange(event)
+    )
+    google.maps.event.addListener(@gmap, 'center_changed', (event) =>
+      @handleViewportChange(event)
+    )
+    google.maps.event.addListener(@gmap, 'zoom_changed', (event) =>
+      @handleViewportChange(event)
+    )
+    google.maps.event.addListener(@gmap, 'idle', (event) =>
+      @updateCollection(event)
+    )
     return @gmap
 
   handleViewportChange: (event) ->
@@ -126,7 +128,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       lat: center[Object.keys(center)[0]]
       lon: center[Object.keys(center)[1]]
     zoom = @gmap.getZoom()
-    console.log('center_changed', center, centerGeoPt, zoom)
+    # console.log('center_changed', center, centerGeoPt, zoom)
 
   updateCollection: (event) ->
     center = @gmap.getCenter()
@@ -257,13 +259,15 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @allMarkers = @markerArrayFromCollection(@collection)
     # @markersForEachScene()
     @markerClustersForScenes(@allMarkers)
-    @positionMap()
+    console.log('first view display?', @initialMapView)
+    if @initialMapView == true
+      @positionMap()
     # $('#hidemarkers').on('click', @hideMarkers)
     # $('#showmarkers').on('click', @showMarkers)
 
   positionMap: () ->
-    if CENTER?
-      mapcenter = new google.maps.LatLng(CENTER.lat, CENTER.lng)
+    if window.CENTER?
+      mapcenter = new google.maps.LatLng(window.CENTER.lat, window.CENTER.lng)
       @gmap.setCenter(mapcenter)
       if (window.location.pathname.indexOf('collections') != -1)
         @gmap.setZoom(@settings.zoomLevel.wide)
@@ -278,9 +282,10 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       usacenter = new google.maps.LatLng(usaCoords.lat, usaCoords.lng)
       @gmap.setCenter(usacenter)
       @gmap.setZoom(2)
-    if PLACEKEY?
+    if window.PLACEKEY?
       windowOptions = position: mapcenter
-      @openInfowindowForPlace(PLACEKEY, windowOptions)
+      @openInfowindowForPlace(window.PLACEKEY, windowOptions)
+    @initialMapView = false
 
   handleMapClick: (event) ->
     @setUserMapMarker(@gmap, event.latLng)
@@ -480,6 +485,9 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     # this can be triggered by a deep link or map marker click
     # TODO: marker clicks are tracked as events, deep links as pages- RESOLVE
     url = '/places/info/' + place_key
+    console.log('place key?', window.PLACEKEY)
+    window.PLACEKEY = null
+
     if windowOptions.marker
       tracking =
         'category': 'marker'
