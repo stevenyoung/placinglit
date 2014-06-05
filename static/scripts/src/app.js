@@ -190,68 +190,7 @@
           return _this.handleMapClick(event);
         };
       })(this));
-      google.maps.event.addListener(this.gmap, 'bounds_changed', (function(_this) {
-        return function(event) {
-          return _this.handleViewportChange(event);
-        };
-      })(this));
-      google.maps.event.addListener(this.gmap, 'center_changed', (function(_this) {
-        return function(event) {
-          return _this.handleViewportChange(event);
-        };
-      })(this));
-      google.maps.event.addListener(this.gmap, 'zoom_changed', (function(_this) {
-        return function(event) {
-          return _this.handleViewportChange(event);
-        };
-      })(this));
-      google.maps.event.addListener(this.gmap, 'idle', (function(_this) {
-        return function(event) {
-          return _this.updateCollection(event);
-        };
-      })(this));
       return this.gmap;
-    };
-
-    MapCanvasView.prototype.handleViewportChange = function(event) {
-      var center, centerGeoPt, zoom;
-      center = this.gmap.getCenter();
-      centerGeoPt = {
-        lat: center[Object.keys(center)[0]],
-        lon: center[Object.keys(center)[1]]
-      };
-      return zoom = this.gmap.getZoom();
-    };
-
-    MapCanvasView.prototype.updateCollection = function(event) {
-      var center, centerGeoPt, collection_url, query, update, zoom;
-      center = this.gmap.getCenter();
-      centerGeoPt = {
-        lat: center[Object.keys(center)[0]],
-        lng: center[Object.keys(center)[1]]
-      };
-      zoom = this.gmap.getZoom();
-      console.log('pan/zoom idle', centerGeoPt, zoom);
-      if (window.CENTER != null) {
-        console.log(window.CENTER);
-        console.log(Math.abs(window.CENTER.lat - centerGeoPt.lat));
-        console.log(Math.abs(window.CENTER.lng - centerGeoPt.lng));
-      } else {
-        window.CENTER = centerGeoPt;
-      }
-      query = '?lat=' + centerGeoPt.lat + '&lon=' + centerGeoPt.lng;
-      collection_url = '/places/near' + query;
-      update = false;
-      if (Math.abs(window.CENTER.lat - centerGeoPt.lat) > 5) {
-        update = true;
-      }
-      if (Math.abs(window.CENTER.lng - centerGeoPt.lng) > 5) {
-        update = true;
-      }
-      if (update) {
-        window.CENTER = centerGeoPt;
-        return this.collection.reset(collection_url);
-      }
     };
 
     MapCanvasView.prototype.marker = function() {
@@ -1140,6 +1079,82 @@
     MapFilterView.prototype.render = function(event) {
       this.mapWithMarkers();
       return this.attachFilteredViewSearchHandler();
+    };
+
+    MapFilterView.prototype.googlemap = function() {
+      var map_elem;
+      if (this.gmap != null) {
+        return this.gmap;
+      }
+      map_elem = document.getElementById(this.$el.selector);
+      this.gmap = new google.maps.Map(map_elem, this.mapOptions);
+      google.maps.event.addListener(this.gmap, 'click', (function(_this) {
+        return function(event) {
+          return _this.handleMapClick(event);
+        };
+      })(this));
+      google.maps.event.addListener(this.gmap, 'bounds_changed', (function(_this) {
+        return function(event) {
+          return _this.handleViewportChange(event);
+        };
+      })(this));
+      google.maps.event.addListener(this.gmap, 'center_changed', (function(_this) {
+        return function(event) {
+          return _this.handleViewportChange(event);
+        };
+      })(this));
+      google.maps.event.addListener(this.gmap, 'zoom_changed', (function(_this) {
+        return function(event) {
+          return _this.handleViewportChange(event);
+        };
+      })(this));
+      google.maps.event.addListener(this.gmap, 'idle', (function(_this) {
+        return function(event) {
+          return _this.updateCollection(event);
+        };
+      })(this));
+      return this.gmap;
+    };
+
+    MapFilterView.prototype.handleViewportChange = function(event) {
+      var center, centerGeoPt, zoom;
+      center = this.gmap.getCenter();
+      centerGeoPt = {
+        lat: center[Object.keys(center)[0]],
+        lon: center[Object.keys(center)[1]]
+      };
+      return zoom = this.gmap.getZoom();
+    };
+
+    MapFilterView.prototype.updateCollection = function(event) {
+      var center, centerGeoPt, collection_url, query, update, zoom;
+      center = this.gmap.getCenter();
+      centerGeoPt = {
+        lat: center[Object.keys(center)[0]],
+        lng: center[Object.keys(center)[1]]
+      };
+      zoom = this.gmap.getZoom();
+      console.log('pan/zoom idle', centerGeoPt, zoom);
+      if (window.CENTER != null) {
+        console.log(window.CENTER);
+        console.log(Math.abs(window.CENTER.lat - centerGeoPt.lat));
+        console.log(Math.abs(window.CENTER.lng - centerGeoPt.lng));
+      } else {
+        window.CENTER = centerGeoPt;
+      }
+      query = '?lat=' + centerGeoPt.lat + '&lon=' + centerGeoPt.lng;
+      collection_url = '/places/near' + query;
+      update = false;
+      if (Math.abs(window.CENTER.lat - centerGeoPt.lat) > 5) {
+        update = true;
+      }
+      if (Math.abs(window.CENTER.lng - centerGeoPt.lng) > 5) {
+        update = true;
+      }
+      if (update) {
+        window.CENTER = centerGeoPt;
+        return this.collection.reset(collection_url);
+      }
     };
 
     return MapFilterView;
