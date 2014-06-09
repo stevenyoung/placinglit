@@ -95,7 +95,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @collection.fetch()
     # setup handler for geocoder searches
     @attachSearchHandler()
-    console.log('first time view load', @initialMapView)
 
   render: (event) ->
     @mapWithMarkers() if event is 'sync'
@@ -651,6 +650,7 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
       @filteredViewGeocoderSearch()
 
   initialize: (scenes) ->
+    console.log('filtered view', scenes)
     @collection ?= new PlacingLit.Collections.Locations()
     @listenTo @collection, 'all', @render
     @collection.reset(scenes)
@@ -662,23 +662,28 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
   googlemap: ()->
     return @gmap if @gmap?
     map_elem = document.getElementById(@$el.selector)
+    console.log('map options', @mapOptions)
+    @mapOptions.minZoom = 4
     @gmap = new google.maps.Map(map_elem, @mapOptions)
     # @mapCenter = @gmap.getCenter()
     google.maps.event.addListener(@gmap, 'click', (event) =>
       @handleMapClick(event)
     )
-    google.maps.event.addListener(@gmap, 'bounds_changed', (event) =>
-      @handleViewportChange(event)
-    )
-    google.maps.event.addListener(@gmap, 'center_changed', (event) =>
-      @handleViewportChange(event)
-    )
-    google.maps.event.addListener(@gmap, 'zoom_changed', (event) =>
-      @handleViewportChange(event)
-    )
-    google.maps.event.addListener(@gmap, 'idle', (event) =>
-      @updateCollection(event)
-    )
+    # google.maps.event.addListener(@gmap, 'dblclick', (event) =>
+    #   @handleMapClick(event)
+    # )
+    # google.maps.event.addListener(@gmap, 'bounds_changed', (event) =>
+    #   @handleViewportChange(event)
+    # )
+    # google.maps.event.addListener(@gmap, 'center_changed', (event) =>
+    #   @handleViewportChange(event)
+    # )
+    # google.maps.event.addListener(@gmap, 'zoom_changed', (event) =>
+    #   @handleViewportChange(event)
+    # )
+    # google.maps.event.addListener(@gmap, 'idle', (event) =>
+    #   @updateCollection(event)
+    # )
     return @gmap
 
   handleViewportChange: (event) ->
@@ -695,7 +700,7 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
       lat: center[Object.keys(center)[0]]
       lng: center[Object.keys(center)[1]]
     zoom = @gmap.getZoom()
-    console.log('pan/zoom idle', centerGeoPt, zoom)
+    console.log('pan/zoom idle', centerGeoPt, zoom, @collection.length)
     if window.CENTER?
       console.log(window.CENTER)
       console.log(Math.abs(window.CENTER.lat - centerGeoPt.lat))
@@ -703,8 +708,6 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
     else
       window.CENTER = centerGeoPt
 
-    query = '?lat=' + centerGeoPt.lat + '&lon=' + centerGeoPt.lng
-    collection_url = '/places/near' + query
     update = false
     if Math.abs(window.CENTER.lat - centerGeoPt.lat) > 5
       update = true
@@ -714,4 +717,20 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
     # window.CENTER = centerGeoPt
     if update
       window.CENTER = centerGeoPt
-      @collection.reset(collection_url)
+      query = '?lat=' + centerGeoPt.lat + '&lon=' + centerGeoPt.lng
+      collection_url = '/places/near' + query
+      new_markers = new PlacingLit.Collections.Locations
+      new_markers.url = collection_url
+      current_collection = @collection
+      console.log('current', current_collection.length)
+      new_markers.fetch(
+        success: (collection, response, options) =>
+          console.log('new', collection.length)
+          updated_collection = _.union(current_collection, collection)
+          console.log('updated', updated_collection.length)
+          @allMarkers = @markerArrayFromCollection(updated_collection)
+          @markerClustersForScenes(@allMarkers)
+        error: (collection, response, options) =>
+          console.log('error', collection, response, options)
+        )
+

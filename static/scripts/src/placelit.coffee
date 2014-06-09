@@ -12,7 +12,7 @@ $(document).on('ready', ->
       alertMessage += 'Click the map to add a book and author.'
       alert alertMessage
     else
-      $('#querymodal').modal()
+      # $('#querymodal').modal()
       mapCanvas = new PlacingLit.Views.MapFilterView(window.SCENES)
   else
     mapCanvas = new PlacingLit.Views.MapCanvasView

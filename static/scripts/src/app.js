@@ -1069,6 +1069,7 @@
     };
 
     MapFilterView.prototype.initialize = function(scenes) {
+      console.log('filtered view', scenes);
       if (this.collection == null) {
         this.collection = new PlacingLit.Collections.Locations();
       }
@@ -1087,8 +1088,10 @@
         return this.gmap;
       }
       map_elem = document.getElementById(this.$el.selector);
+      console.log('map options', this.mapOptions);
+      this.mapOptions.minZoom = 4;
       this.gmap = new google.maps.Map(map_elem, this.mapOptions);
-      google.maps.event.addListener(this.gmap, 'click', (function(_this) {
+      google.maps.event.addListener(this.gmap, 'dblclick', (function(_this) {
         return function(event) {
           return _this.handleMapClick(event);
         };
@@ -1127,14 +1130,14 @@
     };
 
     MapFilterView.prototype.updateCollection = function(event) {
-      var center, centerGeoPt, collection_url, query, update, zoom;
+      var center, centerGeoPt, collection_url, current_collection, new_markers, query, update, zoom;
       center = this.gmap.getCenter();
       centerGeoPt = {
         lat: center[Object.keys(center)[0]],
         lng: center[Object.keys(center)[1]]
       };
       zoom = this.gmap.getZoom();
-      console.log('pan/zoom idle', centerGeoPt, zoom);
+      console.log('pan/zoom idle', centerGeoPt, zoom, this.collection.length);
       if (window.CENTER != null) {
         console.log(window.CENTER);
         console.log(Math.abs(window.CENTER.lat - centerGeoPt.lat));
@@ -1142,8 +1145,6 @@
       } else {
         window.CENTER = centerGeoPt;
       }
-      query = '?lat=' + centerGeoPt.lat + '&lon=' + centerGeoPt.lng;
-      collection_url = '/places/near' + query;
       update = false;
       if (Math.abs(window.CENTER.lat - centerGeoPt.lat) > 5) {
         update = true;
@@ -1153,7 +1154,29 @@
       }
       if (update) {
         window.CENTER = centerGeoPt;
-        return this.collection.reset(collection_url);
+        query = '?lat=' + centerGeoPt.lat + '&lon=' + centerGeoPt.lng;
+        collection_url = '/places/near' + query;
+        new_markers = new PlacingLit.Collections.Locations;
+        new_markers.url = collection_url;
+        current_collection = this.collection;
+        console.log('current', current_collection.length);
+        return new_markers.fetch({
+          success: (function(_this) {
+            return function(collection, response, options) {
+              var updated_collection;
+              console.log('new', collection.length);
+              updated_collection = _.union(current_collection, collection);
+              console.log('updated', updated_collection.length);
+              _this.allMarkers = _this.markerArrayFromCollection(updated_collection);
+              return _this.markerClustersForScenes(_this.allMarkers);
+            };
+          })(this),
+          error: (function(_this) {
+            return function(collection, response, options) {
+              return console.log('error', collection, response, options);
+            };
+          })(this)
+        });
       }
     };
 
