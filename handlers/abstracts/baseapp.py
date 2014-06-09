@@ -16,13 +16,15 @@ from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 
+import keys
+
 TEMPLATE_DIRS = os.path.join(os.path.dirname(__file__), '..', '..', 'templates')
 
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1048576  # 1 MB
 GM3_SSL_API_URL = 'https://maps-api-ssl.google.com/maps/api/js?v=3&sensor=true'
 GM3_API_URL = 'http://maps.google.com/maps/api/js?sensor=true'
 JSON_XSSI_PREFIX = None
-GM3_API_KEY = 'AIzaSyBILv0WzDmEWQ3CFdzJvSPE1v_bD5VcG6w'
+GM3_API_KEY = keys.gmaps_api_key
 
 
 class BaseAppHandler(webapp.RequestHandler):
