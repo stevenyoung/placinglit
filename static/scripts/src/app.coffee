@@ -107,7 +107,54 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     google.maps.event.addListener(@gmap, 'click', (event) =>
       @handleMapClick(event)
     )
+    # google.maps.event.addListener(@gmap, 'bounds_changed', (event) =>
+    #   @handleViewportChange(event)
+    # )
+    # google.maps.event.addListener(@gmap, 'center_changed', (event) =>
+    #   @handleViewportChange(event)
+    # )
+    # google.maps.event.addListener(@gmap, 'zoom_changed', (event) =>
+    #   @handleViewportChange(event)
+    # )
+    # google.maps.event.addListener(@gmap, 'idle', (event) =>
+    #   @updateCollection(event)
+    # )
     return @gmap
+
+  handleViewportChange: (event) ->
+    center = @gmap.getCenter()
+    centerGeoPt =
+      lat: center[Object.keys(center)[0]]
+      lon: center[Object.keys(center)[1]]
+    zoom = @gmap.getZoom()
+    console.log('center_changed', center, centerGeoPt, zoom)
+
+  updateCollection: (event) ->
+    center = @gmap.getCenter()
+    centerGeoPt =
+      lat: center[Object.keys(center)[0]]
+      lng: center[Object.keys(center)[1]]
+    zoom = @gmap.getZoom()
+    console.log('pan/zoom idle', centerGeoPt, zoom)
+    if window.CENTER?
+      console.log(window.CENTER)
+      console.log(Math.abs(window.CENTER.lat - centerGeoPt.lat))
+      console.log(Math.abs(window.CENTER.lng - centerGeoPt.lng))
+    else
+      window.CENTER = centerGeoPt
+
+    query = '?lat=' + centerGeoPt.lat + '&lon=' + centerGeoPt.lng
+    collection_url = '/places/near' + query
+    update = false
+    if Math.abs(window.CENTER.lat - centerGeoPt.lat) > 5
+      update = true
+    if Math.abs(window.CENTER.lng - centerGeoPt.lng) > 5
+      update = true
+
+    # window.CENTER = centerGeoPt
+    if update
+      window.CENTER = centerGeoPt
+      @collection.reset(collection_url)
 
   marker: ->
     @placeInfowindow.close() if @placeInfowindow?
@@ -211,9 +258,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @allMarkers = @markerArrayFromCollection(@collection)
     # @markersForEachScene()
     @markerClustersForScenes(@allMarkers)
-    console.log('first view display?', @initialMapView)
-    if @initialMapView == true
-      @positionMap()
+    @positionMap()
     # $('#hidemarkers').on('click', @hideMarkers)
     # $('#showmarkers').on('click', @showMarkers)
 
@@ -381,8 +426,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     return _.template(field_format)
 
   sceneButtonTemplate: ->
-    gr_books = 'http://www.goodreads.com/book/title/'
-    buy_books = 'http://www.rjjulia.com/aff/PlacingLiterature/book/v/'
     aff_span = '<span id="affbtns">'
     buybook_button =  '<span class="buybook" id="<%= buy_isbn %>">'
     buybook_button += '<img src="/img/ib.png" id="rjjbuy"/></span>'

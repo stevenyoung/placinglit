@@ -1,6 +1,11 @@
 """
 handlers.abstract.baseapp description.
+
+
+Created on Nov 19, 2012
 """
+
+__author__ = 'steven@eyeballschool.com (Steven)'
 
 import json
 import os
