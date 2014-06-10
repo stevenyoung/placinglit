@@ -168,8 +168,7 @@
       }
       this.listenTo(this.collection, 'all', this.render);
       this.collection.fetch();
-      this.attachSearchHandler();
-      return console.log('first time view load', this.initialMapView);
+      return this.attachSearchHandler();
     };
 
     MapCanvasView.prototype.render = function(event) {
@@ -1091,29 +1090,9 @@
       console.log('map options', this.mapOptions);
       this.mapOptions.minZoom = 4;
       this.gmap = new google.maps.Map(map_elem, this.mapOptions);
-      google.maps.event.addListener(this.gmap, 'dblclick', (function(_this) {
+      google.maps.event.addListener(this.gmap, 'click', (function(_this) {
         return function(event) {
           return _this.handleMapClick(event);
-        };
-      })(this));
-      google.maps.event.addListener(this.gmap, 'bounds_changed', (function(_this) {
-        return function(event) {
-          return _this.handleViewportChange(event);
-        };
-      })(this));
-      google.maps.event.addListener(this.gmap, 'center_changed', (function(_this) {
-        return function(event) {
-          return _this.handleViewportChange(event);
-        };
-      })(this));
-      google.maps.event.addListener(this.gmap, 'zoom_changed', (function(_this) {
-        return function(event) {
-          return _this.handleViewportChange(event);
-        };
-      })(this));
-      google.maps.event.addListener(this.gmap, 'idle', (function(_this) {
-        return function(event) {
-          return _this.updateCollection(event);
         };
       })(this));
       return this.gmap;
