@@ -15,6 +15,7 @@
         alertMessage += 'Click the map to add a book and author.';
         alert(alertMessage);
       } else {
+        $('#querymodal').modal();
         mapCanvas = new PlacingLit.Views.MapFilterView(window.SCENES);
       }
     } else {
