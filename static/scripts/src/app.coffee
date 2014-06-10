@@ -382,7 +382,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
 
   sceneButtonTemplate: ->
     gr_books = 'http://www.goodreads.com/book/title/'
-    buy_books = 'http://www.rjjulia.com/book/'
+    buy_books = 'http://www.rjjulia.com/aff/PlacingLiterature/book/v/'
     aff_span = '<span id="affbtns">'
     buybook_button =  '<span class="buybook" id="<%= buy_isbn %>">'
     buybook_button += '<img src="/img/ib.png" id="rjjbuy"/></span>'
@@ -463,6 +463,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     ga('send', 'event', data.category, data.action, data.label, data.value)
 
   handleInfowindowButtonEvents: () ->
+    buy_url = '//www.rjjulia.com/aff/PlacingLiterature/book/v/'
     $('#map_canvas').on 'click', '.buybook', (event) =>
       tracking =
         'category': 'button'
@@ -470,7 +471,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
         'label': event.currentTarget.id
         'value' : 1
       @mapEventTracking(tracking)
-      window.open('//www.rjjulia.com/book/' + event.currentTarget.id)
+      window.open(buy_url + event.currentTarget.id)
     $('#map_canvas').on 'click', '.reviewbook', (event) =>
       tracking =
         'category': 'button'
@@ -663,7 +664,7 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
     return @gmap if @gmap?
     map_elem = document.getElementById(@$el.selector)
     console.log('map options', @mapOptions)
-    @mapOptions.minZoom = 4
+    @mapOptions.minZoom = 2
     @gmap = new google.maps.Map(map_elem, @mapOptions)
     # @mapCenter = @gmap.getCenter()
     google.maps.event.addListener(@gmap, 'click', (event) =>

@@ -630,7 +630,7 @@
     MapCanvasView.prototype.sceneButtonTemplate = function() {
       var aff_span, buy_books, buybook_button, goodrd_button, gr_books;
       gr_books = 'http://www.goodreads.com/book/title/';
-      buy_books = 'http://www.rjjulia.com/book/';
+      buy_books = 'http://www.rjjulia.com/aff/PlacingLiterature/book/v/';
       aff_span = '<span id="affbtns">';
       buybook_button = '<span class="buybook" id="<%= buy_isbn %>">';
       buybook_button += '<img src="/img/ib.png" id="rjjbuy"/></span>';
@@ -748,6 +748,8 @@
     };
 
     MapCanvasView.prototype.handleInfowindowButtonEvents = function() {
+      var buy_url;
+      buy_url = '//www.rjjulia.com/aff/PlacingLiterature/book/v/';
       $('#map_canvas').on('click', '.buybook', (function(_this) {
         return function(event) {
           var tracking;
@@ -758,7 +760,7 @@
             'value': 1
           };
           _this.mapEventTracking(tracking);
-          return window.open('//www.rjjulia.com/book/' + event.currentTarget.id);
+          return window.open(buy_url + event.currentTarget.id);
         };
       })(this));
       return $('#map_canvas').on('click', '.reviewbook', (function(_this) {
@@ -1088,7 +1090,7 @@
       }
       map_elem = document.getElementById(this.$el.selector);
       console.log('map options', this.mapOptions);
-      this.mapOptions.minZoom = 4;
+      this.mapOptions.minZoom = 2;
       this.gmap = new google.maps.Map(map_elem, this.mapOptions);
       google.maps.event.addListener(this.gmap, 'click', (function(_this) {
         return function(event) {
