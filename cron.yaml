@@ -4,6 +4,6 @@ cron:
   schedule: every 24 hours
 
 - description: datastore backups
-  url: /_ah/datastore_admin/backup.create?name=AllEntitiesBackup&kind=Author&kind=Book&kind=Collection&kind=PlacedLit&kind=User&kind=UserRequest&filesystem=blobstore
+  url: /_ah/datastore_admin/backup.create?name=AllEntitiesBackup&kind=Author&kind=Book&kind=Collection&kind=PlacedLit&kind=User&kind=UserRequest&kind=Panoramio&filesystem=blobstore
   schedule: every 24 hours
   target: ah-builtin-python-bundle
