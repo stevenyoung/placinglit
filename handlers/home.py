@@ -44,6 +44,7 @@ class MapHandler(baseapp.BaseAppHandler):
     key = self.request.get('key')
     lat = self.request.get('lat')
     lng = self.request.get('lon')  # FIXIT- Pick one: 'lon', 'lng'
+    lng = self.request.get('lng')
     if lat and lng:  # lat, lng with no scene
       logging.info('got lat, lng in query string')
       template_values['center'] = '{lat:%s,lng:%s}' % (lat, lng)
