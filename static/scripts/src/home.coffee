@@ -1,7 +1,7 @@
 #!/usr/bin/env coffee
 
 $(document).on('ready', ->
-  hpCitySearch = () ->
+  hpCitySearch = ->
     address = gcfield.value
     geocoder = new google.maps.Geocoder()
     geocoder.geocode {'address':address}, (results, status) =>
@@ -16,13 +16,13 @@ $(document).on('ready', ->
       else
         alert("geocode was not successful: " + status)
 
-  hpAuthorSearch = () ->
+  hpAuthorSearch = ->
     authorq = authorfield.value
     mapUrl = window.location.protocol + '//' + window.location.host
     mapUrl += '/map/filter/author/' + authorq
     window.location = mapUrl
 
-  hpSuggestAuthors = () ->
+  hpSuggestAuthors = ->
     author_data = []
     $.ajax
       url: "/places/authors"
@@ -31,6 +31,23 @@ $(document).on('ready', ->
           author_data.push(value.author.toString())
         $('#authorq').typeahead({source: author_data})
 
+
+  updateMapLinksWithLocation = (location) ->
+    lat = location.latitude
+    lng = location.longitude
+    $('#hpbuttons').find('a').attr('href', 'map?lat=' + lat + '&lng=' + lng)
+
+  updateMapLinksWithUserLocation = ->
+    if navigator.geolocation
+      navigator.geolocation.getCurrentPosition((position) ->
+        console.log('lat', position.coords.latitude, 'lng', position.coords.longitude)
+        userLocation =
+          latitude: position.coords.latitude
+          longitude: position.coords.longitude
+        updateMapLinksWithLocation(userLocation)
+      )
+
+  updateMapLinksWithUserLocation()
   hpSuggestAuthors()
   recentPlacesView = new PlacingLit.Views.RecentPlaces
   countView = new PlacingLit.Views.Countview
