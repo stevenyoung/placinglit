@@ -104,9 +104,9 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     map_elem = document.getElementById(@$el.selector)
     @gmap = new google.maps.Map(map_elem, @mapOptions)
     # @mapCenter = @gmap.getCenter()
-    google.maps.event.addListener(@gmap, 'click', (event) =>
-      @handleMapClick(event)
-    )
+    # google.maps.event.addListener(@gmap, 'click', (event) =>
+    #   @handleMapClick(event)
+    # )
     # google.maps.event.addListener(@gmap, 'bounds_changed', (event) =>
     #   @handleViewportChange(event)
     # )
@@ -259,6 +259,8 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     # @markersForEachScene()
     @markerClustersForScenes(@allMarkers)
     @positionMap()
+    $('#addscenebutton').on('click', @handleAddSceneButtonClick)
+    $('#addscenebutton').show()
     # $('#hidemarkers').on('click', @hideMarkers)
     # $('#showmarkers').on('click', @showMarkers)
 
@@ -287,7 +289,14 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
   handleMapClick: (event) ->
     @setUserMapMarker(@gmap, event.latLng)
 
+  handleAddSceneButtonClick: =>
+    @setUserMapMarker(@gmap, @gmap.getCenter())
+    $('#addscenebutton').hide()
+    console.log('all markers', @allMarkers)
+    marker.setMap(null) for marker in @allMarkers
+
   setUserMapMarker: (map, location) ->
+    console.log(map)
     @userMapsMarker.setMap(null) if @userMapsMarker?
     @userInfowindow.close() if @userInfowindow?
     @userMapsMarker = @markerFromMapLocation(map, location)

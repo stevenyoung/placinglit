@@ -1168,7 +1168,7 @@ input:focus:invalid:focus, textarea:focus:invalid:focus, select:focus:invalid:fo
   background-color: #eee;
   border: 1px solid #ccc; }
 
-.input-append .add-on, .input-prepend .add-on, .input-append .btn, .input-append #maplogin button, #maplogin .input-append button, .input-prepend .btn, .input-prepend #maplogin button, #maplogin .input-prepend button, .input-append .btn-group > .dropdown-toggle, .input-prepend .btn-group > .dropdown-toggle {
+.input-append .add-on, .input-prepend .add-on, .input-append .btn, .input-append #maplogin button, #maplogin .input-append button, .input-append #addscenebutton, .input-prepend .btn, .input-prepend #maplogin button, #maplogin .input-prepend button, .input-prepend #addscenebutton, .input-append .btn-group > .dropdown-toggle, .input-prepend .btn-group > .dropdown-toggle {
   vertical-align: top;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -1178,10 +1178,10 @@ input:focus:invalid:focus, textarea:focus:invalid:focus, select:focus:invalid:fo
   background-color: #a9dba9;
   border-color: #46a546; }
 
-.input-prepend .add-on, .input-prepend .btn, .input-prepend #maplogin button, #maplogin .input-prepend button {
+.input-prepend .add-on, .input-prepend .btn, .input-prepend #maplogin button, #maplogin .input-prepend button, .input-prepend #addscenebutton {
   margin-right: -1px; }
 
-.input-prepend .add-on:first-child, .input-prepend .btn:first-child, .input-prepend #maplogin button:first-child, #maplogin .input-prepend button:first-child {
+.input-prepend .add-on:first-child, .input-prepend .btn:first-child, .input-prepend #maplogin button:first-child, #maplogin .input-prepend button:first-child, .input-prepend #addscenebutton:first-child {
   -webkit-border-radius: 4px 0 0 4px;
   -moz-border-radius: 4px 0 0 4px;
   border-radius: 4px 0 0 4px; }
@@ -1191,15 +1191,15 @@ input:focus:invalid:focus, textarea:focus:invalid:focus, select:focus:invalid:fo
   -moz-border-radius: 4px 0 0 4px;
   border-radius: 4px 0 0 4px; }
 
-.input-append input + .btn-group .btn:last-child, .input-append input + .btn-group #maplogin button:last-child, #maplogin .input-append input + .btn-group button:last-child, .input-append select + .btn-group .btn:last-child, .input-append select + .btn-group #maplogin button:last-child, #maplogin .input-append select + .btn-group button:last-child, .input-append .uneditable-input + .btn-group .btn:last-child, .input-append .uneditable-input + .btn-group #maplogin button:last-child, #maplogin .input-append .uneditable-input + .btn-group button:last-child {
+.input-append input + .btn-group .btn:last-child, .input-append input + .btn-group #maplogin button:last-child, #maplogin .input-append input + .btn-group button:last-child, .input-append input + .btn-group #addscenebutton:last-child, .input-append select + .btn-group .btn:last-child, .input-append select + .btn-group #maplogin button:last-child, #maplogin .input-append select + .btn-group button:last-child, .input-append select + .btn-group #addscenebutton:last-child, .input-append .uneditable-input + .btn-group .btn:last-child, .input-append .uneditable-input + .btn-group #maplogin button:last-child, #maplogin .input-append .uneditable-input + .btn-group button:last-child, .input-append .uneditable-input + .btn-group #addscenebutton:last-child {
   -webkit-border-radius: 0 4px 4px 0;
   -moz-border-radius: 0 4px 4px 0;
   border-radius: 0 4px 4px 0; }
 
-.input-append .add-on, .input-append .btn, .input-append #maplogin button, #maplogin .input-append button, .input-append .btn-group {
+.input-append .add-on, .input-append .btn, .input-append #maplogin button, #maplogin .input-append button, .input-append #addscenebutton, .input-append .btn-group {
   margin-left: -1px; }
 
-.input-append .add-on:last-child, .input-append .btn:last-child, .input-append #maplogin button:last-child, #maplogin .input-append button:last-child, .input-append .btn-group:last-child > .dropdown-toggle {
+.input-append .add-on:last-child, .input-append .btn:last-child, .input-append #maplogin button:last-child, #maplogin .input-append button:last-child, .input-append #addscenebutton:last-child, .input-append .btn-group:last-child > .dropdown-toggle {
   -webkit-border-radius: 0 4px 4px 0;
   -moz-border-radius: 0 4px 4px 0;
   border-radius: 0 4px 4px 0; }
@@ -1209,18 +1209,18 @@ input:focus:invalid:focus, textarea:focus:invalid:focus, select:focus:invalid:fo
   -moz-border-radius: 0;
   border-radius: 0; }
 
-.input-prepend.input-append input + .btn-group .btn, .input-prepend.input-append input + .btn-group #maplogin button, #maplogin .input-prepend.input-append input + .btn-group button, .input-prepend.input-append select + .btn-group .btn, .input-prepend.input-append select + .btn-group #maplogin button, #maplogin .input-prepend.input-append select + .btn-group button, .input-prepend.input-append .uneditable-input + .btn-group .btn, .input-prepend.input-append .uneditable-input + .btn-group #maplogin button, #maplogin .input-prepend.input-append .uneditable-input + .btn-group button {
+.input-prepend.input-append input + .btn-group .btn, .input-prepend.input-append input + .btn-group #maplogin button, #maplogin .input-prepend.input-append input + .btn-group button, .input-prepend.input-append input + .btn-group #addscenebutton, .input-prepend.input-append select + .btn-group .btn, .input-prepend.input-append select + .btn-group #maplogin button, #maplogin .input-prepend.input-append select + .btn-group button, .input-prepend.input-append select + .btn-group #addscenebutton, .input-prepend.input-append .uneditable-input + .btn-group .btn, .input-prepend.input-append .uneditable-input + .btn-group #maplogin button, #maplogin .input-prepend.input-append .uneditable-input + .btn-group button, .input-prepend.input-append .uneditable-input + .btn-group #addscenebutton {
   -webkit-border-radius: 0 4px 4px 0;
   -moz-border-radius: 0 4px 4px 0;
   border-radius: 0 4px 4px 0; }
 
-.input-prepend.input-append .add-on:first-child, .input-prepend.input-append .btn:first-child, .input-prepend.input-append #maplogin button:first-child, #maplogin .input-prepend.input-append button:first-child {
+.input-prepend.input-append .add-on:first-child, .input-prepend.input-append .btn:first-child, .input-prepend.input-append #maplogin button:first-child, #maplogin .input-prepend.input-append button:first-child, .input-prepend.input-append #addscenebutton:first-child {
   margin-right: -1px;
   -webkit-border-radius: 4px 0 0 4px;
   -moz-border-radius: 4px 0 0 4px;
   border-radius: 4px 0 0 4px; }
 
-.input-prepend.input-append .add-on:last-child, .input-prepend.input-append .btn:last-child, .input-prepend.input-append #maplogin button:last-child, #maplogin .input-prepend.input-append button:last-child {
+.input-prepend.input-append .add-on:last-child, .input-prepend.input-append .btn:last-child, .input-prepend.input-append #maplogin button:last-child, #maplogin .input-prepend.input-append button:last-child, .input-prepend.input-append #addscenebutton:last-child {
   margin-left: -1px;
   -webkit-border-radius: 0 4px 4px 0;
   -moz-border-radius: 0 4px 4px 0;
@@ -1249,7 +1249,7 @@ input.search-query {
   -moz-border-radius: 14px 0 0 14px;
   border-radius: 14px 0 0 14px; }
 
-.form-search .input-append .btn, .form-search .input-append #maplogin button, #maplogin .form-search .input-append button {
+.form-search .input-append .btn, .form-search .input-append #maplogin button, #maplogin .form-search .input-append button, .form-search .input-append #addscenebutton {
   -webkit-border-radius: 0 14px 14px 0;
   -moz-border-radius: 0 14px 14px 0;
   border-radius: 0 14px 14px 0; }
@@ -1259,7 +1259,7 @@ input.search-query {
   -moz-border-radius: 0 14px 14px 0;
   border-radius: 0 14px 14px 0; }
 
-.form-search .input-prepend .btn, .form-search .input-prepend #maplogin button, #maplogin .form-search .input-prepend button {
+.form-search .input-prepend .btn, .form-search .input-prepend #maplogin button, #maplogin .form-search .input-prepend button, .form-search .input-prepend #addscenebutton {
   -webkit-border-radius: 14px 0 0 14px;
   -moz-border-radius: 14px 0 0 14px;
   border-radius: 14px 0 0 14px; }
@@ -2218,7 +2218,7 @@ button.close {
   border: 0;
   -webkit-appearance: none; }
 
-.btn, #maplogin button {
+.btn, #maplogin button, #addscenebutton {
   display: inline-block;
   *display: inline;
   padding: 4px 12px;
@@ -2254,18 +2254,18 @@ button.close {
   -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05); }
 
-.btn:hover, #maplogin button:hover, .btn:focus, #maplogin button:focus, .btn:active, #maplogin button:active, .btn.active, #maplogin button.active, .btn.disabled, #maplogin button.disabled, .btn[disabled], #maplogin button[disabled] {
+.btn:hover, #maplogin button:hover, #addscenebutton:hover, .btn:focus, #maplogin button:focus, #addscenebutton:focus, .btn:active, #maplogin button:active, #addscenebutton:active, .btn.active, #maplogin button.active, .active#addscenebutton, .btn.disabled, #maplogin button.disabled, .disabled#addscenebutton, .btn[disabled], #maplogin button[disabled], [disabled]#addscenebutton {
   color: #333;
   background-color: #e6e6e6;
   *background-color: #d9d9d9; }
 
-.btn:active, #maplogin button:active, .btn.active, #maplogin button.active {
+.btn:active, #maplogin button:active, #addscenebutton:active, .btn.active, #maplogin button.active, .active#addscenebutton {
   background-color: #ccc \9; }
 
-.btn:first-child, #maplogin button:first-child {
+.btn:first-child, #maplogin button:first-child, #addscenebutton:first-child {
   *margin-left: 0; }
 
-.btn:hover, #maplogin button:hover, .btn:focus, #maplogin button:focus {
+.btn:hover, #maplogin button:hover, #addscenebutton:hover, .btn:focus, #maplogin button:focus, #addscenebutton:focus {
   color: #333;
   text-decoration: none;
   background-position: 0 -15px;
@@ -2274,19 +2274,19 @@ button.close {
   -o-transition: background-position .1s linear;
   transition: background-position .1s linear; }
 
-.btn:focus, #maplogin button:focus {
+.btn:focus, #maplogin button:focus, #addscenebutton:focus {
   outline: thin dotted #333;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px; }
 
-.btn.active, #maplogin button.active, .btn:active, #maplogin button:active {
+.btn.active, #maplogin button.active, .active#addscenebutton, .btn:active, #maplogin button:active, #addscenebutton:active {
   background-image: none;
   outline: 0;
   -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05); }
 
-.btn.disabled, #maplogin button.disabled, .btn[disabled], #maplogin button[disabled] {
+.btn.disabled, #maplogin button.disabled, .disabled#addscenebutton, .btn[disabled], #maplogin button[disabled], [disabled]#addscenebutton {
   cursor: default;
   background-image: none;
   opacity: .65;
@@ -2340,10 +2340,10 @@ button.close {
 input[type="submit"].btn-block, input[type="reset"].btn-block, input[type="button"].btn-block {
   width: 100%; }
 
-.btn-primary.active, .btn-warning.active, .btn-danger.active, .btn-success.active, .btn-info.active, #maplogin button.active, .btn-inverse.active {
+.btn-primary.active, .active#addscenebutton, .btn-warning.active, .btn-danger.active, .btn-success.active, .btn-info.active, #maplogin button.active, .btn-inverse.active {
   color: rgba(255, 255, 255, 0.75); }
 
-.btn-primary {
+.btn-primary, #addscenebutton {
   color: #fff;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   background-color: #006dcc;
@@ -2359,12 +2359,12 @@ input[type="submit"].btn-block, input[type="reset"].btn-block, input[type="butto
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc',endColorstr='#ff0044cc',GradientType=0);
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false); }
 
-.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .btn-primary.disabled, .btn-primary[disabled] {
+.btn-primary:hover, #addscenebutton:hover, .btn-primary:focus, #addscenebutton:focus, .btn-primary:active, #addscenebutton:active, .btn-primary.active, .active#addscenebutton, .btn-primary.disabled, .disabled#addscenebutton, .btn-primary[disabled], [disabled]#addscenebutton {
   color: #fff;
   background-color: #04c;
   *background-color: #003bb3; }
 
-.btn-primary:active, .btn-primary.active {
+.btn-primary:active, #addscenebutton:active, .btn-primary.active, .active#addscenebutton {
   background-color: #039 \9; }
 
 .btn-warning {
@@ -2487,23 +2487,23 @@ input[type="submit"].btn-block, input[type="reset"].btn-block, input[type="butto
 .btn-inverse:active, .btn-inverse.active {
   background-color: #080808 \9; }
 
-button.btn, #maplogin button, input[type="submit"].btn {
+button.btn, #maplogin button, button#addscenebutton, input[type="submit"].btn, input[type="submit"]#addscenebutton {
   *padding-top: 3px;
   *padding-bottom: 3px; }
 
-button.btn::-moz-focus-inner, #maplogin button::-moz-focus-inner, input[type="submit"].btn::-moz-focus-inner {
+button.btn::-moz-focus-inner, #maplogin button::-moz-focus-inner, button#addscenebutton::-moz-focus-inner, input[type="submit"].btn::-moz-focus-inner, input[type="submit"]#addscenebutton::-moz-focus-inner {
   padding: 0;
   border: 0; }
 
-button.btn.btn-large, #maplogin button.btn-large, input[type="submit"].btn.btn-large {
+button.btn.btn-large, #maplogin button.btn-large, button.btn-large#addscenebutton, input[type="submit"].btn.btn-large, input[type="submit"].btn-large#addscenebutton {
   *padding-top: 7px;
   *padding-bottom: 7px; }
 
-button.btn.btn-small, #maplogin button.btn-small, input[type="submit"].btn.btn-small {
+button.btn.btn-small, #maplogin button.btn-small, button.btn-small#addscenebutton, input[type="submit"].btn.btn-small, input[type="submit"].btn-small#addscenebutton {
   *padding-top: 3px;
   *padding-bottom: 3px; }
 
-button.btn.btn-mini, #maplogin button.btn-mini, input[type="submit"].btn.btn-mini {
+button.btn.btn-mini, #maplogin button.btn-mini, button.btn-mini#addscenebutton, input[type="submit"].btn.btn-mini, input[type="submit"].btn-mini#addscenebutton {
   *padding-top: 1px;
   *padding-bottom: 1px; }
 
@@ -2552,19 +2552,19 @@ button.btn.btn-mini, #maplogin button.btn-mini, input[type="submit"].btn.btn-min
   margin-bottom: 10px;
   font-size: 0; }
 
-.btn-toolbar > .btn + .btn, #maplogin .btn-toolbar > button + .btn, #maplogin .btn-toolbar > .btn + button, #maplogin .btn-toolbar > button + button, .btn-toolbar > .btn-group + .btn, #maplogin .btn-toolbar > .btn-group + button, .btn-toolbar > .btn + .btn-group, #maplogin .btn-toolbar > button + .btn-group {
+.btn-toolbar > .btn + .btn, #maplogin .btn-toolbar > button + .btn, .btn-toolbar > #addscenebutton + .btn, #maplogin .btn-toolbar > .btn + button, #maplogin .btn-toolbar > button + button, #maplogin .btn-toolbar > #addscenebutton + button, .btn-toolbar > .btn + #addscenebutton, #maplogin .btn-toolbar > button + #addscenebutton, .btn-toolbar > #addscenebutton + #addscenebutton, .btn-toolbar > .btn-group + .btn, #maplogin .btn-toolbar > .btn-group + button, .btn-toolbar > .btn-group + #addscenebutton, .btn-toolbar > .btn + .btn-group, #maplogin .btn-toolbar > button + .btn-group, .btn-toolbar > #addscenebutton + .btn-group {
   margin-left: 5px; }
 
-.btn-group > .btn, #maplogin .btn-group > button {
+.btn-group > .btn, #maplogin .btn-group > button, .btn-group > #addscenebutton {
   position: relative;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0; }
 
-.btn-group > .btn + .btn, #maplogin .btn-group > button + .btn, #maplogin .btn-group > .btn + button, #maplogin .btn-group > button + button {
+.btn-group > .btn + .btn, #maplogin .btn-group > button + .btn, .btn-group > #addscenebutton + .btn, #maplogin .btn-group > .btn + button, #maplogin .btn-group > button + button, #maplogin .btn-group > #addscenebutton + button, .btn-group > .btn + #addscenebutton, #maplogin .btn-group > button + #addscenebutton, .btn-group > #addscenebutton + #addscenebutton {
   margin-left: -1px; }
 
-.btn-group > .btn, #maplogin .btn-group > button, .btn-group > .dropdown-menu, .btn-group > .popover {
+.btn-group > .btn, #maplogin .btn-group > button, .btn-group > #addscenebutton, .btn-group > .dropdown-menu, .btn-group > .popover {
   font-size: 14px; }
 
 .btn-group > .btn-mini {
@@ -2576,7 +2576,7 @@ button.btn.btn-mini, #maplogin button.btn-mini, input[type="submit"].btn.btn-min
 .btn-group > .btn-large {
   font-size: 17.5px; }
 
-.btn-group > .btn:first-child, #maplogin .btn-group > button:first-child {
+.btn-group > .btn:first-child, #maplogin .btn-group > button:first-child, .btn-group > #addscenebutton:first-child {
   margin-left: 0;
   -webkit-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
@@ -2585,7 +2585,7 @@ button.btn.btn-mini, #maplogin button.btn-mini, input[type="submit"].btn.btn-min
   -moz-border-radius-bottomleft: 4px;
   -moz-border-radius-topleft: 4px; }
 
-.btn-group > .btn:last-child, #maplogin .btn-group > button:last-child, .btn-group > .dropdown-toggle {
+.btn-group > .btn:last-child, #maplogin .btn-group > button:last-child, .btn-group > #addscenebutton:last-child, .btn-group > .dropdown-toggle {
   -webkit-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
   -webkit-border-bottom-right-radius: 4px;
@@ -2593,7 +2593,7 @@ button.btn.btn-mini, #maplogin button.btn-mini, input[type="submit"].btn.btn-min
   -moz-border-radius-topright: 4px;
   -moz-border-radius-bottomright: 4px; }
 
-.btn-group > .btn.large:first-child, #maplogin .btn-group > button.large:first-child {
+.btn-group > .btn.large:first-child, #maplogin .btn-group > button.large:first-child, .btn-group > .large#addscenebutton:first-child {
   margin-left: 0;
   -webkit-border-bottom-left-radius: 6px;
   border-bottom-left-radius: 6px;
@@ -2602,7 +2602,7 @@ button.btn.btn-mini, #maplogin button.btn-mini, input[type="submit"].btn.btn-min
   -moz-border-radius-bottomleft: 6px;
   -moz-border-radius-topleft: 6px; }
 
-.btn-group > .btn.large:last-child, #maplogin .btn-group > button.large:last-child, .btn-group > .large.dropdown-toggle {
+.btn-group > .btn.large:last-child, #maplogin .btn-group > button.large:last-child, .btn-group > .large#addscenebutton:last-child, .btn-group > .large.dropdown-toggle {
   -webkit-border-top-right-radius: 6px;
   border-top-right-radius: 6px;
   -webkit-border-bottom-right-radius: 6px;
@@ -2610,13 +2610,13 @@ button.btn.btn-mini, #maplogin button.btn-mini, input[type="submit"].btn.btn-min
   -moz-border-radius-topright: 6px;
   -moz-border-radius-bottomright: 6px; }
 
-.btn-group > .btn:hover, #maplogin .btn-group > button:hover, .btn-group > .btn:focus, #maplogin .btn-group > button:focus, .btn-group > .btn:active, #maplogin .btn-group > button:active, .btn-group > .btn.active, #maplogin .btn-group > button.active {
+.btn-group > .btn:hover, #maplogin .btn-group > button:hover, .btn-group > #addscenebutton:hover, .btn-group > .btn:focus, #maplogin .btn-group > button:focus, .btn-group > #addscenebutton:focus, .btn-group > .btn:active, #maplogin .btn-group > button:active, .btn-group > #addscenebutton:active, .btn-group > .btn.active, #maplogin .btn-group > button.active, .btn-group > .active#addscenebutton {
   z-index: 2; }
 
 .btn-group .dropdown-toggle:active, .btn-group.open .dropdown-toggle {
   outline: 0; }
 
-.btn-group > .btn + .dropdown-toggle, #maplogin .btn-group > button + .dropdown-toggle {
+.btn-group > .btn + .dropdown-toggle, #maplogin .btn-group > button + .dropdown-toggle, .btn-group > #addscenebutton + .dropdown-toggle {
   *padding-top: 5px;
   padding-right: 8px;
   *padding-bottom: 5px;
@@ -2647,10 +2647,10 @@ button.btn.btn-mini, #maplogin button.btn-mini, input[type="submit"].btn.btn-min
   -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05); }
 
-.btn-group.open .btn.dropdown-toggle, .btn-group.open #maplogin button.dropdown-toggle, #maplogin .btn-group.open button.dropdown-toggle {
+.btn-group.open .btn.dropdown-toggle, .btn-group.open #maplogin button.dropdown-toggle, #maplogin .btn-group.open button.dropdown-toggle, .btn-group.open .dropdown-toggle#addscenebutton {
   background-color: #e6e6e6; }
 
-.btn-group.open .btn-primary.dropdown-toggle {
+.btn-group.open .btn-primary.dropdown-toggle, .btn-group.open .dropdown-toggle#addscenebutton {
   background-color: #04c; }
 
 .btn-group.open .btn-warning.dropdown-toggle {
@@ -2668,7 +2668,7 @@ button.btn.btn-mini, #maplogin button.btn-mini, input[type="submit"].btn.btn-min
 .btn-group.open .btn-inverse.dropdown-toggle {
   background-color: #222; }
 
-.btn .caret, #maplogin button .caret {
+.btn .caret, #maplogin button .caret, #addscenebutton .caret {
   margin-top: 8px;
   margin-left: 0; }
 
@@ -2686,7 +2686,7 @@ button.btn.btn-mini, #maplogin button.btn-mini, input[type="submit"].btn.btn-min
 .dropup .btn-large .caret {
   border-bottom-width: 5px; }
 
-.btn-primary .caret, .btn-warning .caret, .btn-danger .caret, .btn-info .caret, #maplogin button .caret, .btn-success .caret, .btn-inverse .caret {
+.btn-primary .caret, #addscenebutton .caret, .btn-warning .caret, .btn-danger .caret, .btn-info .caret, #maplogin button .caret, .btn-success .caret, .btn-inverse .caret {
   border-top-color: #fff;
   border-bottom-color: #fff; }
 
@@ -2695,7 +2695,7 @@ button.btn.btn-mini, #maplogin button.btn-mini, input[type="submit"].btn.btn-min
   *display: inline;
   *zoom: 1; }
 
-.btn-group-vertical > .btn, #maplogin .btn-group-vertical > button {
+.btn-group-vertical > .btn, #maplogin .btn-group-vertical > button, .btn-group-vertical > #addscenebutton {
   display: block;
   float: none;
   max-width: 100%;
@@ -2703,16 +2703,16 @@ button.btn.btn-mini, #maplogin button.btn-mini, input[type="submit"].btn.btn-min
   -moz-border-radius: 0;
   border-radius: 0; }
 
-.btn-group-vertical > .btn + .btn, #maplogin .btn-group-vertical > button + .btn, #maplogin .btn-group-vertical > .btn + button, #maplogin .btn-group-vertical > button + button {
+.btn-group-vertical > .btn + .btn, #maplogin .btn-group-vertical > button + .btn, .btn-group-vertical > #addscenebutton + .btn, #maplogin .btn-group-vertical > .btn + button, #maplogin .btn-group-vertical > button + button, #maplogin .btn-group-vertical > #addscenebutton + button, .btn-group-vertical > .btn + #addscenebutton, #maplogin .btn-group-vertical > button + #addscenebutton, .btn-group-vertical > #addscenebutton + #addscenebutton {
   margin-top: -1px;
   margin-left: 0; }
 
-.btn-group-vertical > .btn:first-child, #maplogin .btn-group-vertical > button:first-child {
+.btn-group-vertical > .btn:first-child, #maplogin .btn-group-vertical > button:first-child, .btn-group-vertical > #addscenebutton:first-child {
   -webkit-border-radius: 4px 4px 0 0;
   -moz-border-radius: 4px 4px 0 0;
   border-radius: 4px 4px 0 0; }
 
-.btn-group-vertical > .btn:last-child, #maplogin .btn-group-vertical > button:last-child {
+.btn-group-vertical > .btn:last-child, #maplogin .btn-group-vertical > button:last-child, .btn-group-vertical > #addscenebutton:last-child {
   -webkit-border-radius: 0 0 4px 4px;
   -moz-border-radius: 0 0 4px 4px;
   border-radius: 0 0 4px 4px; }
@@ -3156,10 +3156,10 @@ button.btn.btn-mini, #maplogin button.btn-mini, input[type="submit"].btn.btn-min
   border-right: 1px solid #fff;
   border-left: 1px solid #f2f2f2; }
 
-.navbar .btn, #uppernav .btn, .navbar #maplogin button, #maplogin .navbar button, #uppernav #maplogin button, #maplogin #uppernav button, .navbar .btn-group, #uppernav .btn-group {
+.navbar .btn, #uppernav .btn, .navbar #maplogin button, #maplogin .navbar button, #uppernav #maplogin button, #maplogin #uppernav button, .navbar #addscenebutton, #uppernav #addscenebutton, .navbar .btn-group, #uppernav .btn-group {
   margin-top: 5px; }
 
-.navbar .btn-group .btn, #uppernav .btn-group .btn, .navbar .btn-group #maplogin button, #maplogin .navbar .btn-group button, #uppernav .btn-group #maplogin button, #maplogin #uppernav .btn-group button, .navbar .input-prepend .btn, #uppernav .input-prepend .btn, .navbar .input-prepend #maplogin button, #maplogin .navbar .input-prepend button, #uppernav .input-prepend #maplogin button, #maplogin #uppernav .input-prepend button, .navbar .input-append .btn, #uppernav .input-append .btn, .navbar .input-append #maplogin button, #maplogin .navbar .input-append button, #uppernav .input-append #maplogin button, #maplogin #uppernav .input-append button, .navbar .input-prepend .btn-group, #uppernav .input-prepend .btn-group, .navbar .input-append .btn-group, #uppernav .input-append .btn-group {
+.navbar .btn-group .btn, #uppernav .btn-group .btn, .navbar .btn-group #maplogin button, #maplogin .navbar .btn-group button, #uppernav .btn-group #maplogin button, #maplogin #uppernav .btn-group button, .navbar .btn-group #addscenebutton, #uppernav .btn-group #addscenebutton, .navbar .input-prepend .btn, #uppernav .input-prepend .btn, .navbar .input-prepend #maplogin button, #maplogin .navbar .input-prepend button, #uppernav .input-prepend #maplogin button, #maplogin #uppernav .input-prepend button, .navbar .input-prepend #addscenebutton, #uppernav .input-prepend #addscenebutton, .navbar .input-append .btn, #uppernav .input-append .btn, .navbar .input-append #maplogin button, #maplogin .navbar .input-append button, #uppernav .input-append #maplogin button, #maplogin #uppernav .input-append button, .navbar .input-append #addscenebutton, #uppernav .input-append #addscenebutton, .navbar .input-prepend .btn-group, #uppernav .input-prepend .btn-group, .navbar .input-append .btn-group, #uppernav .input-append .btn-group {
   margin-top: 0; }
 
 .navbar-form {
@@ -3177,7 +3177,7 @@ button.btn.btn-mini, #maplogin button.btn-mini, input[type="submit"].btn.btn-min
 .navbar-form input, .navbar-form select, .navbar-form .radio, .navbar-form .checkbox {
   margin-top: 5px; }
 
-.navbar-form input, .navbar-form select, .navbar-form .btn, .navbar-form #maplogin button, #maplogin .navbar-form button {
+.navbar-form input, .navbar-form select, .navbar-form .btn, .navbar-form #maplogin button, #maplogin .navbar-form button, .navbar-form #addscenebutton {
   display: inline-block;
   margin-bottom: 0; }
 
@@ -3785,11 +3785,11 @@ button.btn.btn-mini, #maplogin button.btn-mini, input[type="submit"].btn.btn-min
 .modal-footer:after {
   clear: both; }
 
-.modal-footer .btn + .btn, .modal-footer #maplogin button + .btn, #maplogin .modal-footer button + .btn, .modal-footer #maplogin .btn + button, #maplogin .modal-footer .btn + button, .modal-footer #maplogin button + button, #maplogin .modal-footer button + button {
+.modal-footer .btn + .btn, .modal-footer #maplogin button + .btn, #maplogin .modal-footer button + .btn, .modal-footer #addscenebutton + .btn, .modal-footer #maplogin .btn + button, #maplogin .modal-footer .btn + button, .modal-footer #maplogin button + button, #maplogin .modal-footer button + button, .modal-footer #maplogin #addscenebutton + button, #maplogin .modal-footer #addscenebutton + button, .modal-footer .btn + #addscenebutton, .modal-footer #maplogin button + #addscenebutton, #maplogin .modal-footer button + #addscenebutton, .modal-footer #addscenebutton + #addscenebutton {
   margin-bottom: 0;
   margin-left: 5px; }
 
-.modal-footer .btn-group .btn + .btn, .modal-footer .btn-group #maplogin button + .btn, #maplogin .modal-footer .btn-group button + .btn, .modal-footer .btn-group #maplogin .btn + button, #maplogin .modal-footer .btn-group .btn + button, .modal-footer .btn-group #maplogin button + button, #maplogin .modal-footer .btn-group button + button {
+.modal-footer .btn-group .btn + .btn, .modal-footer .btn-group #maplogin button + .btn, #maplogin .modal-footer .btn-group button + .btn, .modal-footer .btn-group #addscenebutton + .btn, .modal-footer .btn-group #maplogin .btn + button, #maplogin .modal-footer .btn-group .btn + button, .modal-footer .btn-group #maplogin button + button, #maplogin .modal-footer .btn-group button + button, .modal-footer .btn-group #maplogin #addscenebutton + button, #maplogin .modal-footer .btn-group #addscenebutton + button, .modal-footer .btn-group .btn + #addscenebutton, .modal-footer .btn-group #maplogin button + #addscenebutton, #maplogin .modal-footer .btn-group button + #addscenebutton, .modal-footer .btn-group #addscenebutton + #addscenebutton {
   margin-left: -1px; }
 
 .modal-footer .btn-block + .btn-block {
@@ -4137,7 +4137,7 @@ a.label:hover, .plinfowindow a.pllabel:hover, a.label:focus, .plinfowindow a.pll
 .label-inverse[href], .badge-inverse[href] {
   background-color: #1a1a1a; }
 
-.btn .label, #maplogin button .label, .btn .plinfowindow .pllabel, .plinfowindow .btn .pllabel, #maplogin button .plinfowindow .pllabel, .plinfowindow #maplogin button .pllabel, .btn .badge, #maplogin button .badge {
+.btn .label, #maplogin button .label, #addscenebutton .label, .btn .plinfowindow .pllabel, .plinfowindow .btn .pllabel, #maplogin button .plinfowindow .pllabel, .plinfowindow #maplogin button .pllabel, #addscenebutton .plinfowindow .pllabel, .plinfowindow #addscenebutton .pllabel, .btn .badge, #maplogin button .badge, #addscenebutton .badge {
   position: relative;
   top: -1px; }
 
@@ -4632,6 +4632,12 @@ body {
   margin-right: auto; }
   #map_canvas #thankswindow {
     text-align: left; }
+  #map_canvas h3, #map_canvas img {
+    position: relative; }
+  #map_canvas h3 {
+    top: 3em; }
+  #map_canvas img {
+    top: 5em; }
 
 #iwcontainer {
   display: none;
@@ -4723,6 +4729,7 @@ body {
   padding: 10px; }
 
 .plinfowindow {
+  z-index: 1;
   overflow: hidden;
   min-width: 400px;
   text-align: left; }
@@ -4778,3 +4785,10 @@ body {
   padding-right: 5px;
   padding-bottom: 2px;
   text-align: center; }
+
+#addscenebutton {
+  display: none;
+  position: relative;
+  top: -34em;
+  left: 7em;
+  width: 6em; }

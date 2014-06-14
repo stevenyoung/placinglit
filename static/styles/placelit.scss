@@ -163,6 +163,15 @@ body { height: $full; margin:0%; padding:0; }
   #thankswindow {
     text-align: left;
   }
+  h3, img {
+    position: relative;
+  }
+  h3  {
+    top: 3em;
+  }
+  img {
+    top: 5em;
+  }
 }
 #iwcontainer {
   display:none;
@@ -286,6 +295,7 @@ body { height: $full; margin:0%; padding:0; }
   }
 }
 .plinfowindow {
+  z-index: 1;
   overflow: hidden;
   min-width: 400px;
   text-align: left;
@@ -352,4 +362,13 @@ body { height: $full; margin:0%; padding:0; }
   padding-right: 5px;
   padding-bottom: 2px;
   text-align: center;
+}
+#addscenebutton {
+  @extend .btn;
+  @extend .btn-primary;
+  display: none;
+  position: relative;
+  top: -34em;
+  left: 7em;
+  width: 6em;
 }
