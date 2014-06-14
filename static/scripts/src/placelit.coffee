@@ -3,16 +3,21 @@
 $(document).on('ready', ->
   $('#mapmodal').modal() if location.search == '?modal=1'
   if window.SCENES
-    author_path = '/map/filter/author/'
-    query = decodeURIComponent(window.location.pathname.replace(author_path,''))
-    if window.SCENES.length == 0
+    # scenes have been preloaded from query results
+    path = window.location.pathname
+    if (window.SCENES.length == 0) and (path.indexOf('author') != -1)
+      author_path = '/map/filter/author/'
+      author_ = decodeURIComponent(path.replace(author_path,''))
       mapCanvas = new PlacingLit.Views.MapCanvasView
       alertMessage = 'Whoa! No places found for ' + query + '. '
       alertMessage += 'But that\'s ok!. Be the first to map this author. '
       alertMessage += 'Click the map to add a book and author.'
       alert alertMessage
     else
-      $('#querymodal').modal()
+      if (path.indexOf('collections') != -1)
+        $('#querymodal').modal()
+      if (path.indexOf('author') != -1)
+        $('#querymodal').modal()
       mapCanvas = new PlacingLit.Views.MapFilterView(window.SCENES)
   else
     mapCanvas = new PlacingLit.Views.MapCanvasView
