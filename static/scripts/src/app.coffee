@@ -236,8 +236,8 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
           author_data.push(value.author.toString())
         $('#map_canvas').find('#author').typeahead({source: author_data})
 
-  markersForEachScene: () ->
-    @collection.each (model) => @dropMarkerForStoredLocation(model)
+  markersForEachScene: (markers) ->
+    markers.each (model) => @dropMarkerForStoredLocation(model)
 
   markerArrayFromCollection: (collection) ->
     return (@buildMarkerFromLocation(model) for model in collection.models)
@@ -256,8 +256,9 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
   mapWithMarkers: () ->
     @gmap ?= @googlemap()
     @allMarkers = @markerArrayFromCollection(@collection)
-    # @markersForEachScene()
-    @markerClustersForScenes(@allMarkers)
+    @markersForEachScene(@collection)
+    console.log(@allMarkers)
+    # @markerClustersForScenes(@allMarkers)
     @positionMap()
     $('#addscenebutton').on('click', @handleAddSceneButtonClick)
     $('#addscenebutton').show()

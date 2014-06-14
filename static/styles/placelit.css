@@ -4632,12 +4632,6 @@ body {
   margin-right: auto; }
   #map_canvas #thankswindow {
     text-align: left; }
-  #map_canvas h3, #map_canvas img {
-    position: relative; }
-  #map_canvas h3 {
-    top: 3em; }
-  #map_canvas img {
-    top: 5em; }
 
 #iwcontainer {
   display: none;

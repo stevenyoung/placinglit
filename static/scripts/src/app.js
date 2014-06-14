@@ -371,8 +371,8 @@
       });
     };
 
-    MapCanvasView.prototype.markersForEachScene = function() {
-      return this.collection.each((function(_this) {
+    MapCanvasView.prototype.markersForEachScene = function(markers) {
+      return markers.each((function(_this) {
         return function(model) {
           return _this.dropMarkerForStoredLocation(model);
         };
@@ -428,7 +428,8 @@
         this.gmap = this.googlemap();
       }
       this.allMarkers = this.markerArrayFromCollection(this.collection);
-      this.markerClustersForScenes(this.allMarkers);
+      this.markersForEachScene(this.collection);
+      console.log(this.allMarkers);
       this.positionMap();
       $('#addscenebutton').on('click', this.handleAddSceneButtonClick);
       return $('#addscenebutton').show();
