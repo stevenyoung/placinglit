@@ -128,6 +128,7 @@
   </div>
 {% endblock %}
 {% block scripts %}
+  <script>window.REMOTE_ADDR = "{{remote_addr}}";</script>
   <script type="text/javascript" src="/js/src/app.js"></script>
   <script type="text/javascript" src="/js/src/home.js"></script>
 {% endblock %}
