@@ -32,20 +32,22 @@ $(document).on('ready', ->
         $('#authorq').typeahead({source: author_data})
 
 
-  updateMapLinksWithLocation = (location) ->
-    lat = location.latitude
-    lng = location.longitude
+  updateMapLinksWithLocation = (position) ->
+    lat = position.coords.latitude
+    lng = position.coords.longitude
     $('#hpbuttons').find('a').attr('href', 'map?lat=' + lat + '&lng=' + lng)
+
+
+  positionError = (error) ->
+    console.log('error', error)
+    console.log('client ip', window.REMOTE_ADDR)
+
 
   updateMapLinksWithUserLocation = ->
     if navigator.geolocation
-      navigator.geolocation.getCurrentPosition((position) ->
-        console.log('lat', position.coords.latitude, 'lng', position.coords.longitude)
-        userLocation =
-          latitude: position.coords.latitude
-          longitude: position.coords.longitude
-        updateMapLinksWithLocation(userLocation)
-      )
+      navigator.geolocation.getCurrentPosition(
+        updateMapLinksWithLocation, positionError)
+
 
   updateMapLinksWithUserLocation()
   hpSuggestAuthors()
