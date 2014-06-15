@@ -20,6 +20,7 @@ class HomeHandler(baseapp.BaseAppHandler):
     posts = blogposts.BlogpostsHandler.posts_for_display()
     bloglinks = [{'title': post.title, 'link': post.link} for post in posts]
     template_values['posts'] = bloglinks
+    template_values['remote_addr'] = self.request.remote_addr
     self.render_template('home.tmpl', template_values)
 
 
@@ -43,8 +44,11 @@ class MapHandler(baseapp.BaseAppHandler):
     template_values['title'] = 'Map'
     key = self.request.get('key')
     lat = self.request.get('lat')
-    lng = self.request.get('lon')  # FIXIT- Pick one: 'lon', 'lng'
-    lng = self.request.get('lng')
+    # FIXIT- Pick one: 'lon', 'lng'
+    if self.request.get('lon'):
+      lng = self.request.get('lon')
+    else:
+      lng = self.request.get('lng')
     if lat and lng:  # lat, lng with no scene
       logging.info('got lat, lng in query string')
       template_values['center'] = '{lat:%s,lng:%s}' % (lat, lng)
