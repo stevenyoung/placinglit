@@ -257,7 +257,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @gmap ?= @googlemap()
     @allMarkers = @markerArrayFromCollection(@collection)
     @markersForEachScene(@collection)
-    console.log(@allMarkers)
     # @markerClustersForScenes(@allMarkers)
     @positionMap()
     $('#addscenebutton').on('click', @handleAddSceneButtonClick)
@@ -687,8 +686,8 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
           lat = position[Object.keys(position)[0]]
           lng = position[Object.keys(position)[1]]
           mapUrl = window.location.protocol + '//' + window.location.host
-          mapUrl += '/map/' + lat + ',' + lng
-          # mapUrl += '/map?lat=' + lat + '&lon=' + lng
+          # mapUrl += '/map/' + lat + ',' + lng
+          mapUrl += '/map?lat=' + lat + '&lon=' + lng
           window.location = mapUrl
         else
           alert("geocode was not successful: " + status)
@@ -704,14 +703,20 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
       @filteredViewGeocoderSearch()
 
   initialize: (scenes) ->
-    console.log('filtered view', scenes)
+    # console.log('filtered view', scenes)
     @collection ?= new PlacingLit.Collections.Locations()
     @listenTo @collection, 'all', @render
     @collection.reset(scenes)
 
   render: (event) ->
-    @mapWithMarkers()
+    @gmap ?= @googlemap()
+    # @allMarkers = @markerArrayFromCollection(@collection)
+    @markersForEachScene(@collection)
     @attachFilteredViewSearchHandler()
+    mapcenter = new google.maps.LatLng(window.CENTER.lat, window.CENTER.lng)
+    @gmap.setCenter(mapcenter)
+    console.log('zoom', @gmap.getZoom())
+    @gmap.setZoom(@settings.zoomLevel.wide)
 
   googlemap: ()->
     return @gmap if @gmap?
@@ -719,10 +724,10 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
     console.log('map options', @mapOptions)
     @mapOptions.minZoom = 2
     @gmap = new google.maps.Map(map_elem, @mapOptions)
-    # @mapCenter = @gmap.getCenter()
-    google.maps.event.addListener(@gmap, 'click', (event) =>
-      @handleMapClick(event)
-    )
+    @mapCenter = @gmap.getCenter()
+    # google.maps.event.addListener(@gmap, 'click', (event) =>
+    #   @handleMapClick(event)
+    # )
     # google.maps.event.addListener(@gmap, 'dblclick', (event) =>
     #   @handleMapClick(event)
     # )
@@ -735,9 +740,9 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
     # google.maps.event.addListener(@gmap, 'zoom_changed', (event) =>
     #   @handleViewportChange(event)
     # )
-    # google.maps.event.addListener(@gmap, 'idle', (event) =>
-    #   @updateCollection(event)
-    # )
+    google.maps.event.addListener(@gmap, 'idle', (event) =>
+      @updateCollection(event)
+    )
     return @gmap
 
   handleViewportChange: (event) ->
@@ -768,22 +773,32 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
     if Math.abs(window.CENTER.lng - centerGeoPt.lng) > 5
       update = true
 
-    # window.CENTER = centerGeoPt
     if update
-      window.CENTER = centerGeoPt
+      console.log('adding new scenes')
       query = '?lat=' + centerGeoPt.lat + '&lon=' + centerGeoPt.lng
       collection_url = '/places/near' + query
       new_markers = new PlacingLit.Collections.Locations
       new_markers.url = collection_url
       current_collection = @collection
-      console.log('current', current_collection.length)
+      window.CENTER = centerGeoPt
       new_markers.fetch(
         success: (collection, response, options) =>
-          console.log('new', collection.length)
-          updated_collection = _.union(current_collection, collection)
-          console.log('updated', updated_collection.length)
-          @allMarkers = @markerArrayFromCollection(updated_collection)
-          @markerClustersForScenes(@allMarkers)
+          console.log('current', current_collection.length,
+                       current_collection.models)
+          console.log('new', collection.length, collection.models)
+          union = _.union(current_collection.models, collection.models)
+          set_options =
+            add: true
+            remove: false
+            merge: false
+          @collection.reset(union, set_options)
+          # @allMarkers = @markerArrayFromCollection(@collection)
+          # @markersForEachScene(@allMarkers)
+          # updated_collection = _.union(current_collection, collection)
+          # console.log('updated', updated_collection.length)
+          # @allMarkers = @markerArrayFromCollection(updated_collection)
+          # @markersForEachScene(@collection)
+          # @markerClustersForScenes(@allMarkers)
         error: (collection, response, options) =>
           console.log('error', collection, response, options)
         )

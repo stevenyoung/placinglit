@@ -429,7 +429,6 @@
       }
       this.allMarkers = this.markerArrayFromCollection(this.collection);
       this.markersForEachScene(this.collection);
-      console.log(this.allMarkers);
       this.positionMap();
       $('#addscenebutton').on('click', this.handleAddSceneButtonClick);
       return $('#addscenebutton').show();
@@ -1094,7 +1093,7 @@
               lat = position[Object.keys(position)[0]];
               lng = position[Object.keys(position)[1]];
               mapUrl = window.location.protocol + '//' + window.location.host;
-              mapUrl += '/map/' + lat + ',' + lng;
+              mapUrl += '/map?lat=' + lat + '&lon=' + lng;
               return window.location = mapUrl;
             } else {
               return alert("geocode was not successful: " + status);
@@ -1121,7 +1120,6 @@
     };
 
     MapFilterView.prototype.initialize = function(scenes) {
-      console.log('filtered view', scenes);
       if (this.collection == null) {
         this.collection = new PlacingLit.Collections.Locations();
       }
@@ -1130,8 +1128,16 @@
     };
 
     MapFilterView.prototype.render = function(event) {
-      this.mapWithMarkers();
-      return this.attachFilteredViewSearchHandler();
+      var mapcenter;
+      if (this.gmap == null) {
+        this.gmap = this.googlemap();
+      }
+      this.markersForEachScene(this.collection);
+      this.attachFilteredViewSearchHandler();
+      mapcenter = new google.maps.LatLng(window.CENTER.lat, window.CENTER.lng);
+      this.gmap.setCenter(mapcenter);
+      console.log('zoom', this.gmap.getZoom());
+      return this.gmap.setZoom(this.settings.zoomLevel.wide);
     };
 
     MapFilterView.prototype.googlemap = function() {
@@ -1143,9 +1149,10 @@
       console.log('map options', this.mapOptions);
       this.mapOptions.minZoom = 2;
       this.gmap = new google.maps.Map(map_elem, this.mapOptions);
-      google.maps.event.addListener(this.gmap, 'click', (function(_this) {
+      this.mapCenter = this.gmap.getCenter();
+      google.maps.event.addListener(this.gmap, 'idle', (function(_this) {
         return function(event) {
-          return _this.handleMapClick(event);
+          return _this.updateCollection(event);
         };
       })(this));
       return this.gmap;
@@ -1185,22 +1192,26 @@
         update = true;
       }
       if (update) {
-        window.CENTER = centerGeoPt;
+        console.log('adding new scenes');
         query = '?lat=' + centerGeoPt.lat + '&lon=' + centerGeoPt.lng;
         collection_url = '/places/near' + query;
         new_markers = new PlacingLit.Collections.Locations;
         new_markers.url = collection_url;
         current_collection = this.collection;
-        console.log('current', current_collection.length);
+        window.CENTER = centerGeoPt;
         return new_markers.fetch({
           success: (function(_this) {
             return function(collection, response, options) {
-              var updated_collection;
-              console.log('new', collection.length);
-              updated_collection = _.union(current_collection, collection);
-              console.log('updated', updated_collection.length);
-              _this.allMarkers = _this.markerArrayFromCollection(updated_collection);
-              return _this.markerClustersForScenes(_this.allMarkers);
+              var set_options, union;
+              console.log('current', current_collection.length, current_collection.models);
+              console.log('new', collection.length, collection.models);
+              union = _.union(current_collection.models, collection.models);
+              set_options = {
+                add: true,
+                remove: false,
+                merge: false
+              };
+              return _this.collection.reset(union, set_options);
             };
           })(this),
           error: (function(_this) {
