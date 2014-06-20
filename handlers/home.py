@@ -46,7 +46,7 @@ class MapHandler(baseapp.BaseAppHandler):
       (lat, lng) = location.replace('/', '').split(',')
       template_values['center'] = '{lat:%s,lng:%s}' % (lat, lng)
     if self.request.get('key'):
-      template_values['key'] = key
+      template_values['key'] = self.request.get('key')
     self.render_template('map.tmpl', template_values)
 
 

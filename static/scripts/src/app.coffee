@@ -717,33 +717,6 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
     console.log('zoom', @gmap.getZoom())
     @gmap.setZoom(@settings.zoomLevel.wide)
 
-  googlemap: ()->
-    return @gmap if @gmap?
-    map_elem = document.getElementById(@$el.selector)
-    console.log('map options', @mapOptions)
-    @mapOptions.minZoom = 2
-    @gmap = new google.maps.Map(map_elem, @mapOptions)
-    @mapCenter = @gmap.getCenter()
-    google.maps.event.addListener(@gmap, 'click', (event) =>
-      @handleMapClick(event)
-    )
-    # google.maps.event.addListener(@gmap, 'dblclick', (event) =>
-    #   @handleMapClick(event)
-    # )
-    # google.maps.event.addListener(@gmap, 'bounds_changed', (event) =>
-    #   @handleViewportChange(event)
-    # )
-    # google.maps.event.addListener(@gmap, 'center_changed', (event) =>
-    #   @handleViewportChange(event)
-    # )
-    # google.maps.event.addListener(@gmap, 'zoom_changed', (event) =>
-    #   @handleViewportChange(event)
-    # )
-    google.maps.event.addListener(@gmap, 'idle', (event) =>
-      @updateCollection(event)
-    )
-    return @gmap
-
   handleViewportChange: (event) ->
     center = @gmap.getCenter()
     centerGeoPt =

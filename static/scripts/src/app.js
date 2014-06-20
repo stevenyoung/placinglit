@@ -1143,29 +1143,6 @@
       return this.gmap.setZoom(this.settings.zoomLevel.wide);
     };
 
-    MapFilterView.prototype.googlemap = function() {
-      var map_elem;
-      if (this.gmap != null) {
-        return this.gmap;
-      }
-      map_elem = document.getElementById(this.$el.selector);
-      console.log('map options', this.mapOptions);
-      this.mapOptions.minZoom = 2;
-      this.gmap = new google.maps.Map(map_elem, this.mapOptions);
-      this.mapCenter = this.gmap.getCenter();
-      google.maps.event.addListener(this.gmap, 'click', (function(_this) {
-        return function(event) {
-          return _this.handleMapClick(event);
-        };
-      })(this));
-      google.maps.event.addListener(this.gmap, 'idle', (function(_this) {
-        return function(event) {
-          return _this.updateCollection(event);
-        };
-      })(this));
-      return this.gmap;
-    };
-
     MapFilterView.prototype.handleViewportChange = function(event) {
       var center, centerGeoPt, zoom;
       center = this.gmap.getCenter();
