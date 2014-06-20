@@ -147,11 +147,12 @@
 
     MapCanvasView.prototype.mapOptions = {
       zoom: 4,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      mapTypeId: google.maps.MapTypeId.TERRAIN,
       mapTypeControlOptions: {
-        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+        position: google.maps.ControlPosition.TOP_RIGHT
       },
-      maxZoom: 25,
+      maxZoom: 40,
       minZoom: 2,
       zoomControl: true,
       zoomControlOptions: {
@@ -471,6 +472,9 @@
     };
 
     MapCanvasView.prototype.handleAddSceneButtonClick = function() {
+      if (this.infowindows.length) {
+        this.closeInfowindows();
+      }
       return this.setUserMapMarker(this.gmap, this.gmap.getCenter());
     };
 

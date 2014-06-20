@@ -77,10 +77,11 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     #https://developers.google.com/maps/documentation/javascript/styling#creating_a_styledmaptype
     zoom: 4
     #google.maps.MapTypeId.SATELLITE | ROADMAP | HYBRID
-    mapTypeId: google.maps.MapTypeId.ROADMAP
+    mapTypeId: google.maps.MapTypeId.TERRAIN
     mapTypeControlOptions:
       style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
-    maxZoom: 25
+      position: google.maps.ControlPosition.TOP_RIGHT
+    maxZoom: 40
     minZoom: 2
     zoomControl: true
     zoomControlOptions:
@@ -292,6 +293,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @setUserMapMarker(@gmap, event.latLng)
 
   handleAddSceneButtonClick: =>
+    @closeInfowindows() if @infowindows.length
     @setUserMapMarker(@gmap, @gmap.getCenter())
     # $('#addscenebutton').hide()
     # console.log('all markers', @allMarkers)
