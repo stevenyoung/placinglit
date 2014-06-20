@@ -42,12 +42,12 @@ class MapHandler(baseapp.BaseAppHandler):
   def get(self, location=None, key=None):
     template_values = self.basic_template_content()
     template_values['title'] = 'Map'
-    key = self.request.get('key')
     if location and ',' in location:
       (lat, lng) = location.replace('/', '').split(',')
       template_values['center'] = '{lat:%s,lng:%s}' % (lat, lng)
+    if self.request.get('key'):
       template_values['key'] = key
-      self.render_template('map.tmpl', template_values)
+    self.render_template('map.tmpl', template_values)
 
 
 class IndexedSceneMapHandler(baseapp.BaseAppHandler):

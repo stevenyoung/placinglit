@@ -489,7 +489,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     # this can be triggered by a deep link or map marker click
     # TODO: marker clicks are tracked as events, deep links as pages- RESOLVE
     url = '/places/info/' + place_key
-    console.log('place key?', window.PLACEKEY)
     window.PLACEKEY = null
 
     if windowOptions.marker

@@ -766,7 +766,6 @@
     MapCanvasView.prototype.openInfowindowForPlace = function(place_key, windowOptions) {
       var tracking, url;
       url = '/places/info/' + place_key;
-      console.log('place key?', window.PLACEKEY);
       window.PLACEKEY = null;
       if (windowOptions.marker) {
         tracking = {
