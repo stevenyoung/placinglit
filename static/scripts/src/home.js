@@ -61,7 +61,6 @@
         return navigator.geolocation.getCurrentPosition(updateMapLinksWithLocation, positionError);
       }
     };
-    updateMapLinksWithUserLocation();
     hpSuggestAuthors();
     recentPlacesView = new PlacingLit.Views.RecentPlaces;
     countView = new PlacingLit.Views.Countview;

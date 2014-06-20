@@ -103,10 +103,10 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     return @gmap if @gmap?
     map_elem = document.getElementById(@$el.selector)
     @gmap = new google.maps.Map(map_elem, @mapOptions)
-    # @mapCenter = @gmap.getCenter()
-    # google.maps.event.addListener(@gmap, 'click', (event) =>
-    #   @handleMapClick(event)
-    # )
+    @mapCenter = @gmap.getCenter()
+    google.maps.event.addListener(@gmap, 'click', (event) =>
+      @handleMapClick(event)
+    )
     # google.maps.event.addListener(@gmap, 'bounds_changed', (event) =>
     #   @handleViewportChange(event)
     # )
@@ -256,11 +256,11 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
   mapWithMarkers: () ->
     @gmap ?= @googlemap()
     @allMarkers = @markerArrayFromCollection(@collection)
-    @markersForEachScene(@collection)
-    # @markerClustersForScenes(@allMarkers)
+    # @markersForEachScene(@collection)
+    @markerClustersForScenes(@allMarkers)
     @positionMap()
-    $('#addscenebutton').on('click', @handleAddSceneButtonClick)
-    $('#addscenebutton').show()
+    # $('#addscenebutton').on('click', @handleAddSceneButtonClick)
+    # $('#addscenebutton').show()
     # $('#hidemarkers').on('click', @hideMarkers)
     # $('#showmarkers').on('click', @showMarkers)
 
@@ -725,9 +725,9 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
     @mapOptions.minZoom = 2
     @gmap = new google.maps.Map(map_elem, @mapOptions)
     @mapCenter = @gmap.getCenter()
-    # google.maps.event.addListener(@gmap, 'click', (event) =>
-    #   @handleMapClick(event)
-    # )
+    google.maps.event.addListener(@gmap, 'click', (event) =>
+      @handleMapClick(event)
+    )
     # google.maps.event.addListener(@gmap, 'dblclick', (event) =>
     #   @handleMapClick(event)
     # )

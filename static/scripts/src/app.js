@@ -185,6 +185,12 @@
       }
       map_elem = document.getElementById(this.$el.selector);
       this.gmap = new google.maps.Map(map_elem, this.mapOptions);
+      this.mapCenter = this.gmap.getCenter();
+      google.maps.event.addListener(this.gmap, 'click', (function(_this) {
+        return function(event) {
+          return _this.handleMapClick(event);
+        };
+      })(this));
       return this.gmap;
     };
 
@@ -428,10 +434,8 @@
         this.gmap = this.googlemap();
       }
       this.allMarkers = this.markerArrayFromCollection(this.collection);
-      this.markersForEachScene(this.collection);
-      this.positionMap();
-      $('#addscenebutton').on('click', this.handleAddSceneButtonClick);
-      return $('#addscenebutton').show();
+      this.markerClustersForScenes(this.allMarkers);
+      return this.positionMap();
     };
 
     MapCanvasView.prototype.positionMap = function() {
@@ -1150,6 +1154,11 @@
       this.mapOptions.minZoom = 2;
       this.gmap = new google.maps.Map(map_elem, this.mapOptions);
       this.mapCenter = this.gmap.getCenter();
+      google.maps.event.addListener(this.gmap, 'click', (function(_this) {
+        return function(event) {
+          return _this.handleMapClick(event);
+        };
+      })(this));
       google.maps.event.addListener(this.gmap, 'idle', (function(_this) {
         return function(event) {
           return _this.updateCollection(event);
