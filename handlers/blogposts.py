@@ -14,7 +14,7 @@ from handlers.abstracts import baseapp
 from classes import blogposts
 
 
-POST_COUNT = 7  # number of posts to display
+POST_COUNT = blogposts.DEFAULT_LIMIT  # number of posts to display
 BLOG_FEED_URL = 'http://placingliterature.wordpress.com/feed/'
 
 
@@ -39,8 +39,7 @@ class BlogpostsHandler(baseapp.BaseAppHandler):
       alllinks.append(bloglink)
       blog_data = {'title': item_title, 'link': item_link,
                    'pub_date': item_pub_date, 'description': item_description}
-      post = blogposts.Blogpost()
-      post.create(blog_data)
+      blogposts.Blogpost.create_from_dict(blog_data)
 
     links = alllinks[:POST_COUNT]
     for link in links:
