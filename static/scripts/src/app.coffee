@@ -85,9 +85,11 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     zoomControl: true
     zoomControlOptions:
       style: google.maps.ZoomControlStyle.DEFAULT
-      position: google.maps.ControlPosition.TOP_LEFT
+      # position: google.maps.ControlPosition.TOP_LEFT
+      position: google.maps.ControlPosition.LEFT_CENTER
     panControlOptions:
-      position: google.maps.ControlPosition.TOP_LEFT
+      # position: google.maps.ControlPosition.TOP_LEFT
+      position: google.maps.ControlPosition.LEFT_CENTER
 
   initialize: (scenes) ->
     @collection ?= new PlacingLit.Collections.Locations()
@@ -104,9 +106,9 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     map_elem = document.getElementById(@$el.selector)
     @gmap = new google.maps.Map(map_elem, @mapOptions)
     @mapCenter = @gmap.getCenter()
-    google.maps.event.addListener(@gmap, 'click', (event) =>
-      @handleMapClick(event)
-    )
+    # google.maps.event.addListener(@gmap, 'click', (event) =>
+    #   @handleMapClick(event)
+    # )
     # google.maps.event.addListener(@gmap, 'bounds_changed', (event) =>
     #   @handleViewportChange(event)
     # )
@@ -259,8 +261,8 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     # @markersForEachScene(@collection)
     @markerClustersForScenes(@allMarkers)
     @positionMap()
-    # $('#addscenebutton').on('click', @handleAddSceneButtonClick)
-    # $('#addscenebutton').show()
+    $('#addscenebutton').on('click', @handleAddSceneButtonClick)
+    $('#addscenebutton').show()
     # $('#hidemarkers').on('click', @hideMarkers)
     # $('#showmarkers').on('click', @showMarkers)
 
@@ -291,9 +293,9 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
 
   handleAddSceneButtonClick: =>
     @setUserMapMarker(@gmap, @gmap.getCenter())
-    $('#addscenebutton').hide()
-    console.log('all markers', @allMarkers)
-    marker.setMap(null) for marker in @allMarkers
+    # $('#addscenebutton').hide()
+    # console.log('all markers', @allMarkers)
+    # marker.setMap(null) for marker in @allMarkers
 
   setUserMapMarker: (map, location) ->
     console.log(map)

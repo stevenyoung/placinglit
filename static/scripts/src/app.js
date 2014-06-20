@@ -156,10 +156,10 @@
       zoomControl: true,
       zoomControlOptions: {
         style: google.maps.ZoomControlStyle.DEFAULT,
-        position: google.maps.ControlPosition.TOP_LEFT
+        position: google.maps.ControlPosition.LEFT_CENTER
       },
       panControlOptions: {
-        position: google.maps.ControlPosition.TOP_LEFT
+        position: google.maps.ControlPosition.LEFT_CENTER
       }
     };
 
@@ -186,11 +186,6 @@
       map_elem = document.getElementById(this.$el.selector);
       this.gmap = new google.maps.Map(map_elem, this.mapOptions);
       this.mapCenter = this.gmap.getCenter();
-      google.maps.event.addListener(this.gmap, 'click', (function(_this) {
-        return function(event) {
-          return _this.handleMapClick(event);
-        };
-      })(this));
       return this.gmap;
     };
 
@@ -435,7 +430,9 @@
       }
       this.allMarkers = this.markerArrayFromCollection(this.collection);
       this.markerClustersForScenes(this.allMarkers);
-      return this.positionMap();
+      this.positionMap();
+      $('#addscenebutton').on('click', this.handleAddSceneButtonClick);
+      return $('#addscenebutton').show();
     };
 
     MapCanvasView.prototype.positionMap = function() {
@@ -474,17 +471,7 @@
     };
 
     MapCanvasView.prototype.handleAddSceneButtonClick = function() {
-      var marker, _i, _len, _ref, _results;
-      this.setUserMapMarker(this.gmap, this.gmap.getCenter());
-      $('#addscenebutton').hide();
-      console.log('all markers', this.allMarkers);
-      _ref = this.allMarkers;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        marker = _ref[_i];
-        _results.push(marker.setMap(null));
-      }
-      return _results;
+      return this.setUserMapMarker(this.gmap, this.gmap.getCenter());
     };
 
     MapCanvasView.prototype.setUserMapMarker = function(map, location) {
