@@ -293,7 +293,7 @@
       this.userInfowindow = this.infowindow();
       this.userInfowindow.setContent(document.getElementById('iwcontainer').innerHTML);
       this.userInfowindow.setPosition(location);
-      this.userInfowindow.open(map);
+      this.userInfowindow.open(map, this.userMapsMarker);
       if (!Modernizr.input.placeholder) {
         google.maps.event.addListener(this.userInfowindow, 'domready', (function(_this) {
           return function() {};
@@ -479,7 +479,6 @@
     };
 
     MapCanvasView.prototype.setUserMapMarker = function(map, location) {
-      console.log(map);
       if (this.userMapsMarker != null) {
         this.userMapsMarker.setMap(null);
       }
@@ -488,11 +487,27 @@
       }
       this.userMapsMarker = this.markerFromMapLocation(map, location);
       this.userMapsMarker.setMap(map);
-      return google.maps.event.addListener(this.userMapsMarker, 'click', (function(_this) {
+      google.maps.event.addListener(this.userMapsMarker, 'click', (function(_this) {
         return function(event) {
           return _this.isUserLoggedIn(_this.dropMarkerForNewLocation);
         };
       })(this));
+      return this.showUserMarkerHelp();
+    };
+
+    MapCanvasView.prototype.showUserMarkerHelp = function() {
+      var content, loginWindowPosition;
+      if (this.userMapsMarker) {
+        loginWindowPosition = this.userMapsMarker.getPosition();
+        this.closeInfowindows();
+        this.userInfowindow = this.infowindow();
+        content = '<div id="usermarker">';
+        content += '<div>Drag this marker to place.<br>';
+        content += 'Click the marker to add the scene</div></div>';
+        this.userInfowindow.setContent(content);
+        this.userInfowindow.setPosition(loginWindowPosition);
+        return this.userInfowindow.open(this.gmap, this.userMapsMarker);
+      }
     };
 
     MapCanvasView.prototype.isUserLoggedIn = function(callback) {
@@ -520,13 +535,14 @@
       }
       this.closeInfowindows();
       this.userInfowindow = this.infowindow();
-      content = '<div id="maplogin" class="plinfowindow">';
-      content += '<div>You must be logged in to update content.</div>';
+      content = '<div id="usermarker">';
+      content += '<div>You must be logged in to update content.</div><br>';
       login_url = document.getElementById('loginlink').href;
       content += '<a href="' + login_url + '"><button>log in</button></a></p>';
+      content += '</div>';
       this.userInfowindow.setContent(content);
       this.userInfowindow.setPosition(loginWindowPosition);
-      return this.userInfowindow.open(this.gmap);
+      return this.userInfowindow.open(this.gmap, this.userMapsMarker);
     };
 
     MapCanvasView.prototype.dropMarkerForNewLocation = function() {

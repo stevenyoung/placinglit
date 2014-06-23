@@ -198,7 +198,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @userInfowindow = @infowindow()
     @userInfowindow.setContent(document.getElementById('iwcontainer').innerHTML)
     @userInfowindow.setPosition(location)
-    @userInfowindow.open(map)
+    @userInfowindow.open(map, @userMapsMarker)
     if not Modernizr.input.placeholder
       google.maps.event.addListener(@userInfowindow, 'domready', () =>
       @clearPlaceholders()
@@ -300,7 +300,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     # marker.setMap(null) for marker in @allMarkers
 
   setUserMapMarker: (map, location) ->
-    console.log(map)
     @userMapsMarker.setMap(null) if @userMapsMarker?
     @userInfowindow.close() if @userInfowindow?
     @userMapsMarker = @markerFromMapLocation(map, location)
@@ -308,6 +307,20 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     google.maps.event.addListener(@userMapsMarker, 'click', (event) =>
       @isUserLoggedIn(@dropMarkerForNewLocation)
     )
+    @showUserMarkerHelp()
+
+  showUserMarkerHelp: ->
+    if @userMapsMarker
+      loginWindowPosition = @userMapsMarker.getPosition()
+      @closeInfowindows()
+      @userInfowindow = @infowindow()
+      content = '<div id="usermarker">'
+      content += '<div>Drag this marker to place.<br>'
+      content += 'Click the marker to add the scene</div></div>'
+      @userInfowindow.setContent(content)
+      @userInfowindow.setPosition(loginWindowPosition)
+      @userInfowindow.open(@gmap, @userMapsMarker)
+
 
   isUserLoggedIn: (callback) ->
     $.ajax
@@ -326,13 +339,14 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       loginWindowPosition = @gmap.getCenter()
     @closeInfowindows()
     @userInfowindow = @infowindow()
-    content = '<div id="maplogin" class="plinfowindow">'
-    content += '<div>You must be logged in to update content.</div>'
+    content = '<div id="usermarker">'
+    content += '<div>You must be logged in to update content.</div><br>'
     login_url = document.getElementById('loginlink').href
     content += '<a href="' + login_url + '"><button>log in</button></a></p>'
+    content += '</div>'
     @userInfowindow.setContent(content)
     @userInfowindow.setPosition(loginWindowPosition)
-    @userInfowindow.open(@gmap)
+    @userInfowindow.open(@gmap, @userMapsMarker)
 
   dropMarkerForNewLocation: () ->
     location = @userMapsMarker.getPosition()

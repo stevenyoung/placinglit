@@ -285,10 +285,9 @@ body { height: $full; margin:0%; padding:0; }
 
   }
 }
-#maplogin {
-  text-align:center;
+#usermarker {
   padding:10px;
-  @extend .lead;
+  @extend .text-center;
   button {
     @extend .btn;
     @extend .btn-info;
