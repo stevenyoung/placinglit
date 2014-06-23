@@ -84,7 +84,8 @@ class BaseAppHandler(webapp.RequestHandler):
     server = self.request.headers.get('host', 'no host')
     if (
       server.startswith('www.placingliterature') or
-      server.startswith('placingliterature')
+      server.startswith('placingliterature') or
+      server.endswith('appspot.com')
     ):
       return GM3_API_URL + '&key=' + GM3_API_KEY
     else:
