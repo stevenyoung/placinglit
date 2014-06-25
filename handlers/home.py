@@ -179,7 +179,7 @@ urls = [
   ('/map(/?.*)', MapHandler),
   ('/', HomeHandler),
   ('/user/status', UserstatusHandler),
-  ('/top/', NewhomeHandler),
+  ('/desktop/', NewhomeHandler),
   ('/admin/edit', AdminEditSceneHandler),
   ('/admin/menu', AdminMenuHandler),
 ]

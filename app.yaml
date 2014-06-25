@@ -38,13 +38,13 @@ handlers:
 - url: /media
   static_dir: static/media
 
-- url: /top/scripts
+- url: /desktop/scripts
   static_dir: static/app/scripts
 
-- url: /top/views
+- url: /desktop/views
   static_dir: static/app/views
 
-- url: /top/styles
+- url: /desktop/styles
   static_dir: static/app/styles
 
 - url: /about
@@ -56,7 +56,7 @@ handlers:
 - url: /home
   script: handlers.home.app
 
-- url: /top/(.*)
+- url: /desktop/(.*)
   script: handlers.home.app
 
 - url: /map(/?.*)
