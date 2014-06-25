@@ -98,6 +98,10 @@ require([
       editView = {
         templateUrl: 'views/placeform.html',
         controller: 'EditCtrl'
+      },
+      leafletMapView = {
+        templateUrl: 'views/leaflet-map.html',
+        controller: 'LeafletMapCtrl'
       };
     app.config(['$routeProvider',
       function($routeProvider) {
@@ -105,7 +109,7 @@ require([
           .when('/map', mapView)
           .when('/edit', editView)
           .when('/home', homeView)
-          .when('/', homeView);
+          .when('/', leafletMapView);
           // .when('/', {
           //   templateUrl: 'views/main.html',
           //   controller: 'MainCtrl'

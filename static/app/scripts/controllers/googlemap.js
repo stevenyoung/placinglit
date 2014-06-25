@@ -1,6 +1,6 @@
 define(['controllers/controllers','googlemaps'],
   function(controllers, googlemaps){
-    controllers.controller('MapCtrl', function ($scope, googlemaps) {
+    controllers.controller('GoogleMapCtrl', function ($scope, googlemaps) {
       $scope.awesomeThings = [
         'HTML5 Boilerplate',
         'AngularJS',

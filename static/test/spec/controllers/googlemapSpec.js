@@ -1,10 +1,10 @@
 define(['angularMocks',
-  'controllers/leafletmap'],
+  'controllers/googlemap'],
   function(){
     'use strict';
     beforeEach(module('controllers'));
 
-    describe('Controller: LeafletMapCtrl', function () {
+    describe('Controller: GoogleMapCtrl', function () {
       var ctrl,
         scope,
         leafletEvents;
@@ -12,7 +12,7 @@ define(['angularMocks',
       describe('#loading map', function() {
         beforeEach(inject(function($controller, $rootScope){
           scope = $rootScope.$new();
-          ctrl = $controller('LeafletMapCtrl', {
+          ctrl = $controller('GoogleMapCtrl', {
             $scope: scope,
             leafletEvents: leafletEvents
           });

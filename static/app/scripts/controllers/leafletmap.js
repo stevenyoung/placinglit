@@ -3,7 +3,7 @@ define(['controllers/controllers',
         'services/scenes',
         'services/geolocation'],//, 'googlemaps'],
   function(controllers, leafletEvents) {
-    controllers.controller('MapCtrl',
+    controllers.controller('LeafletMapCtrl',
       function ($scope, leafletEvents, $location, SceneService,
                 GeolocationService) {
       $scope.eventDetected = 'Nothing'
