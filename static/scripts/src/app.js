@@ -668,7 +668,7 @@
     };
 
     MapCanvasView.prototype.attachSearchHandler = function() {
-      document.getElementById('gcf').addEventListener('keydown', (function(_this) {
+      $('#gcf').on('keydown', (function(_this) {
         return function(event) {
           if (event.which === 13 || event.keyCode === 13) {
             event.preventDefault();
@@ -676,7 +676,7 @@
           }
         };
       })(this));
-      return document.getElementById('search').addEventListener('click', (function(_this) {
+      return $('#search').on('click', (function(_this) {
         return function(event) {
           return _this.geocoderSearch();
         };
@@ -794,6 +794,7 @@
           if (windowOptions.position) {
             iw.setPosition(windowOptions.position);
             iw.open(_this.gmap);
+            _this.gmap.setCenter(windowOptions.position);
           } else {
             iw.open(_this.gmap, windowOptions.marker);
           }
@@ -1088,9 +1089,7 @@
 
     MapFilterView.prototype.filteredViewGeocoderSearch = function() {
       var address, geocoder;
-      console.log('geocoder search');
       address = document.getElementById('gcf').value;
-      console.log('address');
       if (address) {
         geocoder = new google.maps.Geocoder();
         return geocoder.geocode({
@@ -1103,7 +1102,7 @@
               lat = position[Object.keys(position)[0]];
               lng = position[Object.keys(position)[1]];
               mapUrl = window.location.protocol + '//' + window.location.host;
-              mapUrl += '/map?lat=' + lat + '&lon=' + lng;
+              mapUrl += '/map/' + lat + ',' + lng;
               return window.location = mapUrl;
             } else {
               return alert("geocode was not successful: " + status);
@@ -1114,7 +1113,7 @@
     };
 
     MapFilterView.prototype.attachFilteredViewSearchHandler = function() {
-      document.getElementById('gcf').addEventListener('keydown', (function(_this) {
+      $('#gcf').on('keydown', (function(_this) {
         return function(event) {
           if (event.which === 13 || event.keyCode === 13) {
             event.preventDefault();
@@ -1122,7 +1121,7 @@
           }
         };
       })(this));
-      return document.getElementById('search').addEventListener('click', (function(_this) {
+      return $('#search').on('click', (function(_this) {
         return function(event) {
           return _this.filteredViewGeocoderSearch();
         };
@@ -1142,11 +1141,11 @@
       if (this.gmap == null) {
         this.gmap = this.googlemap();
       }
-      this.markersForEachScene(this.collection);
+      this.allMarkers = this.markerArrayFromCollection(this.collection);
+      this.markerClustersForScenes(this.allMarkers);
       this.attachFilteredViewSearchHandler();
       mapcenter = new google.maps.LatLng(window.CENTER.lat, window.CENTER.lng);
       this.gmap.setCenter(mapcenter);
-      console.log('zoom', this.gmap.getZoom());
       return this.gmap.setZoom(this.settings.zoomLevel.wide);
     };
 

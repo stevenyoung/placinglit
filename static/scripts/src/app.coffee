@@ -438,13 +438,12 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       )
 
   attachSearchHandler: ->
-    document.getElementById('gcf').addEventListener('keydown',
-      (event) =>
+    $('#gcf').on('keydown', (event) =>
         if (event.which == 13 || event.keyCode == 13)
           event.preventDefault()
           @geocoderSearch()
       )
-    document.getElementById('search').addEventListener 'click', (event) =>
+    $('#search').on 'click', (event) =>
       @geocoderSearch()
 
   sceneFieldsTemplate: ->
@@ -508,7 +507,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     # TODO: marker clicks are tracked as events, deep links as pages- RESOLVE
     url = '/places/info/' + place_key
     window.PLACEKEY = null
-
+    # console.log('open window', windowOptions)
     if windowOptions.marker
       tracking =
         'category': 'marker'
@@ -523,9 +522,11 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       if windowOptions.position
         iw.setPosition(windowOptions.position)
         iw.open(@gmap)
+        @gmap.setCenter(windowOptions.position)
       else
         iw.open(@gmap, windowOptions.marker)
       @placeInfowindow = iw
+
       @handleCheckinButtonClick
 
   mapEventTracking: (data)->
@@ -692,9 +693,9 @@ class PlacingLit.Views.Allscenes extends Backbone.View
 class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
   #TODO - FIX THIS MONSTROSITY!!!
   filteredViewGeocoderSearch: () ->
-    console.log('geocoder search')
+    # console.log('geocoder search')
     address = document.getElementById('gcf').value
-    console.log('address')
+    # console.log('address')
     if address
       geocoder = new google.maps.Geocoder()
       geocoder.geocode {'address':address}, (results, status) =>
@@ -703,20 +704,20 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
           lat = position[Object.keys(position)[0]]
           lng = position[Object.keys(position)[1]]
           mapUrl = window.location.protocol + '//' + window.location.host
-          # mapUrl += '/map/' + lat + ',' + lng
-          mapUrl += '/map?lat=' + lat + '&lon=' + lng
+          mapUrl += '/map/' + lat + ',' + lng
+          # mapUrl += '/map?lat=' + lat + '&lon=' + lng
           window.location = mapUrl
         else
           alert("geocode was not successful: " + status)
 
   attachFilteredViewSearchHandler: ->
-    document.getElementById('gcf').addEventListener('keydown',
+    $('#gcf').on('keydown',
       (event) =>
         if (event.which == 13 || event.keyCode == 13)
           event.preventDefault()
           @filteredViewGeocoderSearch()
       )
-    document.getElementById('search').addEventListener 'click', (event) =>
+    $('#search').on 'click', (event) =>
       @filteredViewGeocoderSearch()
 
   initialize: (scenes) ->
@@ -727,12 +728,13 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
 
   render: (event) ->
     @gmap ?= @googlemap()
-    # @allMarkers = @markerArrayFromCollection(@collection)
-    @markersForEachScene(@collection)
+    @allMarkers = @markerArrayFromCollection(@collection)
+    @markerClustersForScenes(@allMarkers)
+    # @markersForEachScene(@collection)
     @attachFilteredViewSearchHandler()
     mapcenter = new google.maps.LatLng(window.CENTER.lat, window.CENTER.lng)
     @gmap.setCenter(mapcenter)
-    console.log('zoom', @gmap.getZoom())
+    # console.log('zoom', @gmap.getZoom())
     @gmap.setZoom(@settings.zoomLevel.wide)
 
   handleViewportChange: (event) ->

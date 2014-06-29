@@ -56,13 +56,13 @@ $(document).on('ready', ->
   # mapCanvas = new PlacingLit.Views.MapCanvasView
   # document.querySelector('.carousel').carousel()
   $('.carousel').carousel()
-  gcfield = document.getElementById('gcf')
-  gcfield.addEventListener 'keydown', (event) =>
+  # gcfield = document.getElementById('gcf')
+  $('#gcf').on 'keydown', (event) =>
     if (event.which == 13 || event.keyCode == 13)
       event.preventDefault()
       hpCitySearch()
-  authorfield = document.getElementById('authorq')
-  authorfield.addEventListener 'keydown', (event) =>
+  # authorfield = document.getElementById('authorq')
+  $('#authorq').on 'keydown', (event) =>
     if (event.which == 13 || event.keyCode == 13)
       event.preventDefault()
       hpAuthorSearch()
