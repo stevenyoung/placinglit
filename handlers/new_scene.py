@@ -71,7 +71,7 @@ class AddPlacesHandler(baseapp.BaseAppHandler):
     self.add_scene_to_user(scene_key=place_key)
     agent = self.request.headers['User-Agent']
     user_request.UserRequest.create(ua=agent, user_loc=place_key)
-    self.send_response()
+    self.send_response(scene_key=place_key)
     post_place_to_twitter(scene_key=place_key)
     add_panoramio_photo_to_new_scene(place_key.id())
     add_scene_to_location_index(place_key.id())
@@ -87,7 +87,7 @@ class AddPlacesHandler(baseapp.BaseAppHandler):
       if self.place_data['check_in']:
         user.visit_scene(scene_key)
 
-  def send_response(self):
+  def send_response(self, scene_key=None):
     """ format user client response """
     scene_data = self.place_data
     response = '{} by {} added at <br>location: ({}, {})<br>thanks.'
@@ -99,6 +99,8 @@ class AddPlacesHandler(baseapp.BaseAppHandler):
       'message': response_message,
       'geopt': {'lat': scene_data['latitude'], 'lng': scene_data['longitude']}
     }
+    if scene_key:
+      response_json['scene_key'] = scene_key.id()
     self.output_json(response_json)
 
 
