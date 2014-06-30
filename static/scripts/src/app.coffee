@@ -107,21 +107,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     map_elem = document.getElementById(@$el.selector)
     @gmap = new google.maps.Map(map_elem, @mapOptions)
     @mapCenter = @gmap.getCenter()
-    # google.maps.event.addListener(@gmap, 'click', (event) =>
-    #   @handleMapClick(event)
-    # )
-    # google.maps.event.addListener(@gmap, 'bounds_changed', (event) =>
-    #   @handleViewportChange(event)
-    # )
-    # google.maps.event.addListener(@gmap, 'center_changed', (event) =>
-    #   @handleViewportChange(event)
-    # )
-    # google.maps.event.addListener(@gmap, 'zoom_changed', (event) =>
-    #   @handleViewportChange(event)
-    # )
-    # google.maps.event.addListener(@gmap, 'idle', (event) =>
-    #   @updateCollection(event)
-    # )
     return @gmap
 
   handleViewportChange: (event) ->
@@ -304,9 +289,8 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @userInfowindow.close() if @userInfowindow?
     @userMapsMarker = @markerFromMapLocation(map, location)
     @userMapsMarker.setMap(map)
-    google.maps.event.addListener(@userMapsMarker, 'click', (event) =>
+    google.maps.event.addListenerOnce @userMapsMarker, 'click', (event) =>
       @isUserLoggedIn(@dropMarkerForNewLocation)
-    )
     @showUserMarkerHelp()
 
   showUserMarkerHelp: ->
@@ -320,7 +304,8 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       @userInfowindow.setContent(content)
       @userInfowindow.setPosition(loginWindowPosition)
       @userInfowindow.open(@gmap, @userMapsMarker)
-
+      google.maps.event.addListenerOnce @userInfowindow, 'closeclick', () =>
+        @userMapsMarker.setMap(null)
 
   isUserLoggedIn: (callback) ->
     $.ajax
@@ -347,6 +332,8 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @userInfowindow.setContent(content)
     @userInfowindow.setPosition(loginWindowPosition)
     @userInfowindow.open(@gmap, @userMapsMarker)
+    google.maps.event.addListener @userInfowindow, 'closeclick', () =>
+      @userMapsMarker.setMap(null)
 
   dropMarkerForNewLocation: () ->
     location = @userMapsMarker.getPosition()
@@ -356,13 +343,17 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @suggestTitles()
     @suggestAuthors()
 
-  updateInfowindowWithMessage: (infowindow, text, refresh) ->
-    textcontainer = '<div id="thankswindow">' + text.message + '</div>'
+  updateInfowindowWithMessage: (infowindow, response, refresh) ->
+    console.log('new marker', response, refresh)
+    textcontainer = '<div id="thankswindow">' + response.message + '</div>'
     infowindow.setContent(textcontainer)
     if refresh
-      google.maps.event.addListener(infowindow, 'closeclick', () =>
+      google.maps.event.addListenerOnce infowindow, 'closeclick', () =>
+        @userMapsMarker.setMap(null)
         @showUpdatedMap()
-      )
+
+  showUpdatedMapWithNewScene: (scene) ->
+
 
   showUpdatedMap: () ->
     maps = new MapCanvasView
@@ -503,6 +494,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     return content
 
   openInfowindowForPlace: (place_key, windowOptions) ->
+    console.log('open', windowOptions)
     # this can be triggered by a deep link or map marker click
     # TODO: marker clicks are tracked as events, deep links as pages- RESOLVE
     url = '/places/info/' + place_key

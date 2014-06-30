@@ -487,7 +487,7 @@
       }
       this.userMapsMarker = this.markerFromMapLocation(map, location);
       this.userMapsMarker.setMap(map);
-      google.maps.event.addListener(this.userMapsMarker, 'click', (function(_this) {
+      google.maps.event.addListenerOnce(this.userMapsMarker, 'click', (function(_this) {
         return function(event) {
           return _this.isUserLoggedIn(_this.dropMarkerForNewLocation);
         };
@@ -506,7 +506,12 @@
         content += 'Click the marker to add the scene</div></div>';
         this.userInfowindow.setContent(content);
         this.userInfowindow.setPosition(loginWindowPosition);
-        return this.userInfowindow.open(this.gmap, this.userMapsMarker);
+        this.userInfowindow.open(this.gmap, this.userMapsMarker);
+        return google.maps.event.addListenerOnce(this.userInfowindow, 'closeclick', (function(_this) {
+          return function() {
+            return _this.userMapsMarker.setMap(null);
+          };
+        })(this));
       }
     };
 
@@ -542,7 +547,12 @@
       content += '</div>';
       this.userInfowindow.setContent(content);
       this.userInfowindow.setPosition(loginWindowPosition);
-      return this.userInfowindow.open(this.gmap, this.userMapsMarker);
+      this.userInfowindow.open(this.gmap, this.userMapsMarker);
+      return google.maps.event.addListener(this.userInfowindow, 'closeclick', (function(_this) {
+        return function() {
+          return _this.userMapsMarker.setMap(null);
+        };
+      })(this));
     };
 
     MapCanvasView.prototype.dropMarkerForNewLocation = function() {
@@ -555,18 +565,22 @@
       return this.suggestAuthors();
     };
 
-    MapCanvasView.prototype.updateInfowindowWithMessage = function(infowindow, text, refresh) {
+    MapCanvasView.prototype.updateInfowindowWithMessage = function(infowindow, response, refresh) {
       var textcontainer;
-      textcontainer = '<div id="thankswindow">' + text.message + '</div>';
+      console.log('new marker', response, refresh);
+      textcontainer = '<div id="thankswindow">' + response.message + '</div>';
       infowindow.setContent(textcontainer);
       if (refresh) {
-        return google.maps.event.addListener(infowindow, 'closeclick', (function(_this) {
+        return google.maps.event.addListenerOnce(infowindow, 'closeclick', (function(_this) {
           return function() {
+            _this.userMapsMarker.setMap(null);
             return _this.showUpdatedMap();
           };
         })(this));
       }
     };
+
+    MapCanvasView.prototype.showUpdatedMapWithNewScene = function(scene) {};
 
     MapCanvasView.prototype.showUpdatedMap = function() {
       var maps;
@@ -772,6 +786,7 @@
 
     MapCanvasView.prototype.openInfowindowForPlace = function(place_key, windowOptions) {
       var tracking, url;
+      console.log('open', windowOptions);
       url = '/places/info/' + place_key;
       window.PLACEKEY = null;
       if (windowOptions.marker) {
