@@ -17,29 +17,6 @@ class UpdatePhotosBatchHandler(webapp.RequestHandler):
     self.response.out.write('photo update successfully initiated.')
 
 
-#FIXIT - Is this necessary any longer?
-# class UpdateAllPhotosHandler(baseapp.BaseAppHandler):
-#   """ get panaramio photos for scenes without photos """
-#   def get(self):
-#     scene_query = db.GqlQuery('SELECT __key__ from PlacedLit')
-#     scene_count = 0
-#     photo_count = 0
-#     for key in scene_query.run():
-#       if photo_index.has_panoramio_photos(key.id()):
-#         logging.info('%s already has photos', key.id())
-#       else:
-#         url = panoramio.build_url_for_scene(scene_key=key)
-#         api_response = panoramio.get_api_data(url)
-#         if 'map_location' in api_response:
-#           map_location = api_response['map_location']
-#           for photo in api_response['photos']:
-#             photo_count += 1
-#             panoramio.Panoramio.save_images_for_scene(scene_key=key, data=photo,
-#                                                       location=map_location)
-#       scene_count += 1
-#     logging.info('added %s pix for %s scenes', photo_count, scene_count)
-
-
 class EmptyPhotoIndexHandler(webapp.RequestHandler):
   """ empty photo index """
   def get(self):
