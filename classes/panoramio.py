@@ -10,6 +10,10 @@ import photo_index
 import placedlit
 
 
+CORNER_DISTANCE = 0.005  # distance from lat, lng of scene
+IMAGE_COUNT = 10
+
+
 def build_url_for_scene(scene_key):
   """
   for "set" you can use:
@@ -36,18 +40,15 @@ def build_url_for_scene(scene_key):
     The maximum number of photos you can retrieve in one query is 100.
   """
 
-  distance = 0.005
-  count = 10
-
   api_url = 'http://www.panoramio.com/map/get_panoramas.php?'
-  api_url += 'set=public&from=0&to={}'.format(count)
+  api_url += 'set=public&from=0&to={}'.format(IMAGE_COUNT)
 
   scene = placedlit.PlacedLit.get(scene_key)
   if scene:
-    min_lng = scene.location.lon - distance
-    min_lat = scene.location.lat - distance
-    max_lng = scene.location.lon + distance
-    max_lat = scene.location.lat + distance
+    min_lng = scene.location.lon - CORNER_DISTANCE
+    min_lat = scene.location.lat - CORNER_DISTANCE
+    max_lng = scene.location.lon + CORNER_DISTANCE
+    max_lat = scene.location.lat + CORNER_DISTANCE
 
     api_url += '&minx={}&miny={}&maxx={}&maxy={}'.format(min_lng, min_lat,
                                                          max_lng, max_lat)
@@ -61,12 +62,6 @@ def get_api_data(url):
     request = urllib2.Request(url)
     response = json.loads(urllib2.urlopen(request).read())
     return response
-
-
-def retrieved_scenes():
-  """ List of scene for which we already have photo data. """
-  # return PanoramioScenes.scenes
-  return None
 
 
 def get_photos_for_scene(scene_key):
