@@ -2,7 +2,7 @@
 
 $(document).on('ready', ->
   hpCitySearch = ->
-    address = gcfield.value
+    address = document.getElementById('gcf').value
     geocoder = new google.maps.Geocoder()
     geocoder.geocode {'address':address}, (results, status) =>
       if (status == google.maps.GeocoderStatus.OK)
@@ -16,8 +16,9 @@ $(document).on('ready', ->
       else
         alert("geocode was not successful: " + status)
 
+
   hpAuthorSearch = ->
-    authorq = authorfield.value
+    authorq = document.getElementById('authorq').value
     mapUrl = window.location.protocol + '//' + window.location.host
     mapUrl += '/map/filter/author/' + authorq
     window.location = mapUrl
@@ -53,15 +54,11 @@ $(document).on('ready', ->
   hpSuggestAuthors()
   recentPlacesView = new PlacingLit.Views.RecentPlaces
   countView = new PlacingLit.Views.Countview
-  # mapCanvas = new PlacingLit.Views.MapCanvasView
-  # document.querySelector('.carousel').carousel()
   $('.carousel').carousel()
-  # gcfield = document.getElementById('gcf')
   $('#gcf').on 'keydown', (event) =>
     if (event.which == 13 || event.keyCode == 13)
       event.preventDefault()
       hpCitySearch()
-  # authorfield = document.getElementById('authorq')
   $('#authorq').on 'keydown', (event) =>
     if (event.which == 13 || event.keyCode == 13)
       event.preventDefault()
