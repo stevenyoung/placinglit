@@ -4,7 +4,7 @@
     var countView, hpAuthorSearch, hpCitySearch, hpSuggestAuthors, positionError, recentPlacesView, updateMapLinksWithLocation, updateMapLinksWithUserLocation;
     hpCitySearch = function() {
       var address, geocoder;
-      address = gcfield.value;
+      address = document.getElementById('gcf').value;
       geocoder = new google.maps.Geocoder();
       return geocoder.geocode({
         'address': address
@@ -26,7 +26,7 @@
     };
     hpAuthorSearch = function() {
       var authorq, mapUrl;
-      authorq = authorfield.value;
+      authorq = document.getElementById('authorq').value;
       mapUrl = window.location.protocol + '//' + window.location.host;
       mapUrl += '/map/filter/author/' + authorq;
       return window.location = mapUrl;
