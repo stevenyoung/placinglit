@@ -299,9 +299,14 @@
           return function() {};
         })(this), this.clearPlaceholders());
       }
-      return $('#map_canvas').find('#guidelines').on('click', (function(_this) {
+      $('#map_canvas').find('#guidelines').on('click', (function(_this) {
         return function(event) {
           return $('#helpmodal').modal();
+        };
+      })(this));
+      return google.maps.event.addListenerOnce(this.userInfowindow, 'closeclick', (function(_this) {
+        return function() {
+          return _this.userMapsMarker.setMap(null);
         };
       })(this));
     };
@@ -1161,7 +1166,9 @@
       this.attachFilteredViewSearchHandler();
       mapcenter = new google.maps.LatLng(window.CENTER.lat, window.CENTER.lng);
       this.gmap.setCenter(mapcenter);
-      return this.gmap.setZoom(this.settings.zoomLevel.wide);
+      this.gmap.setZoom(this.settings.zoomLevel.wide);
+      $('#addscenebutton').on('click', this.handleAddSceneButtonClick);
+      return $('#addscenebutton').show();
     };
 
     MapFilterView.prototype.handleViewportChange = function(event) {

@@ -190,6 +190,9 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       )
     $('#map_canvas').find('#guidelines').on 'click', (event) =>
       $('#helpmodal').modal()
+    google.maps.event.addListenerOnce @userInfowindow, 'closeclick', () =>
+      @userMapsMarker.setMap(null)
+
 
   clearPlaceholders: () ->
     $('#title').one('keypress', ()-> $('#title').val(''))
@@ -728,6 +731,8 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
     @gmap.setCenter(mapcenter)
     # console.log('zoom', @gmap.getZoom())
     @gmap.setZoom(@settings.zoomLevel.wide)
+    $('#addscenebutton').on('click', @handleAddSceneButtonClick)
+    $('#addscenebutton').show()
 
   handleViewportChange: (event) ->
     center = @gmap.getCenter()
