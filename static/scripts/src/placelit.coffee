@@ -7,9 +7,9 @@ $(document).on('ready', ->
     path = window.location.pathname
     if (window.SCENES.length == 0) and (path.indexOf('author') != -1)
       author_path = '/map/filter/author/'
-      author_ = decodeURIComponent(path.replace(author_path,''))
+      author = decodeURIComponent(path.replace(author_path,''))
       mapCanvas = new PlacingLit.Views.MapCanvasView
-      alertMessage = 'Whoa! No places found for ' + query + '. '
+      alertMessage = 'Whoa! No places found for ' + author + '. '
       alertMessage += 'But that\'s ok!. Be the first to map this author. '
       alertMessage += 'Click the map to add a book and author.'
       alert alertMessage
