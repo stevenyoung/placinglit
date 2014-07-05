@@ -1,11 +1,15 @@
-""" Datastore models for authors"""
+"""
+Datastore model for authors.
+And methods for standardizing author names from disparate sources.
+User entry and isbndb crowd-sourced data often has
+"""
 
 import logging
 
 from google.appengine.ext import db
 
 
-def get_author_names(author_name):
+def format_author_names(author_name):
   """ Parse string for first and last names. """
   first_name = ''
   last_name = ''
@@ -32,11 +36,10 @@ class Author(db.Model):   # pylint: disable=R0904
 
   @classmethod
   def get_author_key(cls, author_json=None, author_id=None):
-    """ Get author
+    """ Get author db.Key for reference properties
         args:
           author_json: author data in json format
-          author_id: author id e.g. 'first_last'
-          author_name: format 'First Last' or 'Last, First'
+          author_id: author id 'first_last'
         returns:
           author_key: db.Key of new/existing author
     """
@@ -55,7 +58,7 @@ class Author(db.Model):   # pylint: disable=R0904
   def create_from_json(cls, author_json, source="isbndb"):
     """ new author from json """
     logging.info('author create from json %s', author_json)
-    first_name, last_name = (get_author_names(author_json['name']))
+    first_name, last_name = (format_author_names(author_json['name']))
     display_name = ' '.join([first_name, last_name])
     author_id = author_json['id']
     author = cls(
@@ -96,4 +99,3 @@ class Author(db.Model):   # pylint: disable=R0904
       author.author = author.display_name
       to_put.append(author)
     db.put(to_put)
-
