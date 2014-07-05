@@ -6,22 +6,23 @@ define(['angularMocks',
 
     describe('Controller: GoogleMapCtrl', function () {
       var ctrl,
-        scope,
-        leafletEvents;
+        scope;
+        // leafletEvents;
 
       describe('#loading map', function() {
         beforeEach(inject(function($controller, $rootScope){
           scope = $rootScope.$new();
           ctrl = $controller('GoogleMapCtrl', {
             $scope: scope,
-            leafletEvents: leafletEvents
+            // leafletEvents: leafletEvents
           });
         }));
-
-
+        it('should have a map property', function(){
+          expect(scope.map).toBeDefined();
+        });
         it('should load a map with a center and zoom', function(){
-          expect(scope.center.lat).toBeDefined();
-          expect(scope.center.lng).toBeDefined();
+          expect(scope.map.center.lat).toBeDefined();
+          expect(scope.map.center.lng).toBeDefined();
           expect(scope.center.zoom).toBeDefined();
         });
         it('should listen for load', function(){
