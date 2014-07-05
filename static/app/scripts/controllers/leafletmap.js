@@ -1,7 +1,7 @@
 define(['controllers/controllers',
         'leafletmaps',
         'services/scenes',
-        'services/geolocation'],//, 'googlemaps'],
+        'services/geolocation'],
   function(controllers, leafletEvents) {
     controllers.controller('LeafletMapCtrl',
       function ($scope, leafletEvents, $location, SceneService,
