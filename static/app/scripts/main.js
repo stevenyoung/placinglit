@@ -76,10 +76,8 @@ require([
   'jquery',
 
   'controllers/main',
-  'controllers/edit',
   'controllers/leafletmap',
   'controllers/scenes',
-  'controllers/home',
 
   'services/pagination',
   'services/scenes',
@@ -102,14 +100,20 @@ require([
       leafletMapView = {
         templateUrl: 'views/leaflet-map.html',
         controller: 'LeafletMapCtrl'
+      },
+      googleMapView = {
+        templateUrl: 'views/google-map.html',
+        controller: 'GoogleMapCtrl'
       };
     app.config(['$routeProvider',
       function($routeProvider) {
         $routeProvider
-          .when('/map', mapView)
+          .when('/map', leafletMapView)
           .when('/edit', editView)
           .when('/home', homeView)
-          .when('/', leafletMapView);
+          .when('/', leafletMapView)
+          .when('/lmap', leafletMapView)
+          .when('/gmap', googleMapView)
           // .when('/', {
           //   templateUrl: 'views/main.html',
           //   controller: 'MainCtrl'
