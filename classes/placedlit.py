@@ -19,9 +19,9 @@ import panoramio
 import location_index
 
 
-def get_nearby_places(lat, lon, sorted=False):
+def get_nearby_places(lat, lon, sorted_by_distance=False):
   """ run location query """
-  if sorted:
+  if sorted_by_distance:
     return location_index.sorted_location_query(lat, lon)
   else:
     return location_index.location_query(lat, lon)
