@@ -1,4 +1,4 @@
-""" Datastore models for app."""
+""" Datastore models for book data."""
 
 import json
 import logging
