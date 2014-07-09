@@ -1,43 +1,49 @@
-#!/usr/bin/coffee
+class AllScenes
 
-$(document).on 'ready', ->
-  list = new PlacingLit.Views.Allscenes()
-  editPlace = ->
-    $form = $('#editform')
-    key = window.location.search.split('=')[1]
-    form_data =
-      title: $form.find('#title').val()
-      author: $form.find('#author').val()
-      scenelocation: $form.find('#scenelocation').val()
-      scenedescription: $form.find('#scenedescription').val()
-      notes: $form.find('#notes').val()
-      image_url: $form.find('#image_url').val()
-      actors: $form.find('#actors').val()
-      scenetime: $form.find('#scenetime').val()
-      symbols: $form.find('#symbols').val()
-      ug_isbn: $form.find('#ug_isbn').val()
-    console.log(form_data)
-    $.ajax
-      url: '/admin/edit?key=' + key
-      type: 'POST'
-      data: form_data
-      success: (data, status, xhr) =>
-        $('#editplacebutton').off 'click'
-        $('#editplacebutton').text(data)
+  constructor: (@key) ->
+    @key ?= window.location.search.split("=")[1]
+    @list = new PlacingLit.Views.Allscenes()
+    @elements =
+      inputs:       $("#editform :input")
+      editButton:   $("#editplacebutton")
+      deleteButton: $("#deleteplacebutton")
 
+  apiEndpoint: -> "/admin/edit?key=#{@key}"
 
-  deletePlace = ->
-    key = window.location.search.split('=')[1]
-    $.ajax
-      url: '/admin/edit?key=' + key
-      type: 'DELETE'
-      success: (data, status, xhr) =>
-        $('#deleteplacebutton').off 'click'
-        $('#deleteplacebutton').text(data)
-        $('#editplacebutton').remove()
+  post: (data) -> $.ajax {url: @apiEndpoint(), type: "POST", data}
 
-  $('#editplacebutton').on 'click', (event) ->
-    editPlace()
+  destroy: (data) -> $.ajax {url: @apiEndpoint(), type: "DELETE", data}
 
-  $('#deleteplacebutton').on 'click', (event) ->
-    deletePlace()
+  attachEvents: ->
+    @elements.editButton.on   "click.allscenes", @editPlace
+    @elements.deleteButton.on "click.allscenes", @deletePlace
+    this
+
+  detachEvents: (data) =>
+    @elements.deleteButton
+      .off('click.allscenes')
+      .text(data)
+    data
+
+  buildDataFromElements: ->
+    # jQuery supports using a normal form element for this. But since the
+    # markup is a div with inputs inside we have to reference them
+    # individually.
+    _(@elements.inputs.serializeArray()).chain()
+      .map (field) ->
+        [field.name, field.value]
+      .object()
+      .value()
+
+  editPlace: =>
+    @post(@buildDataFromElements())
+      .then(@detachEvents)
+
+  deletePlace: =>
+    @destroy()
+      .then(@detachEvents)
+      .then =>
+        @elements.editButton.remove()
+
+# TODO: export AllScenes to a global namespace to allow testing
+$ -> new AllScenes().attachEvents()
