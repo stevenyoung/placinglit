@@ -1,37 +1,47 @@
-#!/usr/bin/coffee
+class AllScenes
 
-$(document).on 'ready', ->
-  apiEndpoint = ->
-    key = window.location.search.split('=')[1]
-    "/admin/edit?key=#{key}"
-  post    = (data) -> $.ajax {url: apiEndpoint(), type: "POST", data}
-  destroy = (data) -> $.ajax {url: apiEndpoint(), type: "DELETE", data}
+  constructor: (@key) ->
+    @key ?= window.location.search.split("=")[1]
+    @list = new PlacingLit.Views.Allscenes()
+    @elements =
+      inputs:       $("#editform :input")
+      editButton:   $("#editplacebutton")
+      deleteButton: $("#deleteplacebutton")
 
-  buildDataFromElements ->
+  apiEndpoint: -> "/admin/edit?key=#{@key}"
+
+  post: (data) -> $.ajax {url: @apiEndpoint(), type: "POST", data}
+
+  destroy: (data) -> $.ajax {url: @apiEndpoint(), type: "DELETE", data}
+
+  attachEvents: ->
+    @elements.editButton.on   "click.allscenes", @editPlace
+    @elements.deleteButton.on "click.allscenes", @deletePlace
+    this
+
+  detachEvents: (data) =>
+    @elements.deleteButton
+      .off('click.allscenes')
+      .text(data)
+    data
+
+  buildDataFromElements: ->
     data = {}
     # jQuery supports using a normal form element for this. But since the
     # markup is a div with inputs inside we have to reference them
-    # indevidually.
-    fields = $("#editform :input").serializeArray()
+    # individually.
+    fields = @elements.inputs.serializeArray()
     $.each fields, (i, field) -> data[field.name] = field.value
     data
 
-  list = new PlacingLit.Views.Allscenes()
+  editPlace: =>
+    @post(@buildDataFromElements())
+      .then(@detachEvents)
 
-  editPlace = ->
-    post(buildDataFromElements())
-      .then (data) ->
-        $('#editplacebutton')
-          .off('click.allscenes')
-          .text(data)
+  deletePlace: =>
+    @destroy()
+      .then(@detachEvents)
+      .then => @elements.editButton.remove()
 
-  deletePlace = ->
-    destroy()
-      .then (data) ->
-        $('#editplacebutton').remove()
-        $('#deleteplacebutton')
-          .off('click.allscenes')
-          .text(data)
-
-  $('#editplacebutton').on 'click.allscenes', editPlace
-  $('#deleteplacebutton').on 'click.allscenes', deletePlace
+# TODO: export AllScenes to a global namespace to allow testing
+$ -> new AllScenes().attachEvents()
