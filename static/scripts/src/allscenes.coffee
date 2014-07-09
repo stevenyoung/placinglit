@@ -1,43 +1,37 @@
 #!/usr/bin/coffee
 
 $(document).on 'ready', ->
-  list = new PlacingLit.Views.Allscenes()
-  editPlace = ->
-    $form = $('#editform')
+  apiEndpoint = ->
     key = window.location.search.split('=')[1]
-    form_data =
-      title: $form.find('#title').val()
-      author: $form.find('#author').val()
-      scenelocation: $form.find('#scenelocation').val()
-      scenedescription: $form.find('#scenedescription').val()
-      notes: $form.find('#notes').val()
-      image_url: $form.find('#image_url').val()
-      actors: $form.find('#actors').val()
-      scenetime: $form.find('#scenetime').val()
-      symbols: $form.find('#symbols').val()
-      ug_isbn: $form.find('#ug_isbn').val()
-    console.log(form_data)
-    $.ajax
-      url: '/admin/edit?key=' + key
-      type: 'POST'
-      data: form_data
-      success: (data, status, xhr) =>
-        $('#editplacebutton').off 'click'
-        $('#editplacebutton').text(data)
+    "/admin/edit?key=#{key}"
+  post    = (data) -> $.ajax {url: apiEndpoint(), type: "POST", data}
+  destroy = (data) -> $.ajax {url: apiEndpoint(), type: "DELETE", data}
 
+  buildDataFromElements ->
+    data = {}
+    # jQuery supports using a normal form element for this. But since the
+    # markup is a div with inputs inside we have to reference them
+    # indevidually.
+    fields = $("#editform :input").serializeArray()
+    $.each fields, (i, field) -> data[field.name] = field.value
+    data
+
+  list = new PlacingLit.Views.Allscenes()
+
+  editPlace = ->
+    post(buildDataFromElements())
+      .then (data) ->
+        $('#editplacebutton')
+          .off('click.allscenes')
+          .text(data)
 
   deletePlace = ->
-    key = window.location.search.split('=')[1]
-    $.ajax
-      url: '/admin/edit?key=' + key
-      type: 'DELETE'
-      success: (data, status, xhr) =>
-        $('#deleteplacebutton').off 'click'
-        $('#deleteplacebutton').text(data)
+    destroy()
+      .then (data) ->
         $('#editplacebutton').remove()
+        $('#deleteplacebutton')
+          .off('click.allscenes')
+          .text(data)
 
-  $('#editplacebutton').on 'click', (event) ->
-    editPlace()
-
-  $('#deleteplacebutton').on 'click', (event) ->
-    deletePlace()
+  $('#editplacebutton').on 'click.allscenes', editPlace
+  $('#deleteplacebutton').on 'click.allscenes', deletePlace
