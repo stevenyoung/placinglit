@@ -26,13 +26,14 @@ class AllScenes
     data
 
   buildDataFromElements: ->
-    data = {}
     # jQuery supports using a normal form element for this. But since the
     # markup is a div with inputs inside we have to reference them
     # individually.
-    fields = @elements.inputs.serializeArray()
-    $.each fields, (i, field) -> data[field.name] = field.value
-    data
+    _(@elements.inputs.serializeArray()).chain()
+      .map (field) ->
+        [field.name, field.value]
+      .object()
+      .value()
 
   editPlace: =>
     @post(@buildDataFromElements())
@@ -41,7 +42,8 @@ class AllScenes
   deletePlace: =>
     @destroy()
       .then(@detachEvents)
-      .then => @elements.editButton.remove()
+      .then =>
+        @elements.editButton.remove()
 
 # TODO: export AllScenes to a global namespace to allow testing
 $ -> new AllScenes().attachEvents()
