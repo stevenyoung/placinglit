@@ -1,66 +1,82 @@
-#!/usr/bin/env coffee
+class Home
 
-$(document).on('ready', ->
-  hpCitySearch = ->
-    address = document.getElementById('gcf').value
+  constructor: ->
+    @ENTER_KEY = 13
+    @elements =
+      cityInput:  $('#gcf')
+      authorInput: $('#authorq')
+      mapButtons: $('#hpbuttons').find('a')
+
+  geocoderSearch: =>
+    deferred = $.Deferred()
+    location = @elements.cityInput.val()
     geocoder = new google.maps.Geocoder()
-    geocoder.geocode {'address':address}, (results, status) =>
-      if (status == google.maps.GeocoderStatus.OK)
-        position = results[0].geometry.location
-        lat = position[Object.keys(position)[0]]
-        lng = position[Object.keys(position)[1]]
-        mapUrl = window.location.protocol + '//' + window.location.host
-        # mapUrl += '/map?lat=' + lat + '&lon=' + lng
-        mapUrl += '/map/' + lat + ',' + lng
-        window.location = mapUrl
-      else
-        alert("geocode was not successful: " + status)
+    geocoder.geocode({'address': location}, deferred.resolve)
+    return deferred.promise()
 
+  attachEvents: ->
+    # city/location search
+    @elements.cityInput.on 'keydown', (event) =>
+      if (event.which == @ENTER_KEY) || (event.keyCode == @ENTER_KEY)
+        event.preventDefault()
+        @geocoderSearch()
+        .then(@useGeocodedLocation)
 
-  hpAuthorSearch = ->
-    authorq = document.getElementById('authorq').value
-    mapUrl = window.location.protocol + '//' + window.location.host
-    mapUrl += '/map/filter/author/' + authorq
-    window.location = mapUrl
+    # filter by author
+    @elements.authorInput.on 'keydown', (event) =>
+      if (event.which == @ENTER_KEY) || (event.keyCode == @ENTER_KEY)
+        event.preventDefault()
+        @reloadWithFilteredMap()
 
-  hpSuggestAuthors = ->
-    author_data = []
+  suggestAuthors: ->
+    authors = []
+    authorInput = @elements.authorInput
     $.ajax
       url: "/places/authors"
       success: (data) ->
         $.each data, (key, value) ->
-          author_data.push(value.author.toString())
-        $('#authorq').typeahead({source: author_data})
+          authors.push(value.author.toString())
+        authorInput.typeahead({source: authors})
 
-
-  updateMapLinksWithLocation = (position) ->
+  updateMapLinksWithLocation: (position) ->
     lat = position.coords.latitude
     lng = position.coords.longitude
-    $('#hpbuttons').find('a').attr('href', 'map?lat=' + lat + '&lng=' + lng)
+    @elements.mapButtons.attr('href', 'map?lat=' + lat + '&lng=' + lng)
 
-
-  positionError = (error) ->
-    console.log('error', error)
-    console.log('client ip', window.REMOTE_ADDR)
-
-
-  updateMapLinksWithUserLocation = ->
+  getUserLocation: ->
     if navigator.geolocation
       navigator.geolocation.getCurrentPosition(
         updateMapLinksWithLocation, positionError)
 
+  positionError: (error) ->
+    console.log('error', error)
+    console.log('client ip', window.REMOTE_ADDR)
 
-  # updateMapLinksWithUserLocation()
-  hpSuggestAuthors()
-  recentPlacesView = new PlacingLit.Views.RecentPlaces
-  countView = new PlacingLit.Views.Countview
-  $('.carousel').carousel()
-  $('#gcf').on 'keydown', (event) =>
-    if (event.which == 13 || event.keyCode == 13)
-      event.preventDefault()
-      hpCitySearch()
-  $('#authorq').on 'keydown', (event) =>
-    if (event.which == 13 || event.keyCode == 13)
-      event.preventDefault()
-      hpAuthorSearch()
-)
+  useGeocodedLocation: (results, status) =>
+    if status == google.maps.GeocoderStatus.OK
+      position = results[0].geometry.location
+      location =
+        lat:  position[Object.keys(position)[0]]
+        lng:  position[Object.keys(position)[1]]
+      @reloadWithLocatedMap(location)
+    else
+      alert("geocode was not successful: " + status)
+
+  reloadWithLocatedMap: (location) ->
+    @relocateWindowToMap('/map/' + location.lat + ',' + location.lng)
+
+  reloadWithFilteredMap: ->
+    @relocateWindowToMap('/map/filter/author/' + @elements.authorInput.val())
+
+  relocateWindowToMap: (path) ->
+    mapUrl = window.location.protocol + '//' + window.location.host + path
+    window.location = mapUrl
+
+$ ->
+  home = new Home()
+  home.attachEvents()
+  home.suggestAuthors()
+  new PlacingLit.Views.RecentPlaces
+  new PlacingLit.Views.Countview
+  $('.carousel').carousel()  # bootstrap carousel
+
