@@ -7,3 +7,4 @@ static/app/bower_components
 keys.py
 static/scripts/src/*.js
 static/scripts/src/**/*.js
+static/styles/*.css
