@@ -1,5 +1,3 @@
-#!/usr/bin/env coffee
-
 $(document).on('ready', ->
   $('#mapmodal').modal() if location.search == '?modal=1'
   if window.SCENES

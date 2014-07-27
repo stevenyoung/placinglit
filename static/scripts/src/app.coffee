@@ -1,4 +1,3 @@
-#!/usr/bin/env coffee
 window.PlacingLit =
   Models: {}
   Collections: {}
@@ -91,6 +90,10 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     panControlOptions:
       # position: google.maps.ControlPosition.TOP_LEFT
       position: google.maps.ControlPosition.LEFT_CENTER
+
+  elements:
+    geocodeInput: $('#gcf')
+    searchButton: $('#search')
 
   initialize: (scenes) ->
     @collection ?= new PlacingLit.Collections.Locations()
@@ -432,12 +435,12 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       )
 
   attachSearchHandler: ->
-    $('#gcf').on('keydown', (event) =>
+    @elements.geocodeInput.on('keydown', (event) =>
         if (event.which == 13 || event.keyCode == 13)
           event.preventDefault()
           @geocoderSearch()
       )
-    $('#search').on 'click', (event) =>
+    @elements.searchButton.on 'click', (event) =>
       @geocoderSearch()
 
   sceneFieldsTemplate: ->
