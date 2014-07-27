@@ -26,7 +26,7 @@ class Home
     @elements.authorInput.on 'keydown', (event) =>
       if (event.which == @ENTER_KEY) || (event.keyCode == @ENTER_KEY)
         event.preventDefault()
-        @reloadWithFilteredMap()
+        @reloadWithFilteredMap('author', @elements.authorInput.val())
 
   suggestAuthors: ->
     authors = []
@@ -65,8 +65,8 @@ class Home
   reloadWithLocatedMap: (location) ->
     @relocateWindowToMap('/map/' + location.lat + ',' + location.lng)
 
-  reloadWithFilteredMap: ->
-    @relocateWindowToMap('/map/filter/author/' + @elements.authorInput.val())
+  reloadWithFilteredMap: (filter, value)->
+    @relocateWindowToMap('/map/filter/' + filter + '/' value)
 
   relocateWindowToMap: (path) ->
     mapUrl = window.location.protocol + '//' + window.location.host + path
