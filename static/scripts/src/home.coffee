@@ -66,7 +66,7 @@ class Home
     @relocateWindowToMap('/map/' + location.lat + ',' + location.lng)
 
   reloadWithFilteredMap: (filter, value)->
-    @relocateWindowToMap('/map/filter/' + filter + '/' value)
+    @relocateWindowToMap('/map/filter/' + filter + '/' + value)
 
   relocateWindowToMap: (path) ->
     mapUrl = window.location.protocol + '//' + window.location.host + path
@@ -79,4 +79,3 @@ $ ->
   new PlacingLit.Views.RecentPlaces
   new PlacingLit.Views.Countview
   $('.carousel').carousel()  # bootstrap carousel
-
