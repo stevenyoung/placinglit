@@ -1,3 +1,4 @@
+#!/usr/bin/env coffee
 window.PlacingLit =
   Models: {}
   Collections: {}
@@ -70,6 +71,8 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       draggable: false
       animation: google.maps.Animation.DROP
       icon : '/img/book.png'
+    maxTerrainZoom: 15
+
 
   mapOptions:
     #TODO styled maps?
@@ -80,7 +83,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     mapTypeControlOptions:
       style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
       position: google.maps.ControlPosition.TOP_RIGHT
-    maxZoom: 40
+    maxZoom: 25
     minZoom: 2
     zoomControl: true
     zoomControlOptions:
@@ -90,10 +93,6 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     panControlOptions:
       # position: google.maps.ControlPosition.TOP_LEFT
       position: google.maps.ControlPosition.LEFT_CENTER
-
-  elements:
-    geocodeInput: $('#gcf')
-    searchButton: $('#search')
 
   initialize: (scenes) ->
     @collection ?= new PlacingLit.Collections.Locations()
@@ -110,15 +109,18 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     map_elem = document.getElementById(@$el.selector)
     @gmap = new google.maps.Map(map_elem, @mapOptions)
     @mapCenter = @gmap.getCenter()
+    google.maps.event.addListener(@gmap, 'bounds_changed', @handleViewportChange)
     return @gmap
 
-  handleViewportChange: (event) ->
+  handleViewportChange: (event) =>
     center = @gmap.getCenter()
     centerGeoPt =
       lat: center[Object.keys(center)[0]]
       lon: center[Object.keys(center)[1]]
-    zoom = @gmap.getZoom()
-    console.log('center_changed', center, centerGeoPt, zoom)
+    if @gmap.getZoom() >= @settings.maxTerrainZoom
+      @gmap.setMapTypeId(google.maps.MapTypeId.ROADMAP)
+    else
+      @gmap.setMapTypeId(google.maps.MapTypeId.TERRAIN)
 
   updateCollection: (event) ->
     center = @gmap.getCenter()
@@ -255,6 +257,7 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
     @positionMap()
     $('#addscenebutton').on('click', @handleAddSceneButtonClick)
     $('#addscenebutton').show()
+
     # $('#hidemarkers').on('click', @hideMarkers)
     # $('#showmarkers').on('click', @showMarkers)
 
@@ -435,12 +438,12 @@ class PlacingLit.Views.MapCanvasView extends Backbone.View
       )
 
   attachSearchHandler: ->
-    @elements.geocodeInput.on('keydown', (event) =>
+    $('#gcf').on('keydown', (event) =>
         if (event.which == 13 || event.keyCode == 13)
           event.preventDefault()
           @geocoderSearch()
       )
-    @elements.searchButton.on 'click', (event) =>
+    $('#search').on 'click', (event) =>
       @geocoderSearch()
 
   sceneFieldsTemplate: ->
