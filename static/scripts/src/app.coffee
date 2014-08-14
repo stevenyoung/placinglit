@@ -1,4 +1,3 @@
-#!/usr/bin/env coffee
 window.PlacingLit =
   Models: {}
   Collections: {}
