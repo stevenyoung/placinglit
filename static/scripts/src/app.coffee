@@ -740,14 +740,6 @@ class PlacingLit.Views.MapFilterView extends PlacingLit.Views.MapCanvasView
     $('#addscenebutton').on('click', @handleAddSceneButtonClick)
     $('#addscenebutton').show()
 
-  handleViewportChange: (event) ->
-    center = @gmap.getCenter()
-    centerGeoPt =
-      lat: center[Object.keys(center)[0]]
-      lon: center[Object.keys(center)[1]]
-    zoom = @gmap.getZoom()
-    # console.log('center_changed', center, centerGeoPt, zoom)
-
   updateCollection: (event) ->
     center = @gmap.getCenter()
     centerGeoPt =
