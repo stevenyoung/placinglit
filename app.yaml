@@ -183,6 +183,9 @@ handlers:
 - url: /places/latest
   script: handlers.location_index.app
 
+- url: /api/(.*)
+  script: handlers.api.app
+
 - url: .*
   script: handlers.home.app
 
