@@ -8,7 +8,7 @@ keys.py
 static/scripts/src/*.js
 static/scripts/src/**/*.js
 static/styles/*.css
-handlers/*.py
-templates/*.py
-classes/*.py
+handlers
+templates
+classes
 app.yaml
