@@ -11,4 +11,5 @@ static/styles/*.css
 handlers
 templates
 classes
+misc
 app.yaml
