@@ -8,8 +8,3 @@ keys.py
 static/scripts/src/*.js
 static/scripts/src/**/*.js
 static/styles/*.css
-handlers
-templates
-classes
-misc
-app.yaml
